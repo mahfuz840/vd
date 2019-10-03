@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'maafiatwo2'
+            storeFile file('/media/spartan840/Document/Virtual Diary Keystore/diaryfinal.jks')
+            storePassword 'maafiatwo2'
+        }
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/license.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/notice.txt'
+            exclude 'META-INF/ASL2.0'
+            exclude 'META-INF/proguard/androidx-annotations.pro'
+            pickFirst  'META-INF/*'
+        }
+    }
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.the_spartan.virtualdiary"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 6
+        versionName "2.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            check
+            signingConfig signingConfigs.config
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+repositories {
+    jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.takisoft.fix:preference-v7:27.0.0.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.http-client:google-http-client-gson:1.32.1'
+    implementation 'com.vanniktech:vntfontlistpreference:1.0.0'
+    implementation 'com.vanniktech:vntfontlistpreference:1.0.1-SNAPSHOT'
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.github.wangjiegulu:rfab:2.0.0'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+
+
+    implementation('com.google.api-client:google-api-client-android:1.30.4') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-drive:v3-rev99-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+}

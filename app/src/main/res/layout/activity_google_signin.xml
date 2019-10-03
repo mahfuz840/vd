@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/signin_bg"
+    tools:context=".activities.GoogleSigninActivity"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@android:color/white"
+            android:theme="@style/ToolbarTheme" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome"
+                android:textSize="@dimen/title_bar_font_size"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:layout_marginTop="50dp"
+        app:srcCompat="@drawable/diary_icon" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        android:textSize="30sp"
+        android:fontFamily="@font/roboto" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:text="with"
+        android:fontFamily="@font/roboto"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        app:srcCompat="@drawable/google_logo" />
+
+
+    <Button
+        android:id="@+id/signin_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/submit_login_buttons_shape"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:text="Continue with google"
+        android:fontFamily="@font/roboto"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="5dp">
+    </Button>
+
+
+    <Button
+        android:id="@+id/skip_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/submit_login_buttons_shape"
+        android:fontFamily="@font/roboto"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Skip"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"/>
+
+
+
+
+</LinearLayout>

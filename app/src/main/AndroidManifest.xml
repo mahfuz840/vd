@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.the_spartan.virtualdiary">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/diary_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/diary_icon"
+        android:testOnly="false"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+
+        <activity android:name=".activities.NewItemActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar"/>
+        <activity android:name=".activities.ToDoActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <provider
+            android:name=".data.ToDoProvider"
+            android:authorities="to.do.authority"
+            android:enabled="true"
+            android:exported="false" />
+        <provider
+            android:name=".data.NoteProvider"
+            android:authorities="com.the_spartan.virtualdiary"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6572007445610561~2773371688" />
+
+        <activity
+            android:name=".activities.MainActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        </activity>
+        <activity
+            android:name=".activities.CreateNoteActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".activities.AboutActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".settings_activities.FontStyleActivity"
+            android:theme="@style/MyPreferenceTheme" />
+
+        <service android:name=".service.NotificationService" />
+
+        <activity
+            android:name=".settings_activities.FontColorActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".settings_activities.NotificationActivity"
+            android:theme="@style/MyPreferenceTheme" />
+
+        <receiver android:name=".service.NotificationBroadcastReceiver" />
+
+        <activity
+            android:name=".activities.GoogleSigninActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        </activity>
+        <activity
+            android:name=".activities.BackupRestoreActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".activities.CustomizationActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+        <activity
+            android:name=".activities.PasswordActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".settings_activities.PasswordSettingsActivity"
+            android:theme="@style/ToolbarThemeWithNoActionBar" />
+    </application>
+
+</manifest>

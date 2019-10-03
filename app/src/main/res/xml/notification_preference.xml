@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Notification Settings">
+
+        <SwitchPreference
+            android:id="@+id/not_sw"
+            android:key="notification_switch_value"
+            android:title="Notification" />
+
+        <ListPreference
+            android:key="@string/notification_delay_value"
+            android:title="Notification Delay"
+            android:entries="@array/notification_delay_array"
+            android:entryValues="@array/notification_delay_array_values"
+            android:defaultValue="1"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

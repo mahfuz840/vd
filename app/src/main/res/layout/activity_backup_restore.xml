@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+    tools:context=".activities.BackupRestoreActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@android:color/white"
+            android:theme="@style/ToolbarTheme" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Backup"
+                android:textSize="@dimen/title_bar_font_size"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <ImageView
+        android:paddingTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/profile_icon" />
+
+    <TextView
+        android:textAlignment="center"
+        android:id="@+id/email_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="someone@gmail.com" />
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/change_account_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Account"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/backup_restore_help_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="This option lets you backup your notes to your google drive and restore them later."
+        android:textSize="16sp"
+        android:textColor="@android:color/black"/>
+
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/restore_btn"
+            android:layout_weight="1"
+            android:layout_marginRight="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Restore"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_shape"/>
+
+        <Button
+            android:id="@+id/backup_btn"
+            android:layout_weight="1"
+            android:layout_marginLeft="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Backup"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_shape"/>
+
+    </LinearLayout>
+
+</LinearLayout>

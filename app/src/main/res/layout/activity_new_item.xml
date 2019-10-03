@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context=".activities.NewItemActivity"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme" >
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Task"
+                android:layout_gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/title_bar_font_size" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:id="@+id/tvNewTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/task_to_be_done"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etNewTask"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvNewTask"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/spkBtnNewTask"
+        android:hint="@string/enter_task_here"
+        android:textColorHint="#B8BFC2" />
+
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etNewTask"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/due_date"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etDisplayDate"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDate"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/imgDate"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:hint="@string/date_not_set"
+        android:onClick="onDateSet"
+        android:paddingTop="8sp"
+        android:textColor="@android:color/black"
+        android:textColorHint="#B8BFC2"
+        android:textSize="16sp"
+        tools:ignore="TextFields" />
+
+    <ImageView
+        android:id="@+id/imgDate"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_below="@+id/tvDate"
+        android:layout_toStartOf="@+id/imgDateClear"
+        android:contentDescription="@string/click_to_set_date"
+        android:src="@drawable/ic_event_black_24dp"
+        android:tint="@color/colorPrimary" />
+
+    <ImageView
+        android:id="@+id/imgDateClear"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_below="@+id/tvDate"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/cancel_date"
+        android:onClick="clearDate"
+        android:src="@drawable/ic_highlight_off_black_24dp"
+        android:tint="@color/colorPrimary" />
+
+    <EditText
+        android:id="@+id/etDisplayTime"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDisplayDate"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_toStartOf="@+id/imgTime"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:hint="@string/time_not_set"
+        android:onClick="onTimeSet"
+        android:paddingTop="8sp"
+        android:textColor="@android:color/black"
+        android:textColorHint="#B8BFC2"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/imgTime"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_below="@+id/etDisplayDate"
+        android:layout_marginTop="20dp"
+        android:layout_toStartOf="@+id/imgTimeClear"
+        android:contentDescription="@string/click_to_set_time"
+        android:src="@drawable/ic_schedule_black_24dp"
+        android:tint="@color/colorPrimary" />
+
+    <ImageView
+        android:id="@+id/imgTimeClear"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_below="@+id/etDisplayDate"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/cancel_time"
+        android:onClick="clearTime"
+        android:src="@drawable/ic_highlight_off_black_24dp"
+        android:tint="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/tvPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgTime"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/enter_priority"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPriority"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:prompt="@string/priority_prompt"
+        android:spinnerMode="dropdown" />
+
+</RelativeLayout>
+</LinearLayout>
