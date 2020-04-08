@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
+    android:layout_width="192dp"
+    android:layout_height="192dp"
     android:id="@+id/note_layout_root">
 
     <ImageView
@@ -15,13 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginRight="5dp">
 
         <TextView
             android:id="@+id/note_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:layout_toLeftOf="@id/note_month"
             android:layout_toStartOf="@id/note_month"
             android:paddingTop="1dp"

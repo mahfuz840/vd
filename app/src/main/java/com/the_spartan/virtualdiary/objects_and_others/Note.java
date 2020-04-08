@@ -100,7 +100,7 @@ public class Note implements Serializable {
     }
 
     public String getDateTimeFormatted(Context context){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a"
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mma"
                 , context.getResources().getConfiguration().locale);
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
 //        return simpleDateFormat.format(new Date(mDateTime));

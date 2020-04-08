@@ -2,15 +2,16 @@ package com.the_spartan.virtualdiary.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.the_spartan.virtualdiary.models.Priority;
 import com.the_spartan.virtualdiary.objects_and_others.Note;
 import com.the_spartan.virtualdiary.Adapters.NoteAdapter;
 import com.the_spartan.virtualdiary.R;
@@ -52,6 +53,8 @@ public class SearchActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         search();
+
+        Log.d("priority", String.valueOf(Priority.values()));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

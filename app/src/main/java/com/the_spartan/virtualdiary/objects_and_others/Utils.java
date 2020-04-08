@@ -1,17 +1,29 @@
 package com.the_spartan.virtualdiary.objects_and_others;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.activities.GoogleSigninActivity;
+import com.the_spartan.virtualdiary.activities.MainActivity;
 
 public class Utils {
 
     public static Typeface initializeFonts(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String fontPath = preferences.getString(context.getString(R.string.font), null);
+        Typeface defaultFont = context.getResources().getFont(R.font.roboto);
 
         Typeface myFont;
 
@@ -19,7 +31,7 @@ public class Utils {
         if (fontPath != null && !fontPath.equals("null"))
             myFont = Typeface.createFromAsset(context.getAssets(), fontPath);
         else
-            myFont = null;
+            myFont = defaultFont;
 
         return myFont;
     }

@@ -19,7 +19,7 @@
 
         <activity android:name=".activities.NewItemActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar"/>
-        <activity android:name=".activities.ToDoActivity"
+        <activity android:name=".activities.ToDoFragment"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -50,9 +50,7 @@
         <activity
             android:name=".activities.CreateNoteActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
-        <activity
-            android:name=".activities.AboutActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar" />
+
         <activity
             android:name=".settings_activities.FontStyleActivity"
             android:theme="@style/MyPreferenceTheme" />
@@ -65,9 +63,6 @@
         <activity
             android:name=".activities.SearchActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
-        <activity
-            android:name=".settings_activities.NotificationActivity"
-            android:theme="@style/MyPreferenceTheme" />
 
         <receiver android:name=".service.NotificationBroadcastReceiver" />
 
@@ -78,12 +73,7 @@
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
         </activity>
-        <activity
-            android:name=".activities.BackupRestoreActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar" />
-        <activity
-            android:name=".activities.CustomizationActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar" />
+
         <activity
             android:name=".activities.PasswordActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar">
@@ -94,9 +84,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".settings_activities.PasswordSettingsActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar" />
     </application>
 
 </manifest>

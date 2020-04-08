@@ -1,7 +1,7 @@
 package com.the_spartan.virtualdiary.models;
 
 import android.graphics.Color;
-;import com.the_spartan.virtualdiary.activities.ToDoActivity;
+;import com.the_spartan.virtualdiary.activities.ToDoFragment;
 
 public enum Priority {
     LOW("low", 0, Color.rgb(204, 214, 0)),
@@ -23,14 +23,14 @@ public enum Priority {
     }
 
     public String getName() {
-        return ToDoActivity.getContext().getString(ToDoActivity.getContext().getResources().getIdentifier(name, "string",  ToDoActivity.getContext().getPackageName()));
+        return ToDoFragment.getToDoContext().getString(ToDoFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoFragment.getToDoContext().getPackageName()));
     }
 
     public int getColor() {
         return color;
     }
 
-    @Override public String toString(){
-        return ToDoActivity.getContext().getString(ToDoActivity.getContext().getResources().getIdentifier(name, "string",  ToDoActivity.getContext().getPackageName()));
+    public String toString(){
+        return ToDoFragment.getToDoContext().getString(ToDoFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoFragment.getToDoContext().getPackageName()));
     }
 }

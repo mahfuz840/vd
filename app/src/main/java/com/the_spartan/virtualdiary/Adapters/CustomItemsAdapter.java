@@ -18,17 +18,14 @@ import android.widget.TextView;
 
 
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.activities.CreateNoteActivity;
-import com.the_spartan.virtualdiary.activities.ToDoActivity;
+import com.the_spartan.virtualdiary.activities.ToDoFragment;
 //import com.the_spartan.virtualdiary.models.Item;
 import com.the_spartan.virtualdiary.objects_and_others.ToDoItem;
-import com.the_spartan.virtualdiary.objects_and_others.ToDoUtils;
 import com.the_spartan.virtualdiary.objects_and_others.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import static com.the_spartan.virtualdiary.activities.ToDoActivity.deleteList;
+import static com.the_spartan.virtualdiary.activities.ToDoFragment.deleteList;
 
 public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
@@ -74,13 +71,8 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
         TextView tvPriority;
         TextView dueDate;
 
-        Animation alphaAnim = AnimationUtils.loadAnimation(context, R.anim.alpha);
-        boolean isFirst = false;
-
-        if (v == null) {
+        if (v == null)
             v = LayoutInflater.from(context).inflate(R.layout.item, null);
-            isFirst = true;
-        }
 
 
         Typeface myFont = Utils.initializeFonts(context);
@@ -115,11 +107,9 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
             else if (!isCheckedBool && found)
                 deleteList.remove(index);
 
-            cb.setOnCheckedChangeListener((ToDoActivity) context);
+//            cb.setOnCheckedChangeListener(ToDoFragment);
 
             tvName.setText(item.getSubject());
-            if(isFirst)
-                tvName.startAnimation(alphaAnim);
 
             if (isCheckedBool)
                 tvName.setPaintFlags(tvName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -130,8 +120,7 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
                 tvPriority.setText("Medium");
             else
                 tvPriority.setText("High");
-            if(isFirst)
-                tvPriority.startAnimation(alphaAnim);
+
 //            tvPriority.setTextColor(item.priority.getColor());
             dueDate = (TextView) v.findViewById(R.id.tvDueDate);
             if (!TextUtils.isEmpty(item.getDueDate())) {
@@ -144,8 +133,6 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
             } else {
                 dueDate.setVisibility(View.GONE);
             }
-            if(isFirst)
-                dueDate.startAnimation(alphaAnim);
 
             if (myFont != null) {
                 tvName.setTypeface(myFont);
@@ -170,6 +157,8 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
             }
 
         }
+
+        v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale_in));
 
         return v;
     }
