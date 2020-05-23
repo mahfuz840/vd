@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/signin_bg"
-    tools:context=".activities.GoogleSigninActivity"
+    tools:context=".activity.GoogleSigninActivity"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout

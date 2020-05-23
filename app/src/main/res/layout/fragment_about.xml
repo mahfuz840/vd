@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:id="@+id/about_fragment"
-    tools:context="com.the_spartan.virtualdiary.fragments.AboutFragment">
+    tools:context="com.the_spartan.virtualdiary.fragment.AboutFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

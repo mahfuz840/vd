@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.the_spartan.virtualdiary.activities.SearchActivity"
+    tools:context="com.the_spartan.virtualdiary.activity.SearchActivity"
     android:orientation="vertical"
     android:background="@drawable/bg"
     android:id="@+id/search_fragment">

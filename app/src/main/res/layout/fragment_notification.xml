@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg"
-    tools:context=".fragments.NotificationFragment">
+    tools:context=".fragment.NotificationFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
