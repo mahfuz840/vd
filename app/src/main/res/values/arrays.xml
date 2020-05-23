@@ -35,7 +35,7 @@
         <item>Strawberry Muffins</item>
         <item>Handlee</item>
         <item>Roboto</item>
-        <!--<item>Yester Year</item>-->
+        <item>Product Sans</item>
     </string-array>
 
     <string-array name="font_values">
@@ -44,7 +44,7 @@
         <item>fonts/strawberry_muffins.ttf</item>
         <item>fonts/handlee.ttf</item>
         <item>fonts/roboto.ttf</item>
-        <!--<item>fonts/yester_year.ttf</item>-->
+        <item>fonts/product_sans.ttf</item>
     </string-array>
 
     <string-array name="year_array">

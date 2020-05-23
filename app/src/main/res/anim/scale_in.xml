@@ -9,7 +9,7 @@
         android:pivotX="50%"
         android:pivotY="50%" />
     <alpha
-        android:fromAlpha="0.2"
+        android:fromAlpha="0.1"
         android:toAlpha="1"
         android:duration="@android:integer/config_shortAnimTime"
         android:interpolator="@android:anim/decelerate_interpolator"/>

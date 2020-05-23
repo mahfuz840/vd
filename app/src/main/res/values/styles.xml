@@ -8,10 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="SpinnerTheme" parent="android:Widget.Spinner">
-        <item name="android:background">@drawable/spinner_bg</item>
-    </style>
-
     <style name="MyPreferenceTheme" parent="PreferenceFixTheme.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -47,21 +43,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="MySpinnerLook" parent="Widget.AppCompat.Spinner">
-        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">@font/product_sans</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/scale_in</item>
         <item name="android:windowExitAnimation">@anim/scale_out</item>
-    </style>
-
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/ic_share</item>
-        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

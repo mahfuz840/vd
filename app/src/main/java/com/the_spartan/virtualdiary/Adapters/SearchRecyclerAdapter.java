@@ -1,12 +1,14 @@
 package com.the_spartan.virtualdiary.Adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_spartan.virtualdiary.objects_and_others.Note;
 import com.the_spartan.virtualdiary.R;
@@ -118,6 +120,8 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
             monthView = itemView.findViewById(R.id.search_month_view);
             titleView = itemView.findViewById(R.id.search_title_view);
             contentView = itemView.findViewById(R.id.search_content_view);
+
+            itemView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_in));
         }
 
         @Override

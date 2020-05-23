@@ -8,14 +8,15 @@
     android:orientation="vertical"
     tools:context="com.the_spartan.virtualdiary.activities.CreateNoteActivity"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:id="@+id/create_note_fragment">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ToolbarTheme">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -28,10 +29,10 @@
                 android:layout_height="wrap_content"
                 android:text="New Note"
                 android:textSize="@dimen/title_bar_font_size"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:textColor="@android:color/white" />
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,20 +47,27 @@
             android:src="@drawable/ic_time_black_24dp"
             android:id="@+id/date_indicator"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Date: "
-            android:textSize="18sp"
-            android:textColor="@android:color/black"/>
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:paddingLeft="4dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:textSize="16sp" />
+            android:layout_marginRight="10dp"
+            android:textSize="16sp"
+            android:text="21 Jan, 2020"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:textSize="12sp"
+            android:text="08:42AM"/>
 
     </LinearLayout>
 
@@ -109,19 +117,17 @@
             android:gravity="top"
             android:hint="Description"
             android:layout_marginLeft="5dp"
-            android:scrollbars="vertical"
-            android:textColor="@android:color/black" />
+            android:scrollbars="vertical" />
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
+        <LinearLayout
+            android:id="@+id/banner_container"
+            android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-6572007445610561/6616892700">
-        </com.google.android.gms.ads.AdView>
+            android:layout_height="wrap_content">
+        </LinearLayout>
+
     </RelativeLayout>
 
 

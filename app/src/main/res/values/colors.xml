@@ -3,7 +3,8 @@
     <color name="colorPrimary">#FFAA7A5D</color>
     <color name="colorPrimaryDark">#976D58</color>
     <color name="colorAccent">#ba815e</color>
-    <color name="lightGrey">#FFC9C9C9</color>
+    <color name="lightGrey">#D6D6D6</color>
 
     <color name="spinnerBG">#eda39393</color>
+    <color name="textColor">#3F3F3F</color>
 </resources>

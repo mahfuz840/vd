@@ -1,12 +1,15 @@
 package com.the_spartan.virtualdiary.Adapters;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Point;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -18,10 +21,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.the_spartan.virtualdiary.activities.CreateNoteActivity;
+import com.the_spartan.virtualdiary.activities.GoogleSigninActivity;
 import com.the_spartan.virtualdiary.activities.MainActivity;
 import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.objects_and_others.Note;
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.objects_and_others.Utils;
 
 import java.util.ArrayList;
 
@@ -151,42 +160,21 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             titleView = itemView.findViewById(R.id.note_title);
             root = itemView.findViewById(R.id.note_layout_root);
 
-            Animation alphaAnim = AnimationUtils.loadAnimation(mContext, R.anim.alpha);
+            Typeface myFont = Utils.initializeFonts(mContext);
+
+            if (myFont != null) {
+                dateView.setTypeface(myFont);
+                monthView.setTypeface(myFont);
+                titleView.setTypeface(myFont);
+            }
+
+            Animation alphaAnim = AnimationUtils.loadAnimation(mContext, R.anim.scale_in);
             itemView.startAnimation(alphaAnim);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext);
-                int pos = getAdapterPosition();
-                builder.setTitle("Warning!");
-                builder.setMessage("Do your really want to delete this note?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        int pos = getAdapterPosition();
-                        mContext.getContentResolver().delete(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(mNotes.get(getAdapterPosition()).getID())),
-                                null,
-                                null);
-
-                        mNotes.remove(getAdapterPosition());
-                        notifyDataSetChanged();
-                        notifyItemRemoved(getAdapterPosition());
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                android.app.AlertDialog dialog = builder.create();
-                dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-                dialog.show();
-
-
-
-
+                showDialog(itemView, "Do your want to delete this note?", "Yes", "No", getAdapterPosition());
                 return true;
             }
         });
@@ -197,8 +185,55 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
         }
+        public void showDialog(View view, String msg, String posText, String negText, int pos) {
+            ViewGroup viewGroup = view.findViewById(android.R.id.content);
+            final View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog, viewGroup, false);
+            dialogView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_in));
 
 
+            //Now we need an AlertDialog.Builder object
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+            //setting the view of the builder to our custom view that we already inflated
+            builder.setView(dialogView);
+
+            //finally creating the alert dialog and displaying it
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            TextView msgView = dialogView.findViewById(R.id.text_dialog);
+            msgView.setText(msg);
+
+            TextView posBtn = dialogView.findViewById(R.id.pos_btn);
+            posBtn.setText(posText);
+
+            TextView negBtn = dialogView.findViewById(R.id.neg_btn);
+            negBtn.setText(negText);
+
+            posBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.getContentResolver().delete(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(mNotes.get(getAdapterPosition()).getID())),
+                            null,
+                            null);
+
+                    mNotes.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    notifyItemRemoved(getAdapterPosition());
+                    dialogView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_out));
+                    alertDialog.dismiss();
+                }
+            });
+            negBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+
+            alertDialog.show();
+
+        }
 
 
     }
@@ -212,4 +247,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public interface ClickListener{
         void onItemClick(int position, View v);
     }
+
+
 }

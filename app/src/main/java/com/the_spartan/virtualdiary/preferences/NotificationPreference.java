@@ -2,8 +2,8 @@ package com.the_spartan.virtualdiary.preferences;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.service.NotificationService;

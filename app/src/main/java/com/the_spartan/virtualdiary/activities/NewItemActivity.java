@@ -3,22 +3,20 @@ package com.the_spartan.virtualdiary.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -28,12 +26,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.data.NoteContract;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
 import com.the_spartan.virtualdiary.models.Priority;
-import com.the_spartan.virtualdiary.objects_and_others.ToDoUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class NewItemActivity extends AppCompatActivity implements View.OnClickListener{
@@ -61,7 +58,11 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Priority.values()));
+        ArrayList<String> priorityValues = new ArrayList<>();
+        priorityValues.add("low");
+        priorityValues.add("medium");
+        priorityValues.add("high");
+        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, priorityValues));
 
         // Find our View instances
         etNewTask = (EditText)findViewById(R.id.etNewTask);

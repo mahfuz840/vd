@@ -7,23 +7,29 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
 import com.the_spartan.virtualdiary.data.NoteDbHelper;
@@ -31,7 +37,10 @@ import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.objects_and_others.Note;
 import com.the_spartan.virtualdiary.objects_and_others.Utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -40,15 +49,14 @@ public class CreateNoteActivity extends AppCompatActivity {
     ImageView TvDateIndicator;
     ImageView TvTitleIndicator;
     TextView dateView;
-
+    TextView timeView;
+    Note mLoadedNote;
+    int mDay, mMonth, mYear, mTime;
+    int id;
+    AdView adView;
     private String content;
     private String title;
-
-    Note mLoadedNote;
-    int mDay, mMonth, mYear;
-    int id;
     private Calendar mCalendar;
-
     private boolean isExiting;
 
     @Override
@@ -56,16 +64,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
 
-        MobileAds.initialize(this, "ca-app-pub-6572007445610561~2773371688");
-        AdView mAdView;
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        loadAd();
 
         isExiting = false;
         id = -1;
@@ -82,6 +86,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         TvDateIndicator = findViewById(R.id.date_indicator);
         TvTitleIndicator = findViewById(R.id.title_indicator);
         dateView = findViewById(R.id.date);
+        timeView = findViewById(R.id.time);
 
 
         Typeface myFont = Utils.initializeFonts(CreateNoteActivity.this);
@@ -89,9 +94,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (myFont != null) {
             EtContent.setTypeface(myFont);
             EtTitle.setTypeface(myFont);
-
-//            TvDateIndicator.setTypeface(myFont);
-//            TvTitleIndicator.setTypeface(myFont);
             dateView.setTypeface(myFont);
 
         }
@@ -108,10 +110,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         if (fontSize != null) {
             EtContent.setTextSize(Float.parseFloat(fontSize));
             EtTitle.setTextSize(Float.parseFloat(fontSize));
-
-//            TvDateIndicator.setTextSize(Float.parseFloat(fontSize));
-//            TvTitleIndicator.setTextSize(Float.parseFloat(fontSize));
         }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mma", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
 
         String monthString;
         switch (mMonth + 1) {
@@ -154,7 +156,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             default:
                 monthString = "Unknown";
         }
-        dateView.setText(mDay + " " + monthString + " " + mYear);
+        dateView.setText(mDay + " " + monthString + ", " + mYear);
+        timeView.setText(currentDateandTime);
 
         if (getIntent().getExtras() != null) {
             id = getIntent().getIntExtra(NoteEntry.COLUMN_ID, 10);
@@ -201,16 +204,17 @@ public class CreateNoteActivity extends AppCompatActivity {
                 default:
                     monthString = "Unknown";
             }
-            dateView.setText(dates[0] + " " + monthString + " " + dates[2]);
+
+            String[] timeString = dates[2].split(" ");
+            timeView.setText(timeString[1]);
+            dates[2] = timeString[0];
+            dateView.setText(dates[0] + " " + monthString + ", " + dates[2]);
+
             title = getIntent().getStringExtra(NoteEntry.COLUMN_TITLE);
             content = getIntent().getStringExtra(NoteEntry.COLUMN_DESCRIPTION);
 
-                EtTitle.setText(title);
-                EtContent.setText(content);
-
-
-//            EtTitle.setFocusable(false);
-//            EtContent.setFocusable(false);
+            EtTitle.setText(title);
+            EtContent.setText(content);
 
         }
 
@@ -263,7 +267,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                             default:
                                 monthString = "Unknown";
                         }
-                        dateView.setText(dayOfMonth + " " + monthString + " " + year);
+                        dateView.setText(dayOfMonth + " " + monthString + ", " + year);
                         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         mCalendar.set(Calendar.MONTH, month);
                         mCalendar.set(Calendar.YEAR, year);
@@ -411,32 +415,66 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void showSavePopup() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateNoteActivity.this);
-        dialog.setTitle("Do you want to save the changes?")
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (id != -1) {
-                            updateNote();
-                        } else {
-                            saveNote();
-                        }
-                        isExiting = true;
-                        onBackPressed();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        isExiting = true;
-                        onBackPressed();
-                    }
-                });
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        String msg = "Do you want to save the changes?";
+        String posText = "Save";
+        String negText = "Cancel";
+
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        final View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, viewGroup, false);
+        dialogView.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_in));
+
+
+        //Now we need an AlertDialog.Builder object
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView msgView = dialogView.findViewById(R.id.text_dialog);
+        msgView.setText(msg);
+
+        TextView posBtn = dialogView.findViewById(R.id.pos_btn);
+        posBtn.setText(posText);
+
+        TextView negBtn = dialogView.findViewById(R.id.neg_btn);
+        negBtn.setText(negText);
+
+        posBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (id != -1) {
+                    updateNote();
+                } else {
+                    saveNote();
+                }
+                isExiting = true;
+                onBackPressed();
+            }
+        });
+        negBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                isExiting = true;
+                onBackPressed();
+            }
+        });
+
         alertDialog.show();
+
     }
+
+    private void loadAd() {
+        adView = new AdView(this, "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.banner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
+    }
+
 }
 
 
