@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.the_spartan.virtualdiary">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,9 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".activities.NewItemActivity"
+        <activity android:name=".activity.NewItemActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar"/>
-        <activity android:name=".activities.ToDoFragment"
+        <activity android:name=".activity.ToDoFragment"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -41,33 +40,33 @@
             android:value="ca-app-pub-6572007445610561~2773371688" />
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
         </activity>
         <activity
-            android:name=".activities.CreateNoteActivity"
+            android:name=".activity.CreateNoteActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
 
         <activity
-            android:name=".settings_activities.FontStyleActivity"
+            android:name=".activity.settings.FontStyleActivity"
             android:theme="@style/MyPreferenceTheme" />
 
         <service android:name=".service.NotificationService" />
 
         <activity
-            android:name=".settings_activities.FontColorActivity"
+            android:name=".activity.settings.FontColorActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
         <activity
-            android:name=".activities.SearchActivity"
+            android:name=".activity.SearchActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
 
         <receiver android:name=".service.NotificationBroadcastReceiver" />
 
         <activity
-            android:name=".activities.GoogleSigninActivity"
+            android:name=".activity.GoogleSigninActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="com.google.android.gms.version"
@@ -75,7 +74,7 @@
         </activity>
 
         <activity
-            android:name=".activities.PasswordActivity"
+            android:name=".activity.PasswordActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

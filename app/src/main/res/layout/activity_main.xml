@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="false"
     android:orientation="vertical"
-    tools:context="com.the_spartan.virtualdiary.activities.MainActivity">
+    tools:context="com.the_spartan.virtualdiary.activity.MainActivity">
 
 
     <RelativeLayout

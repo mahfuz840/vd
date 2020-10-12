@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
-        tools:context=".activities.MainActivity"
+        tools:context=".activity.MainActivity"
         android:orientation="vertical"
         android:layout_weight="20">
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg"
-    tools:context=".fragments.BackupRestoreFragment"
+    tools:context=".fragment.BackupRestoreFragment"
     android:id="@+id/backup_restore_fragment">
 
     <com.google.android.material.appbar.AppBarLayout

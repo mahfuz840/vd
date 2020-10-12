@@ -9,12 +9,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.activities.CreateNoteActivity;
-import com.the_spartan.virtualdiary.activities.MainActivity;
+import com.the_spartan.virtualdiary.activity.CreateNoteActivity;
+import com.the_spartan.virtualdiary.activity.MainActivity;
 
 /**
  * Created by Spartan on 3/26/2018.

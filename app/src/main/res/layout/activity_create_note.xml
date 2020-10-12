@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg"
     android:orientation="vertical"
-    tools:context="com.the_spartan.virtualdiary.activities.CreateNoteActivity"
+    tools:context="com.the_spartan.virtualdiary.activity.CreateNoteActivity"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:id="@+id/create_note_fragment">
@@ -90,7 +90,7 @@
 
         <EditText
             android:id="@+id/title_edit_text"
-            class="com.the_spartan.virtualdiary.objects_and_others.LinedEditText"
+            class="com.the_spartan.virtualdiary.model.LinedEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -106,7 +106,7 @@
 
         <view xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/content_edit_text"
-            class="com.the_spartan.virtualdiary.objects_and_others.LinedEditText"
+            class="com.the_spartan.virtualdiary.model.LinedEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="50dp"

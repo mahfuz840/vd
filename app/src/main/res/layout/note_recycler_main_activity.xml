@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.the_spartan.virtualdiary.util.CustomFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="192dp"
     android:layout_height="192dp"
     android:id="@+id/note_layout_root">
@@ -47,12 +47,13 @@
 
     <TextView
         android:id="@+id/note_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="kitare bandir fua vala asot ni? hetir vai tore tukaiya mile na"
-        android:maxLines="3" />
+        android:paddingTop="15dp"
+        android:text="This is a test test instead of lorem ipsum"
+        android:maxLines="4"/>
 
 
-</FrameLayout>
+</com.the_spartan.virtualdiary.util.CustomFrameLayout>
