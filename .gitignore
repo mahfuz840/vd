@@ -5,3 +5,5 @@
 /build
 /gradle/
 /release
+gradlew
+gradlew.bat

@@ -2,12 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.codepath.doit.activities.MainActivity" >
-    <item android:id="@+id/action_share_todo"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share_menu"
-        android:onClick="onShareClick"
-        android:orderInCategory="100"
-        app:showAsAction="always" />
 
     <item android:id="@+id/search"
         android:title="Search"
@@ -17,6 +11,5 @@
     <item android:id="@+id/deleteItems"
         android:title="@string/delete_items"
         android:icon="@drawable/ic_delete"
-        android:onClick="showDeleteConfirmDialog"
         app:showAsAction="always" />
 </menu>

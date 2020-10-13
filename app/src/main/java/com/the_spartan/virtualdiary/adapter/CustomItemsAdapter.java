@@ -20,10 +20,13 @@ import android.widget.TextView;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
+import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 import com.the_spartan.virtualdiary.model.ToDoItem;
+import com.the_spartan.virtualdiary.util.DeleteListCollector;
 import com.the_spartan.virtualdiary.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.the_spartan.virtualdiary.fragment.ToDoFragment.deleteList;
 
@@ -35,23 +38,22 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
     public ArrayList<ToDoItem> fitems;
     private Filter filter;
     private Context context;
+    private DeleteListCollector deleteListCollector;
 
-    public CustomItemsAdapter(Context context, ArrayList<ToDoItem> items) {
+    public CustomItemsAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector) {
         super(context, 0, items);
         this.original = new ArrayList<>();
         this.original.addAll(items);
         this.fitems = new ArrayList<>();
         this.fitems.addAll(items);
+        this.deleteListCollector = deleteListCollector;
 
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        if (fitems == null)
-            return 0;
-        else
-            return fitems.size();
+        return fitems == null ? 0 : fitems.size();
     }
 
     @Override
@@ -102,6 +104,7 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
             } else if (!isCheckedBool && found) {
                 deleteList.remove(index);
             }
+            deleteListCollector.updateDeleteList(deleteList);
 
             cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -123,29 +126,6 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
                     item.setIsDone(isCheckedInt);
                     original.set(pos, item);
                     notifyDataSetChanged();
-
-//                    populateItems();
-
-//                    boolean found = false;
-//                    int index = 0;
-//                    for (int i = 0; i < deleteList.size(); i++)
-//                        if (item.getID() == deleteList.get(i).getID()) {
-//                            found = true;
-//                            index = i;
-//                        }
-//
-//                    if (isChecked && !found) {
-//                        deleteList.add(item);
-//
-//                    } else if (!isChecked && found) {
-//                        deleteList.remove(index);
-//                    }
-//
-//                    for (ToDoItem item1 : deleteList) {
-//                        Log.d("DeleteList", item1.getSubject());
-//                    }
-//
-//                    checkForDeleteVisibility();
                 }
             });
 
@@ -210,7 +190,6 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
 
         return v;
     }
-
 
     public void filter(String query) {
         query = query.toLowerCase();
