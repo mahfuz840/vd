@@ -1,4 +1,4 @@
-package com.the_spartan.virtualdiary.activity;
+package com.the_spartan.virtualdiary.fragment;
 
 import android.app.SearchManager;
 import android.content.ContentValues;
@@ -36,6 +36,8 @@ import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.activity.MainActivity;
+import com.the_spartan.virtualdiary.activity.NewItemActivity;
 import com.the_spartan.virtualdiary.adapter.CustomItemsAdapter;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoDbHelper;
@@ -45,8 +47,6 @@ import com.the_spartan.virtualdiary.model.ToDoItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-//import com.the_spartan.virtualdiary.models.Item;
 
 public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
@@ -71,7 +71,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_to_do, container, false);
+        View view = inflater.inflate(R.layout.fragment_to_do, container, false);
         Toolbar toolbar = view.findViewById(R.id.my_toolbar);
         ((MainActivity)getActivity()).setToolbar(toolbar);
 
@@ -91,23 +91,18 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
 
         listItems = new ArrayList<>();
-
-
         mContext = getContext();
 
-
         populateItems();
-
-
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int pos = position;
                 new AlertDialog.Builder(mContext)
-                        .setTitle("Confirm delete")
-                        .setMessage("Are you sure?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.confirm_delete)
+                        .setMessage(R.string.are_you_sure)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // change here
@@ -116,10 +111,10 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
                                 Uri uri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, String.valueOf(ToDoProvider.DELETE_A_TODO)); //300 is for deleting a single item
                                 mContext.getContentResolver().delete(uri, null, selectionArgs);
                                 populateItems();
-                                Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing actually :p
@@ -141,7 +136,6 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
                 i.putExtra("time", aToDoAdaptor.getItem(position).getTime());
                 i.putExtra("done", aToDoAdaptor.getItem(position).getIsDone());
                 i.putExtra("ID", aToDoAdaptor.getItem(position).getID());
-//                startActivityForResult(i, 202);
                 startActivity(i);
             }
         });
