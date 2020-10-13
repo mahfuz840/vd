@@ -100,7 +100,7 @@ public class BackupRestoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!dialog.isShowing()) {
-                    dialog.setMessage("Backing up your data...");
+                    dialog.setMessage(getContext().getString(R.string.dialog_backing_up_data));
                     dialog.show();
                 }
                 if (checkConnection()) {
@@ -118,7 +118,7 @@ public class BackupRestoreFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!dialog.isShowing()) {
-                    dialog.setMessage("Restoring your data...");
+                    dialog.setMessage(getContext().getString(R.string.dialog_restoring_data));
                     dialog.show();
                 }
                 if (checkConnection()) {
@@ -143,16 +143,16 @@ public class BackupRestoreFragment extends Fragment {
 //            DPImageView.setImageDrawable(account.getPhotoUrl());
             credential.setSelectedAccount(account.getAccount());
         } else {
-            emailTextView.setText("Not signed in");
+            emailTextView.setText(R.string.not_signed_in);
 //            startActivity(new Intent(this, GoogleSigninActivity.class));
-            changeAccountBtn.setText("Sign in");
+            changeAccountBtn.setText(R.string.sign_in);
         }
 
         googleDriveService = new Drive.Builder(
                 AndroidHttp.newCompatibleTransport(),
                 new GsonFactory(),
                 credential)
-                .setApplicationName("Virtual Diary")
+                .setApplicationName(this.getString(R.string.app_name))
                 .build();
 
 
@@ -160,7 +160,7 @@ public class BackupRestoreFragment extends Fragment {
         changeAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.setMessage("Please wait...");
+                dialog.setMessage(getContext().getString(R.string.wait));
                 dialog.show();
                 if (checkConnection()) {
                     signOut();
@@ -180,8 +180,8 @@ public class BackupRestoreFragment extends Fragment {
             return true;
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Please check your network connection")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.check_internet)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -196,7 +196,7 @@ public class BackupRestoreFragment extends Fragment {
     private boolean checkLogin() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
         if (account == null) {
-            Toast.makeText(getContext(), "Please Sign in first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.sign_in_warning, Toast.LENGTH_SHORT).show();
             return false;
         } else
             return true;
@@ -249,17 +249,16 @@ public class BackupRestoreFragment extends Fragment {
 
             if (account != null) {
                 emailTextView.setText(account.getEmail());
-                changeAccountBtn.setText("Change Account");
-                Toast.makeText(getContext(), "successful", Toast.LENGTH_SHORT).show();
+                changeAccountBtn.setText(R.string.change_account);
+                Toast.makeText(getContext(), R.string.toast_successful, Toast.LENGTH_SHORT).show();
             } else {
                 startActivity(new Intent(getContext(), GoogleSigninActivity.class));
             }
 
         } catch (ApiException e) {
-            Log.d("Signin", "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
-            emailTextView.setText("Not signed in");
-            changeAccountBtn.setText("Sign in");
+            Toast.makeText(getContext(), R.string.toast_failed, Toast.LENGTH_SHORT).show();
+            emailTextView.setText(R.string.not_signed_in);
+            changeAccountBtn.setText(R.string.sign_in);
         }
     }
 
@@ -337,9 +336,9 @@ public class BackupRestoreFragment extends Fragment {
                 SharedPreferences preferences = getContext().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
                 preferences.edit().putString("fileID", fileID).apply();
                 Log.d("id", fileID);
-                Toast.makeText(getContext(), "Backup successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.toast_backup_successful, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Backup failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.toast_backup_failed, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -352,8 +351,7 @@ public class BackupRestoreFragment extends Fragment {
             File returnFile = null;
             SharedPreferences preferences = getContext().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
             String fileID = preferences.getString("fileID", "");
-            if (fileID != null)
-                Log.d("id from preference", fileID);
+
             try {
                 files = services[0].files().list()
                         .setSpaces("appDataFolder")
@@ -362,10 +360,8 @@ public class BackupRestoreFragment extends Fragment {
                         .execute();
 
                 for (File file : files.getFiles()) {
-                    System.out.printf("Found file: %s (%s)\n", file.getName(), file.getId());
                     if (fileID.equals(file.getId()) || file.getName().equals("note.db")) {
                         String directory = getContext().getDatabasePath("note.db").getParent();
-                        Log.d("dir", directory);
                         String fileName = "note.db";
                         java.io.File path = new java.io.File(directory + "/" + fileName);
                         OutputStream outputStream = new FileOutputStream(path);
@@ -375,8 +371,6 @@ public class BackupRestoreFragment extends Fragment {
                                 .executeMediaAndDownloadTo(outputStream);
                         outputStream.flush();
                         outputStream.close();
-                        Log.d("directory", path.getAbsolutePath());
-                        Log.d("writeToDB", "success");
                     }
                 }
 
@@ -398,9 +392,9 @@ public class BackupRestoreFragment extends Fragment {
                 dialog.cancel();
 
             if (integer == 1)
-                Toast.makeText(getContext(), "Restored", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.toast_restored, Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.toast_failed, Toast.LENGTH_SHORT).show();
         }
     }
 

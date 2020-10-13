@@ -57,9 +57,9 @@ public class CustomizationFragment extends Fragment {
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("");
 
         final ArrayList<String> titles = new ArrayList<>();
-        titles.add("Font Style");
-        titles.add("Font Size");
-        titles.add("Font Color");
+        titles.add(this.getString(R.string.label_font_style));
+        titles.add(this.getString(R.string.label_font_size));
+        titles.add(this.getString(R.string.label_font_color));
 
         SettingsAdapter adapter = new SettingsAdapter(getContext(), titles);
         listView.setAdapter(adapter);
@@ -102,8 +102,8 @@ public class CustomizationFragment extends Fragment {
 
         FontsAdapter adapter = new FontsAdapter(getContext(), fontTitles);
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-        builder.setTitle("Choose your custom font")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.dialog_choose_font)
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -136,7 +136,7 @@ public class CustomizationFragment extends Fragment {
                 editor.apply();
             }
         })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

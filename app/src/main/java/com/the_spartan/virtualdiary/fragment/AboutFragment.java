@@ -41,15 +41,8 @@ public class AboutFragment extends Fragment {
         ((MainActivity)getActivity()).setToolbar(toolbar);
 
         ActionBar bar = ((MainActivity)getActivity()).getSupportActionBar();
-
-        if(bar == null)
-            Log.d("Toolbar", "null");
-
-        ((MainActivity)getActivity()).setTitle("");
-
+        getActivity().setTitle("");
         setHasOptionsMenu(true);
-        Log.d(TAG, "onCreateView");
-
 
         return view;
     }
@@ -58,20 +51,15 @@ public class AboutFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
-
-        Log.d(TAG, "onCreateOptionsMenu");
-
     }
 
     @Override
     public void onAttach(Context context) {
-        Log.d(TAG, "onAttach");
         super.onAttach(context);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
     }
 }

@@ -36,8 +36,40 @@
     <string name="share_item">Share</string>
     <string name="delete_items">delete items</string>
     <string name="confirm_delete">Confirm Delete</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="deleted">Deleted!</string>
+
+    <string name="toast_deleted">Deleted!</string>
+    <string name="toast_successful">Successful!</string>
+    <string name="toast_failed">Failed!</string>
+    <string name="toast_backup_successful">Backup successful!</string>
+    <string name="toast_backup_failed">Backup failed!</string>
+    <string name="toast_restored">Restored</string>
+    <string name="toast_field_empty">Fields cannot be empty</string>
+    <string name="toast_four_digit">PIN should be at least 4 digits or more</string>
+    <string name="toast_pin_saved">PIN saved!</string>
+    <string name="toast_pin_mismatch">PINs don\'t match</string>
+    <string name="toast_old_pin_empty">Old PIN can\'t be empty</string>
+    <string name="toast_incorrect_old_pin">Incorrect old PIN</string>
+
+    <string name="priority_low">Low</string>
+    <string name="priority_med">Medium</string>
+    <string name="priority_high">High</string>
+
+    <string name="dialog_backing_up_data">Backing up your data…</string>
+    <string name="dialog_restoring_data">Restoring your data…</string>
+    <string name="dialog_are_you_sure">Are you sure?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_choose_font">Choose your custom font</string>
+
+    <string name="label_font_style">Font Style</string>
+    <string name="label_font_color">Font Color</string>
+    <string name="label_font_size">Font Size</string>
+
+    <string name="not_signed_in">Not signed in</string>
+    <string name="sign_in">Sign in</string>
+    <string name="wait">Please wait…</string>
+    <string name="check_internet">Please check your internet connection</string>
+    <string name="ok">OK</string>
+    <string name="sign_in_warning">Please sign in first</string>
+    <string name="change_account">Change account</string>
 </resources>

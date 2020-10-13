@@ -71,7 +71,7 @@ public class PasswordSettingsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        MainActivity mainActivity = (MainActivity)getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setToolbar(toolbar);
         mainActivity.setTitle("");
 
@@ -81,19 +81,19 @@ public class PasswordSettingsFragment extends Fragment {
         oldPassword = preferences.getString("pass", null);
         boolean isPasswordOn = preferences.getBoolean("isPasswordOn", false);
 
-        if(isPasswordOn)
+        if (isPasswordOn)
             passwordSwitch.setChecked(true);
         else
             passwordSwitch.setChecked(false);
 
-        if(oldPassword != null){
+        if (oldPassword != null) {
             setOrChangePassTextView.setText("Change PIN");
         }
 
         passwordSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     editor.putBoolean("isPasswordOn", true);
                 } else {
                     editor.putBoolean("isPasswordOn", false);
@@ -111,35 +111,33 @@ public class PasswordSettingsFragment extends Fragment {
                 String pass1 = setPasswordEditText.getText().toString();
                 String pass2 = confirmPasswordEditText.getText().toString();
 
-                if(savedOldPassword == null)
+                if (savedOldPassword == null)
                     savedOldPassword = "null";
 
-                if(pass1 == null || pass2 == null){
-                    Toast.makeText(getContext(), "fields cannot be empty", Toast.LENGTH_SHORT).show();
-                }else if(pass1.length() < 4 || pass2.length() < 4){
-                    Toast.makeText(getContext(), "PIN should be at least 4 digits or more", Toast.LENGTH_SHORT).show();
-                }
-
-                else if(oldPassword == null){
-                    if(pass1.equals(pass2)){
+                if (pass1 == null || pass2 == null) {
+                    Toast.makeText(getContext(), R.string.toast_field_empty, Toast.LENGTH_SHORT).show();
+                } else if (pass1.length() < 4 || pass2.length() < 4) {
+                    Toast.makeText(getContext(), R.string.toast_four_digit, Toast.LENGTH_SHORT).show();
+                } else if (oldPassword == null) {
+                    if (pass1.equals(pass2)) {
                         editor.putString("pass", pass1);
                         editor.apply();
-                        Toast.makeText(getContext(), "PIN saved!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.toast_pin_saved, Toast.LENGTH_SHORT).show();
 //                        finish();
                     } else {
-                        Toast.makeText(getContext(), "PINs don't match", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.toast_pin_mismatch, Toast.LENGTH_SHORT).show();
                     }
-                } else{
-                    if(oldPasswordInput == null){
-                        Toast.makeText(getContext(), "Old PIN field cannot be empty", Toast.LENGTH_SHORT).show();
-                    } else if(!savedOldPassword.equals(oldPasswordInput))
-                        Toast.makeText(getContext(), "Incorrect old PIN", Toast.LENGTH_SHORT).show();
-                    else if(!pass1.equals(pass2))
-                        Toast.makeText(getContext(), "PINs don't match", Toast.LENGTH_SHORT).show();
-                    else{
+                } else {
+                    if (oldPasswordInput == null) {
+                        Toast.makeText(getContext(), R.string.toast_old_pin_empty, Toast.LENGTH_SHORT).show();
+                    } else if (!savedOldPassword.equals(oldPasswordInput))
+                        Toast.makeText(getContext(), R.string.toast_incorrect_old_pin, Toast.LENGTH_SHORT).show();
+                    else if (!pass1.equals(pass2))
+                        Toast.makeText(getContext(), R.string.toast_pin_mismatch, Toast.LENGTH_SHORT).show();
+                    else {
                         editor.putString("pass", pass1);
                         editor.apply();
-                        Toast.makeText(getContext(), "PIN saved!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.toast_pin_saved, Toast.LENGTH_SHORT).show();
 
                         setPasswordTextView.setVisibility(View.INVISIBLE);
                         setPasswordEditText.setVisibility(View.INVISIBLE);
@@ -163,8 +161,7 @@ public class PasswordSettingsFragment extends Fragment {
                 saveButton.setVisibility(View.VISIBLE);
                 lowerDivider.setVisibility(View.INVISIBLE);
 
-                if(oldPassword != null)
-                {
+                if (oldPassword != null) {
                     oldPasswordLinearLayout.setVisibility(View.VISIBLE);
                     setPasswordTextView.setText("New PIN");
                 }
@@ -180,14 +177,13 @@ public class PasswordSettingsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
 
-            try{
+            try {
                 String pass = null;
                 pass = setPasswordEditText.getText().toString();
-                Log.d("setpassword", pass);
-                System.out.println("setpas" + pass.length());
-                if(pass.length() == 0 && oldPassword == null) {
+
+                if (pass.length() == 0 && oldPassword == null) {
                     editor.putBoolean("isPasswordOn", false);
                     editor.apply();
 

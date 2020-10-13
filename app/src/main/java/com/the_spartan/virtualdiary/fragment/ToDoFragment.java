@@ -50,7 +50,7 @@ import java.util.Comparator;
 
 public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
-    CustomItemsAdapter aToDoAdaptor;
+    CustomItemsAdapter toDoAdapter;
     ListView listView;
     Button quickAddButton;
     EditText editText;
@@ -73,15 +73,15 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_to_do, container, false);
         Toolbar toolbar = view.findViewById(R.id.my_toolbar);
-        ((MainActivity)getActivity()).setToolbar(toolbar);
+        ((MainActivity) getActivity()).setToolbar(toolbar);
 
 
         editText = view.findViewById(R.id.edit_text);
         quickAddButton = view.findViewById(R.id.quick_add_button);
         listView = view.findViewById(R.id.lvDisplay);
         todoEmptyLayout = view.findViewById(R.id.todo_empty_layout);
-        
-        
+
+
         return view;
     }
 
@@ -101,20 +101,20 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
                 final int pos = position;
                 new AlertDialog.Builder(mContext)
                         .setTitle(R.string.confirm_delete)
-                        .setMessage(R.string.are_you_sure)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        .setMessage(R.string.dialog_are_you_sure)
+                        .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // change here
-                                ToDoItem itemToBeDeleted = aToDoAdaptor.getItem(pos);
+                                ToDoItem itemToBeDeleted = toDoAdapter.getItem(pos);
                                 String[] selectionArgs = new String[]{String.valueOf(itemToBeDeleted.getID())};
                                 Uri uri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, String.valueOf(ToDoProvider.DELETE_A_TODO)); //300 is for deleting a single item
                                 mContext.getContentResolver().delete(uri, null, selectionArgs);
                                 populateItems();
-                                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.toast_deleted, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing actually :p
@@ -130,12 +130,12 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(mContext, NewItemActivity.class);
-                i.putExtra("subject", aToDoAdaptor.getItem(position).getSubject());
-                i.putExtra("priority", aToDoAdaptor.getItem(position).getPriority());
-                i.putExtra("date", aToDoAdaptor.getItem(position).getDueDate());
-                i.putExtra("time", aToDoAdaptor.getItem(position).getTime());
-                i.putExtra("done", aToDoAdaptor.getItem(position).getIsDone());
-                i.putExtra("ID", aToDoAdaptor.getItem(position).getID());
+                i.putExtra("subject", toDoAdapter.getItem(position).getSubject());
+                i.putExtra("priority", toDoAdapter.getItem(position).getPriority());
+                i.putExtra("date", toDoAdapter.getItem(position).getDueDate());
+                i.putExtra("time", toDoAdapter.getItem(position).getTime());
+                i.putExtra("done", toDoAdapter.getItem(position).getIsDone());
+                i.putExtra("ID", toDoAdapter.getItem(position).getID());
                 startActivity(i);
             }
         });
@@ -144,7 +144,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
             @Override
             public void onClick(View v) {
                 String newItem = editText.getText().toString().trim();
-                if(!TextUtils.isEmpty(newItem)) {
+                if (!TextUtils.isEmpty(newItem)) {
                     int priority = 0;
                     ContentValues values = new ContentValues();
                     values.put(ToDoContract.ToDoEntry.COLUMN_SUBJECT, newItem);
@@ -163,7 +163,6 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         });
 
 
-
     }
 
     private void populateItems() {
@@ -177,22 +176,19 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         Cursor cursor = null;
         int i = 0;
 
-        try{
+        try {
             cursor = db.rawQuery("select * from todos", null);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(cursor.getCount() == 0)
-                Log.d("cursor", "zero");
-            while(cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 ToDoItem item = new ToDoItem(cursor.getInt(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_ID))
-                , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_SUBJECT))
-                , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_DUE))
-                , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_TIME))
-                , cursor.getInt(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_PRIORITY))
-                , cursor.getInt(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_ISDONE)));
+                        , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_SUBJECT))
+                        , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_DUE))
+                        , cursor.getString(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_TIME))
+                        , cursor.getInt(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_PRIORITY))
+                        , cursor.getInt(cursor.getColumnIndex(ToDoContract.ToDoEntry.COLUMN_ISDONE)));
 
-                Log.d("populating ", i+"");
                 i++;
                 listItems.add(item);
             }
@@ -201,12 +197,10 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
             db.close();
         }
 
-        if(listItems.isEmpty())
-        {
+        if (listItems.isEmpty()) {
             listView.setVisibility(View.GONE);
             todoEmptyLayout.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             todoEmptyLayout.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
         }
@@ -214,41 +208,40 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         Collections.sort(listItems, new Comparator<ToDoItem>() {
             @Override
             public int compare(ToDoItem o1, ToDoItem o2) {
-                if(o1.getDueDate().length() == 0 && o2.getDueDate().length() == 0)
+                if (o1.getDueDate().length() == 0 && o2.getDueDate().length() == 0)
                     return 0;
-                else if(o1.getDueDate().length() == 0)
+                else if (o1.getDueDate().length() == 0)
                     return -1;
                 else if (o2.getDueDate().length() == 0)
                     return 1;
                 String[] date1 = o1.getDueDate().split("/");
                 String[] date2 = o2.getDueDate().split("/");
-                int valYear = Integer.parseInt(date1[2])-Integer.parseInt(date2[2]);
+                int valYear = Integer.parseInt(date1[2]) - Integer.parseInt(date2[2]);
 //                Log.d("valYear", valYear+"");
-                if(valYear > 0)
+                if (valYear > 0)
                     return 1;
-                else if(valYear < 0)
-                    return  -1;
-                int valMonth = Integer.parseInt(date1[1])-Integer.parseInt(date2[1]);
-//                Log.d("valMonth", ""+valMonth);
-                if(valMonth > 0)
-                    return 1;
-                else if(valMonth < 0)
+                else if (valYear < 0)
                     return -1;
-                int dayVal = Integer.parseInt(date1[0])-Integer.parseInt(date2[0]);
-//                Log.d("dayVal", ""+dayVal);
-                if(dayVal > 0)
+                int valMonth = Integer.parseInt(date1[1]) - Integer.parseInt(date2[1]);
+//                Log.d("valMonth", ""+valMonth);
+                if (valMonth > 0)
                     return 1;
-                else if(dayVal < 0)
+                else if (valMonth < 0)
+                    return -1;
+                int dayVal = Integer.parseInt(date1[0]) - Integer.parseInt(date2[0]);
+//                Log.d("dayVal", ""+dayVal);
+                if (dayVal > 0)
+                    return 1;
+                else if (dayVal < 0)
                     return -1;
                 else
                     return 0;
             }
         });
 
-        if(listItems.size() > 0)
-        {
-            aToDoAdaptor = new CustomItemsAdapter(mContext, listItems);
-            listView.setAdapter(aToDoAdaptor);
+        if (listItems.size() > 0) {
+            toDoAdapter = new CustomItemsAdapter(mContext, listItems);
+            listView.setAdapter(toDoAdapter);
         }
 //        if (state != null)
         listView.onRestoreInstanceState(state);
@@ -271,7 +264,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
         searchItem = menu.findItem(R.id.search);
         shareItem = menu.findItem(R.id.action_share_todo);
-        SearchManager searchManager = (SearchManager)mContext.getSystemService((Context.SEARCH_SERVICE));
+        SearchManager searchManager = (SearchManager) mContext.getSystemService((Context.SEARCH_SERVICE));
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 //        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -284,7 +277,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("onQueryTextChange", newText);
-                aToDoAdaptor.filter(newText);
+                toDoAdapter.filter(newText);
                 return true;
             }
         });
@@ -295,7 +288,6 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Log.w("MyApp", "onMenuItemActionExpand");
 //                fab.setVisibility(View.INVISIBLE);
 //                spkBtn.setVisibility(View.INVISIBLE);
                 editText.setVisibility(View.INVISIBLE);
@@ -305,7 +297,6 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Log.w("MyApp", "onMenuItemActionCollapse");
 //                fab.setVisibility(View.VISIBLE);
 //                spkBtn.setVisibility(View.VISIBLE);
                 editText.setVisibility(View.VISIBLE);
@@ -330,14 +321,12 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
 //    }
 
 
-
-
     public void onShareClick(MenuItem view) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = "";
-        for(int i = 0; i < listItems.size(); i++) {
-            shareBody += i+1 + ". " + listItems.get(i).getSubject();
+        for (int i = 0; i < listItems.size(); i++) {
+            shareBody += i + 1 + ". " + listItems.get(i).getSubject();
             shareBody += "\n";
         }
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "ToDo tasks");
@@ -347,13 +336,12 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.w("MyApp", "onCheckedChanged");
 //        int pos = listView.getPositionForView(buttonView);
         int pos = (int) buttonView.getTag();
         Log.d("position", pos + "");
-        ToDoItem item = aToDoAdaptor.getItem(pos);
+        ToDoItem item = toDoAdapter.getItem(pos);
 
-        Log.d("item", isChecked+"");
+        Log.d("item", isChecked + "");
 
         int isCheckedInt;
         if (isChecked)
@@ -370,10 +358,10 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         Uri uri = ToDoProvider.CONTENT_URI;
 
         mContext.getContentResolver().update(uri, values, selection, selectionArgs);
-        if(isChecked)
-            Log.d("checked at ", pos+"");
+        if (isChecked)
+            Log.d("checked at ", pos + "");
         else
-            Log.d("unchecked at ", pos+"");
+            Log.d("unchecked at ", pos + "");
         item.setIsDone(isCheckedInt);
 //        listItems.set(pos, item);
 //        aToDoAdaptor.notifyDataSetChanged();
@@ -402,8 +390,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         checkForDeleteVisibility();
     }
 
-    public void showDeleteConfirmDialog(MenuItem item)
-    {
+    public void showDeleteConfirmDialog(MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                 .setTitle("Do you really want to delete?")
                 .setMessage("The marked items will be deleted")
@@ -426,7 +413,7 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
     public void deleteItems() {
 //        Log.w("MyApp", "deleteItems");
         Log.d("deleteList Size ", deleteList.size() + " ");
-        for(ToDoItem item: deleteList) {
+        for (ToDoItem item : deleteList) {
             String[] selectionArgs = new String[]{String.valueOf(item.getID())};
 
             Uri uri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, String.valueOf(ToDoProvider.DELETE_A_TODO));
@@ -449,15 +436,15 @@ public class ToDoFragment extends Fragment implements CompoundButton.OnCheckedCh
         return mContext;
     }
 
-    private void checkForDeleteVisibility(){
-        Log.d("deleteList size ", deleteList.size()+"");
+    private void checkForDeleteVisibility() {
+        Log.d("deleteList size ", deleteList.size() + "");
 
-        if(deleteList.size() > 0) {
+        if (deleteList.size() > 0) {
 //            searchItem.setVisible(false);
             deleteItems.setVisible(true);
             shareItem.setVisible(false);
         }
-        if(deleteList.size() == 0){
+        if (deleteList.size() == 0) {
 //            searchItem.setVisible(true);
             deleteItems.setVisible(false);
             shareItem.setVisible(true);

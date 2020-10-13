@@ -56,8 +56,6 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
 
     @Override
     public ToDoItem getItem(int position) {
-        Log.d("size", fitems.size() + "");
-        Log.d("size pos", position + "");
         return fitems.get(position);
     }
 
@@ -159,15 +157,20 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
                 tvName.setPaintFlags(0);
             }
 
-            if (item.getPriority() == 0)
-                tvPriority.setText("Low");
-            else if (item.getPriority() == 1)
-                tvPriority.setText("Medium");
-            else
-                tvPriority.setText("High");
+            switch (item.getPriority()) {
+                case 0:
+                    tvPriority.setText(R.string.priority_low);
+                    break;
+                case 1:
+                    tvPriority.setText(R.string.priority_med);
+                    break;
+                default:
+                    tvPriority.setText(R.string.priority_high);
+                    break;
+            }
 
 //            tvPriority.setTextColor(item.priority.getColor());
-            dueDate = (TextView) v.findViewById(R.id.tvDueDate);
+            dueDate = v.findViewById(R.id.tvDueDate);
             if (!TextUtils.isEmpty(item.getDueDate())) {
                 dueDate.setVisibility(View.VISIBLE);
                 if (!TextUtils.isEmpty(item.getTime())) {
