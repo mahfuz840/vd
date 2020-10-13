@@ -63,7 +63,7 @@ public class ToDoActivity extends AppCompatActivity implements CompoundButton.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_to_do);
+        setContentView(R.layout.fragment_to_do);
 
         todoEmptyLayout = findViewById(R.id.todo_empty_layout);
         listItems = new ArrayList<>();

@@ -39,6 +39,7 @@ import com.the_spartan.virtualdiary.fragment.CustomizationFragment;
 import com.the_spartan.virtualdiary.fragment.MainFragment;
 import com.the_spartan.virtualdiary.fragment.NotificationFragment;
 import com.the_spartan.virtualdiary.fragment.PasswordSettingsFragment;
+import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 
 import java.util.Objects;
 

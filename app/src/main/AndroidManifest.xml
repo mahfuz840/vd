@@ -18,7 +18,8 @@
 
         <activity android:name=".activity.NewItemActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar"/>
-        <activity android:name=".activity.ToDoFragment"
+        <activity
+            android:name=".fragment.ToDoFragment"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="android.app.searchable"

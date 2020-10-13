@@ -2,7 +2,7 @@ package com.the_spartan.virtualdiary.model;
 
 import android.graphics.Color;
 
-import com.the_spartan.virtualdiary.activity.ToDoFragment;
+import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 
 ;
 
