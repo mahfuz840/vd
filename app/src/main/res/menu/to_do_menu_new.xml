@@ -6,7 +6,7 @@
         android:title="@string/save_item"
         android:onClick="onAddNewSaveClick"
         android:orderInCategory="98"
-        android:icon="@drawable/ic_done_black_30dp"
+        android:icon="@drawable/ic_done"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/shareNew"
         android:title="@string/share_item"

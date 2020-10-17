@@ -80,8 +80,9 @@
         android:paddingLeft="10dp">
 
         <ImageView
-            android:src="@drawable/ic_note_calendar_white_24dp"
+            android:src="@drawable/ic_note"
             android:id="@+id/title_indicator"
+            android:tint="#ab6767"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Title: "

@@ -33,7 +33,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
         builder.setContentTitle("Write Notes!")
                 .setContentText("It's been a long time since you wrote your last note :(")
-                .setSmallIcon(R.drawable.ic_noti);
+                .setSmallIcon(R.drawable.ic_note);
         builder.setAutoCancel(true);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
