@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -103,8 +101,8 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
                 final int pos = position;
                 new AlertDialog.Builder(mContext)
                         .setTitle(R.string.confirm_delete)
-                        .setMessage(R.string.dialog_are_you_sure)
-                        .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                        .setMessage(R.string.dialog_title_are_you_sure)
+                        .setPositiveButton(R.string.dialog_btn_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // change here
@@ -116,7 +114,7 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
                                 Toast.makeText(mContext, R.string.toast_deleted, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.dialog_btn_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing actually :p
@@ -396,10 +394,10 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
     private void checkForDeleteVisibility(List<ToDoItem> deleteList) {
         if (deleteList.size() > 0) {
             deleteItems.setVisible(true);
-            shareItem.setVisible(false);
+//            shareItem.setVisible(false);
         } else {
             deleteItems.setVisible(false);
-            shareItem.setVisible(true);
+//            shareItem.setVisible(true);
         }
     }
 

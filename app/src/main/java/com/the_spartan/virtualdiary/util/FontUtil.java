@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 
 import com.the_spartan.virtualdiary.R;
 
-public class Utils {
+public class FontUtil {
 
     public static Typeface initializeFonts(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

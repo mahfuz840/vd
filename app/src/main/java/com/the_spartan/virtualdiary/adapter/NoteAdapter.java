@@ -23,7 +23,6 @@ public class NoteAdapter extends ArrayAdapter<Note> {
 
     Context mContext;
     ArrayList<Note> notes;
-    int contentLines;
     TextView contentView;
     TextView titleView;
     TextView dateView;

@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,11 @@ import android.widget.TextView;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
-import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 import com.the_spartan.virtualdiary.model.ToDoItem;
 import com.the_spartan.virtualdiary.util.DeleteListCollector;
-import com.the_spartan.virtualdiary.util.Utils;
+import com.the_spartan.virtualdiary.util.FontUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.the_spartan.virtualdiary.fragment.ToDoFragment.deleteList;
 
@@ -76,7 +73,7 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
         if (v == null)
             v = LayoutInflater.from(context).inflate(R.layout.item, null);
 
-        Typeface myFont = Utils.initializeFonts(context);
+        Typeface myFont = FontUtil.initializeFonts(context);
 
         ToDoItem item = fitems.get(position);
         if (item != null) {
@@ -169,14 +166,14 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
 
             }
 
-            int color = Utils.initializeColor(context);
+            int color = FontUtil.initializeColor(context);
 
             if (color != 0) {
                 tvName.setTextColor(color);
 //                EtTitle.setTextColor(color);
             }
 
-            String fontSize = Utils.initializeFontSize(context);
+            String fontSize = FontUtil.initializeFontSize(context);
 
             if (fontSize != null) {
                 tvName.setTextSize(Float.parseFloat(fontSize));

@@ -1,24 +1,18 @@
 package com.the_spartan.virtualdiary.activity;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,7 +29,9 @@ import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
 import com.the_spartan.virtualdiary.data.NoteDbHelper;
 import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.model.Note;
-import com.the_spartan.virtualdiary.util.Utils;
+import com.the_spartan.virtualdiary.util.FontUtil;
+import com.the_spartan.virtualdiary.util.StringUtil;
+import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,7 +85,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         timeView = findViewById(R.id.time);
 
 
-        Typeface myFont = Utils.initializeFonts(CreateNoteActivity.this);
+        Typeface myFont = FontUtil.initializeFonts(CreateNoteActivity.this);
 
         if (myFont != null) {
             EtContent.setTypeface(myFont);
@@ -98,14 +94,14 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         }
 
-        int color = Utils.initializeColor(CreateNoteActivity.this);
+        int color = FontUtil.initializeColor(CreateNoteActivity.this);
 
         if (color != 0) {
             EtContent.setTextColor(color);
             EtTitle.setTextColor(color);
         }
 
-        String fontSize = Utils.initializeFontSize(CreateNoteActivity.this);
+        String fontSize = FontUtil.initializeFontSize(CreateNoteActivity.this);
 
         if (fontSize != null) {
             EtContent.setTextSize(Float.parseFloat(fontSize));
@@ -115,47 +111,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mma", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
 
-        String monthString;
-        switch (mMonth + 1) {
-            case 1:
-                monthString = "Jan";
-                break;
-            case 2:
-                monthString = "Feb";
-                break;
-            case 3:
-                monthString = "Mar";
-                break;
-            case 4:
-                monthString = "Apr";
-                break;
-            case 5:
-                monthString = "May";
-                break;
-            case 6:
-                monthString = "Jun";
-                break;
-            case 7:
-                monthString = "Jul";
-                break;
-            case 8:
-                monthString = "Aug";
-                break;
-            case 9:
-                monthString = "Sep";
-                break;
-            case 10:
-                monthString = "Oct";
-                break;
-            case 11:
-                monthString = "Nov";
-                break;
-            case 12:
-                monthString = "Dec";
-                break;
-            default:
-                monthString = "Unknown";
-        }
+        String monthString = StringUtil.getMonthNameFromInt(mMonth + 1);
+
         dateView.setText(mDay + " " + monthString + ", " + mYear);
         timeView.setText(currentDateandTime);
 
@@ -164,46 +121,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             Log.d("ID", " " + id);
             String date = getIntent().getStringExtra("formatted_time");
             String[] dates = date.split("/");
-            switch (Integer.parseInt(dates[1])) {
-                case 1:
-                    monthString = "Jan";
-                    break;
-                case 2:
-                    monthString = "Feb";
-                    break;
-                case 3:
-                    monthString = "Mar";
-                    break;
-                case 4:
-                    monthString = "Apr";
-                    break;
-                case 5:
-                    monthString = "May";
-                    break;
-                case 6:
-                    monthString = "Jun";
-                    break;
-                case 7:
-                    monthString = "Jul";
-                    break;
-                case 8:
-                    monthString = "Aug";
-                    break;
-                case 9:
-                    monthString = "Sep";
-                    break;
-                case 10:
-                    monthString = "Oct";
-                    break;
-                case 11:
-                    monthString = "Nov";
-                    break;
-                case 12:
-                    monthString = "Dec";
-                    break;
-                default:
-                    monthString = "Unknown";
-            }
+            monthString = StringUtil.getMonthNameFromInt(Integer.parseInt(dates[1]));
 
             String[] timeString = dates[2].split(" ");
             timeView.setText(timeString[1]);
@@ -225,48 +143,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 DatePickerDialog dialog = new DatePickerDialog(CreateNoteActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//                        month += 1;
-                        String monthString;
-                        switch (month + 1) {
-                            case 1:
-                                monthString = "Jan";
-                                break;
-                            case 2:
-                                monthString = "Feb";
-                                break;
-                            case 3:
-                                monthString = "Mar";
-                                break;
-                            case 4:
-                                monthString = "Apr";
-                                break;
-                            case 5:
-                                monthString = "May";
-                                break;
-                            case 6:
-                                monthString = "Jun";
-                                break;
-                            case 7:
-                                monthString = "Jul";
-                                break;
-                            case 8:
-                                monthString = "Aug";
-                                break;
-                            case 9:
-                                monthString = "Sep";
-                                break;
-                            case 10:
-                                monthString = "Oct";
-                                break;
-                            case 11:
-                                monthString = "Nov";
-                                break;
-                            case 12:
-                                monthString = "Dec";
-                                break;
-                            default:
-                                monthString = "Unknown";
-                        }
+                        String monthString = StringUtil.getMonthNameFromInt(month + 1);
                         dateView.setText(dayOfMonth + " " + monthString + ", " + year);
                         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         mCalendar.set(Calendar.MONTH, month);
@@ -363,7 +240,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         values.put(NoteEntry.COLUMN_MONTH, month);
         values.put(NoteEntry.COLUMN_YEAR, year);
 
-//        int IntegerID = Integer.parseInt(id);
         getContentResolver().update(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(id)),
                 values,
                 null,
@@ -377,29 +253,23 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void showDeleteDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        CustomDialog customDialog = new CustomDialog(this,
+                viewGroup,
+                R.layout.dialog,
+                R.string.dialog_title_delete_note,
+                R.string.dialog_btn_yes,
+                R.string.dialog_btn_no);
 
-        builder.setMessage(R.string.delete_dialog_message)
-                .setTitle(R.string.delete_dialog_title);
-
-        builder.setPositiveButton(R.string.delete_dialog_positive_button, new DialogInterface.OnClickListener() {
+        customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 deleteNote();
                 finish();
             }
         });
 
-        builder.setNegativeButton(R.string.delete_dialog_negative_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.show();
+        customDialog.show();
     }
 
     @Override
@@ -415,35 +285,15 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void showSavePopup() {
-        String msg = "Do you want to save the changes?";
-        String posText = "Save";
-        String negText = "Cancel";
-
         ViewGroup viewGroup = findViewById(android.R.id.content);
-        final View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, viewGroup, false);
-        dialogView.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale_in));
+        final CustomDialog customDialog = new CustomDialog(this,
+                viewGroup,
+                R.layout.dialog,
+                R.string.dialog_title_save_changes,
+                R.string.dialog_btn_save,
+                R.string.dialog_btn_cancel);
 
-
-        //Now we need an AlertDialog.Builder object
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-
-        //setting the view of the builder to our custom view that we already inflated
-        builder.setView(dialogView);
-
-        //finally creating the alert dialog and displaying it
-        final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        TextView msgView = dialogView.findViewById(R.id.text_dialog);
-        msgView.setText(msg);
-
-        TextView posBtn = dialogView.findViewById(R.id.pos_btn);
-        posBtn.setText(posText);
-
-        TextView negBtn = dialogView.findViewById(R.id.neg_btn);
-        negBtn.setText(negText);
-
-        posBtn.setOnClickListener(new View.OnClickListener() {
+        customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (id != -1) {
@@ -455,17 +305,17 @@ public class CreateNoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        negBtn.setOnClickListener(new View.OnClickListener() {
+
+        customDialog.negBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
+                customDialog.dismiss();
                 isExiting = true;
                 onBackPressed();
             }
         });
 
-        alertDialog.show();
-
+        customDialog.show();
     }
 
     private void loadAd() {
@@ -474,7 +324,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         adContainer.addView(adView);
         adView.loadAd();
     }
-
 }
 
 

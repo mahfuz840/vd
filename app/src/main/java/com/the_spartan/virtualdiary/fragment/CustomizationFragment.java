@@ -103,7 +103,7 @@ public class CustomizationFragment extends Fragment {
         FontsAdapter adapter = new FontsAdapter(getContext(), fontTitles);
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
         builder.setTitle(R.string.dialog_choose_font)
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -136,7 +136,7 @@ public class CustomizationFragment extends Fragment {
                 editor.apply();
             }
         })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

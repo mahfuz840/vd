@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.util.Utils;
+import com.the_spartan.virtualdiary.util.FontUtil;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public class FontsAdapter extends ArrayAdapter<String> {
         if (fontPaths[position].equals("null")){
             fonTitleTextView.setTypeface(Typeface.DEFAULT);
         } else {
-            fonTitleTextView.setTypeface(Utils.loadFontForFontChooserDialog(mContext, fontPaths[position]));
+            fonTitleTextView.setTypeface(FontUtil.loadFontForFontChooserDialog(mContext, fontPaths[position]));
         }
 
         return fontListView;

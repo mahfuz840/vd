@@ -1,9 +1,7 @@
 package com.the_spartan.virtualdiary.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -16,13 +14,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.model.Note;
-import com.the_spartan.virtualdiary.util.Utils;
+import com.the_spartan.virtualdiary.util.FontUtil;
+import com.the_spartan.virtualdiary.util.StringUtil;
+import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
 
@@ -32,12 +31,12 @@ import java.util.ArrayList;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
 
-    String mDate;
     Context mContext;
 
     private static ClickListener clickListener;
     private ArrayList<Note> mNotes;
-    public MyRecyclerAdapter(Context context, ArrayList<Note> notes){
+
+    public MyRecyclerAdapter(Context context, ArrayList<Note> notes) {
         mContext = context;
         mNotes = notes;
     }
@@ -53,12 +52,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
         String dateOnly[] = dateWithTime.split("/");
         String title = mNotes.get(position).getMtitle();
-        if(!title.equals("")){
+        if (!title.equals("")) {
             title = title + "...";
             holder.titleView.setText(title);
         } else {
             String content = mNotes.get(position).getmContent();
-            if(content.equals("")){
+            if (content.equals("")) {
                 holder.titleView.setText("(no title)");
             } else {
                 content = content + "...";
@@ -68,48 +67,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
 
         holder.dateView.setText(dateOnly[0]);
-        String monthString;
         int month = mNotes.get(position).getmMonth();
-        switch (month){
-            case 1:
-                monthString = "Jan";
-                break;
-            case 2:
-                monthString = "Feb";
-                break;
-            case 3:
-                monthString = "Mar";
-                break;
-            case 4:
-                monthString = "Apr";
-                break;
-            case 5:
-                monthString = "May";
-                break;
-            case 6:
-                monthString = "Jun";
-                break;
-            case 7:
-                monthString = "Jul";
-                break;
-            case 8:
-                monthString = "Aug";
-                break;
-            case 9:
-                monthString = "Sep";
-                break;
-            case 10:
-                monthString = "Oct";
-                break;
-            case 11:
-                monthString = "Nov";
-                break;
-                case 12:
-                monthString = "Dec";
-                break;
-                default:
-                    monthString = "Unknown";
-        }
+        String monthString = StringUtil.getMonthNameFromInt(month);
         holder.monthView.setText(monthString);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -120,8 +79,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         display.getMetrics(metrics);
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
-        params.height = (int)(height/5.5);
-        params.width = (int)(width/3.35);
+        params.height = (int) (height / 5.5);
+        params.width = (int) (width / 3.35);
         params.topMargin = 10;
         params.bottomMargin = 10;
 
@@ -136,7 +95,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             return mNotes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView dateView;
         TextView monthView;
@@ -152,7 +111,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             titleView = itemView.findViewById(R.id.note_title);
             root = itemView.findViewById(R.id.note_layout_root);
 
-            Typeface myFont = Utils.initializeFonts(mContext);
+            Typeface myFont = FontUtil.initializeFonts(mContext);
 
             if (myFont != null) {
                 dateView.setTypeface(myFont);
@@ -164,45 +123,29 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             itemView.startAnimation(alphaAnim);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showDialog(itemView, "Do your want to delete this note?", "Yes", "No", getAdapterPosition());
-                return true;
-            }
-        });
-
+                @Override
+                public boolean onLongClick(View v) {
+                    showDialog(itemView);
+                    return true;
+                }
+            });
         }
 
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
         }
-        public void showDialog(View view, String msg, String posText, String negText, int pos) {
-            ViewGroup viewGroup = view.findViewById(android.R.id.content);
-            final View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog, viewGroup, false);
-            dialogView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_in));
 
+        public void showDialog(View itemView) {
+            ViewGroup viewGroup = itemView.findViewById(android.R.id.content);
+            final CustomDialog customDialog = new CustomDialog(mContext,
+                    viewGroup,
+                    R.layout.dialog,
+                    R.string.dialog_title_delete_note,
+                    R.string.dialog_btn_yes,
+                    R.string.dialog_btn_no);
 
-            //Now we need an AlertDialog.Builder object
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-
-            //setting the view of the builder to our custom view that we already inflated
-            builder.setView(dialogView);
-
-            //finally creating the alert dialog and displaying it
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-            TextView msgView = dialogView.findViewById(R.id.text_dialog);
-            msgView.setText(msg);
-
-            TextView posBtn = dialogView.findViewById(R.id.pos_btn);
-            posBtn.setText(posText);
-
-            TextView negBtn = dialogView.findViewById(R.id.neg_btn);
-            negBtn.setText(negText);
-
-            posBtn.setOnClickListener(new View.OnClickListener() {
+            customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mContext.getContentResolver().delete(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(mNotes.get(getAdapterPosition()).getID())),
@@ -212,33 +155,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                     mNotes.remove(getAdapterPosition());
                     notifyDataSetChanged();
                     notifyItemRemoved(getAdapterPosition());
-                    dialogView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_out));
-                    alertDialog.dismiss();
-                }
-            });
-            negBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
+                    customDialog.startAnimation(R.anim.scale_in);
+                    customDialog.dismiss();
                 }
             });
 
-            alertDialog.show();
-
+            customDialog.show();
         }
-
-
     }
 
 
-    public void setOnItemClickListener(ClickListener clickListener){
+    public void setOnItemClickListener(ClickListener clickListener) {
         MyRecyclerAdapter.clickListener = clickListener;
     }
 
 
-    public interface ClickListener{
+    public interface ClickListener {
         void onItemClick(int position, View v);
     }
-
-
 }
