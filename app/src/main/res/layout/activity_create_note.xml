@@ -97,7 +97,6 @@
             android:ems="10"
             android:hint="Title"
             android:textColor="@android:color/black" />
-
     </LinearLayout>
 
     <RelativeLayout

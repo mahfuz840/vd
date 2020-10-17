@@ -40,16 +40,15 @@ import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
-    EditText EtTitle;
-    EditText EtContent;
-    ImageView TvDateIndicator;
-    ImageView TvTitleIndicator;
-    TextView dateView;
-    TextView timeView;
-    Note mLoadedNote;
-    int mDay, mMonth, mYear, mTime;
+    private EditText etTitle;
+    private EditText etContent;
+    private ImageView tvDateIndicator;
+    private ImageView tvTitleIndicator;
+    private TextView dateView;
+    private TextView timeView;
+    int mDay, mMonth, mYear;
     int id;
-    AdView adView;
+    private AdView adView;
     private String content;
     private String title;
     private Calendar mCalendar;
@@ -77,10 +76,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         mMonth = mCalendar.get(Calendar.MONTH);
         mYear = mCalendar.get(Calendar.YEAR);
 
-        EtTitle = findViewById(R.id.title_edit_text);
-        EtContent = findViewById(R.id.content_edit_text);
-        TvDateIndicator = findViewById(R.id.date_indicator);
-        TvTitleIndicator = findViewById(R.id.title_indicator);
+        etTitle = findViewById(R.id.title_edit_text);
+        etContent = findViewById(R.id.content_edit_text);
+        tvDateIndicator = findViewById(R.id.date_indicator);
+        tvTitleIndicator = findViewById(R.id.title_indicator);
         dateView = findViewById(R.id.date);
         timeView = findViewById(R.id.time);
 
@@ -88,8 +87,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         Typeface myFont = FontUtil.initializeFonts(CreateNoteActivity.this);
 
         if (myFont != null) {
-            EtContent.setTypeface(myFont);
-            EtTitle.setTypeface(myFont);
+            etContent.setTypeface(myFont);
+            etTitle.setTypeface(myFont);
             dateView.setTypeface(myFont);
 
         }
@@ -97,15 +96,15 @@ public class CreateNoteActivity extends AppCompatActivity {
         int color = FontUtil.initializeColor(CreateNoteActivity.this);
 
         if (color != 0) {
-            EtContent.setTextColor(color);
-            EtTitle.setTextColor(color);
+            etContent.setTextColor(color);
+            etTitle.setTextColor(color);
         }
 
         String fontSize = FontUtil.initializeFontSize(CreateNoteActivity.this);
 
         if (fontSize != null) {
-            EtContent.setTextSize(Float.parseFloat(fontSize));
-            EtTitle.setTextSize(Float.parseFloat(fontSize));
+            etContent.setTextSize(Float.parseFloat(fontSize));
+            etTitle.setTextSize(Float.parseFloat(fontSize));
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mma", Locale.getDefault());
@@ -131,8 +130,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             title = getIntent().getStringExtra(NoteEntry.COLUMN_TITLE);
             content = getIntent().getStringExtra(NoteEntry.COLUMN_DESCRIPTION);
 
-            EtTitle.setText(title);
-            EtContent.setText(content);
+            etTitle.setText(title);
+            etContent.setText(content);
 
         }
 
@@ -153,7 +152,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-
     }
 
     @Override
@@ -186,8 +184,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             case R.id.create_note_activity_action_share:
 
                 String dateForIntent = dateView.getText().toString();
-                String titleForIntent = EtTitle.getText().toString();
-                String descriptionForIntent = EtContent.getText().toString();
+                String titleForIntent = etTitle.getText().toString();
+                String descriptionForIntent = etContent.getText().toString();
                 String message = dateForIntent + "\n" + titleForIntent + "\n" + descriptionForIntent;
 
                 Intent sendIntent = new Intent();
@@ -207,8 +205,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         int month = mCalendar.get(Calendar.MONTH) + 1;
         int year = mCalendar.get(Calendar.YEAR);
 
-        title = EtTitle.getText().toString();
-        content = EtContent.getText().toString();
+        title = etTitle.getText().toString();
+        content = etContent.getText().toString();
 
         NoteDbHelper helper = new NoteDbHelper(this);
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -229,8 +227,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         int month = mCalendar.get(Calendar.MONTH) + 1;
         int year = mCalendar.get(Calendar.YEAR);
 
-        String title = EtTitle.getText().toString();
-        String content = EtContent.getText().toString();
+        String title = etTitle.getText().toString();
+        String content = etContent.getText().toString();
 
         ContentValues values = new ContentValues();
 
@@ -277,7 +275,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         if (isExiting) {
             super.onBackPressed();
-        } else if (!EtTitle.getText().toString().equals(title) || !EtContent.getText().toString().equals(content)) {
+        } else if (!etTitle.getText().toString().equals(title) || !etContent.getText().toString().equals(content)) {
             showSavePopup();
         } else {
             super.onBackPressed();
