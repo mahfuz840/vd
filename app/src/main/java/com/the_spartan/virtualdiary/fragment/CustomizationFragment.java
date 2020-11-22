@@ -36,6 +36,7 @@ public class CustomizationFragment extends Fragment {
     SharedPreferences.Editor editor;
     ListView listView;
     Toolbar toolbar;
+    SettingsAdapter adapter;
 
     @Nullable
     @Override
@@ -61,7 +62,7 @@ public class CustomizationFragment extends Fragment {
         titles.add(this.getString(R.string.label_font_size));
         titles.add(this.getString(R.string.label_font_color));
 
-        SettingsAdapter adapter = new SettingsAdapter(getContext(), titles);
+        adapter = new SettingsAdapter(getContext(), titles);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -161,6 +162,7 @@ public class CustomizationFragment extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("color", color);
                 editor.apply();
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -194,5 +196,4 @@ public class CustomizationFragment extends Fragment {
             }
         });
     }
-
 }

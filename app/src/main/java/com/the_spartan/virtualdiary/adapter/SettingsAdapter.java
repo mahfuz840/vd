@@ -26,7 +26,6 @@ public class SettingsAdapter extends ArrayAdapter<String> {
         this.titles = titles;
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
