@@ -41,7 +41,7 @@ public class CustomDialog {
                 layout,
                 R.anim.scale_in,
                 R.anim.scale_out,
-                context.getString(title),
+                title == 0 ? null : context.getString(title),
                 message == 0 ? null : context.getString(message),
                 context.getString(posText),
                 context.getString(negText));
@@ -77,14 +77,16 @@ public class CustomDialog {
         alertDialog.setCancelable(false);
 
         this.titleView = dialogView.findViewById(R.id.dialog_title);
+        if (title == null) {
+            titleView.setVisibility(View.GONE);
+        }
         titleView.setText(title);
 
         this.messageView = dialogView.findViewById(R.id.dialog_message);
-        if (message != null) {
-            messageView.setText(message);
-        } else {
+        if (message == null) {
             messageView.setVisibility(View.GONE);
         }
+        messageView.setText(message);
 
         this.posBtn = dialogView.findViewById(R.id.pos_btn);
         posBtn.setText(posText);

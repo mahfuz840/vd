@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,8 +42,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     int id;
     private EditText etTitle;
     private EditText etContent;
-    private ImageView tvDateIndicator;
-    private ImageView tvTitleIndicator;
     private TextView dateView;
     private TextView timeView;
     private AdView adView;
@@ -67,8 +64,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         isExiting = false;
         id = -1;
-        title = null;
-        content = null;
+        title = "";
+        content = "";
 
         mCalendar = Calendar.getInstance();
         mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
@@ -77,8 +74,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.title_edit_text);
         etContent = findViewById(R.id.content_edit_text);
-        tvDateIndicator = findViewById(R.id.date_indicator);
-        tvTitleIndicator = findViewById(R.id.title_indicator);
         dateView = findViewById(R.id.date);
         timeView = findViewById(R.id.time);
 
@@ -157,6 +152,15 @@ public class CreateNoteActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.create_note_activity_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (getIntent().getExtras() == null) {
+            menu.findItem(R.id.note_delete).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -272,23 +276,22 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         if (isExiting) {
             super.onBackPressed();
         } else if (!etTitle.getText().toString().equals(title) || !etContent.getText().toString().equals(content)) {
-            showSavePopup();
+            showSaveDialog();
         } else {
             super.onBackPressed();
         }
     }
 
-    private void showSavePopup() {
+    private void showSaveDialog() {
         ViewGroup viewGroup = findViewById(android.R.id.content);
         final CustomDialog customDialog = new CustomDialog(this,
                 viewGroup,
                 R.layout.dialog,
-                R.string.dialog_title_save_changes,
                 0,
+                R.string.dialog_title_save_changes,
                 R.string.dialog_btn_save,
                 R.string.dialog_btn_cancel);
 
