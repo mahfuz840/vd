@@ -215,15 +215,7 @@ public class MainFragment extends Fragment {
             db.close();
         }
 
-        if (notes.isEmpty()) {
-            homepageEmptyLayout.setVisibility(View.VISIBLE);
-            homepageEmptyLayout.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.scale_in));
-            noteView.setVisibility(View.INVISIBLE);
-            return;
-        } else {
-            homepageEmptyLayout.setVisibility(View.INVISIBLE);
-            noteView.setVisibility(View.VISIBLE);
-        }
+        checkEmpty();
 
         int numOfColumns = calculateNoOfColumns(getContext(), 150);
         noteView.setLayoutManager(new GridLayoutManager(getContext(), numOfColumns));
@@ -244,6 +236,13 @@ public class MainFragment extends Fragment {
             }
         });
 
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                checkEmpty();
+            }
+        });
         noteView.setAdapter(adapter);
     }
 
@@ -262,7 +261,17 @@ public class MainFragment extends Fragment {
         }
     }
 
-
+    private void checkEmpty() {
+        if (notes.isEmpty()) {
+            homepageEmptyLayout.setVisibility(View.VISIBLE);
+            homepageEmptyLayout.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.scale_in));
+            noteView.setVisibility(View.INVISIBLE);
+            return;
+        } else {
+            homepageEmptyLayout.setVisibility(View.INVISIBLE);
+            noteView.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void onPause() {

@@ -16,6 +16,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
@@ -24,38 +26,38 @@ import com.the_spartan.virtualdiary.util.DeleteListCollector;
 import com.the_spartan.virtualdiary.util.FontUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.the_spartan.virtualdiary.fragment.ToDoFragment.deleteList;
 
-//import com.the_spartan.virtualdiary.models.Item;
+public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
-public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
-
-    private ArrayList<ToDoItem> original;
-    public ArrayList<ToDoItem> fitems;
-    private Filter filter;
+    private ArrayList<ToDoItem> filteredToDoList;
+    private ArrayList<ToDoItem> originalToDoList;
     private Context context;
     private DeleteListCollector deleteListCollector;
+    private ToDoFilter mFilter;
 
-    public CustomItemsAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector) {
+    public ToDoAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector) {
         super(context, 0, items);
-        this.original = new ArrayList<>();
-        this.original.addAll(items);
-        this.fitems = new ArrayList<>();
-        this.fitems.addAll(items);
+        this.originalToDoList = new ArrayList<>();
+        this.originalToDoList.addAll(items);
+        this.filteredToDoList = new ArrayList<>();
+        this.filteredToDoList.addAll(items);
         this.deleteListCollector = deleteListCollector;
-
         this.context = context;
+
+        mFilter = new ToDoFilter();
     }
 
     @Override
     public int getCount() {
-        return fitems == null ? 0 : fitems.size();
+        return filteredToDoList == null ? 0 : filteredToDoList.size();
     }
 
     @Override
     public ToDoItem getItem(int position) {
-        return fitems.get(position);
+        return filteredToDoList.get(position);
     }
 
     @Override
@@ -70,12 +72,13 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
         TextView tvPriority;
         TextView dueDate;
 
-        if (v == null)
+        if (v == null) {
             v = LayoutInflater.from(context).inflate(R.layout.item, null);
+        }
 
         Typeface myFont = FontUtil.initializeFonts(context);
 
-        ToDoItem item = fitems.get(position);
+        ToDoItem item = filteredToDoList.get(position);
         if (item != null) {
             tvName = v.findViewById(R.id.tvItem);
             tvPriority = v.findViewById(R.id.tvItemPriority);
@@ -121,7 +124,7 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
 
                     getContext().getContentResolver().update(uri, values, selection, selectionArgs);
                     item.setIsDone(isCheckedInt);
-                    original.set(pos, item);
+                    filteredToDoList.set(pos, item);
                     notifyDataSetChanged();
                 }
             });
@@ -180,26 +183,9 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
                 tvPriority.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 4)));
                 dueDate.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 6)));
             }
-
         }
-
-//        v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.scale_in));
 
         return v;
-    }
-
-    public void filter(String query) {
-        query = query.toLowerCase();
-        fitems.clear();
-        if (query.length() == 0) {
-            fitems.addAll(original);
-        } else {
-            for (int i = 0; i < original.size(); i++)
-                if (original.get(i).getSubject().toLowerCase().contains(query))
-                    fitems.add(original.get(i));
-        }
-
-        this.notifyDataSetChanged();
     }
 
     @Override
@@ -212,4 +198,38 @@ public class CustomItemsAdapter extends ArrayAdapter<ToDoItem> implements Filter
         return position;
     }
 
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        return mFilter;
+    }
+
+    private class ToDoFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            String queryString = charSequence.toString().toLowerCase().trim();
+            FilterResults results = new FilterResults();
+            List<ToDoItem> nList = new ArrayList<>();
+            String filterableString = null;
+
+            for (ToDoItem item : originalToDoList) {
+                filterableString = item.getSubject();
+                if (filterableString.contains(queryString)) {
+                    nList.add(item);
+                }
+            }
+
+            results.values = nList;
+            results.count = nList.size();
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            filteredToDoList = (ArrayList<ToDoItem>) filterResults.values;
+            notifyDataSetChanged();
+        }
+    }
 }

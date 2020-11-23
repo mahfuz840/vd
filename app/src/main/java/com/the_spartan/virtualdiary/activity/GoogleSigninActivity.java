@@ -233,7 +233,7 @@ public class GoogleSigninActivity extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        TextView msgView = dialogView.findViewById(R.id.text_dialog);
+        TextView msgView = dialogView.findViewById(R.id.dialog_message);
         msgView.setText(msg);
 
         TextView posBtn = dialogView.findViewById(R.id.pos_btn);

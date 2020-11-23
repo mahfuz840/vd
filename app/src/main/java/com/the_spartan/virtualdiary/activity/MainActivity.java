@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 final View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_search, viewGroup, false);
                 dialogView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.scale_in));
 
-
                 //Now we need an AlertDialog.Builder object
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

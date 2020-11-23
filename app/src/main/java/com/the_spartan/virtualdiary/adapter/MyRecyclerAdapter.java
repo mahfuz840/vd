@@ -88,10 +88,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     @Override
     public int getItemCount() {
-        if (mNotes == null)
+        if (mNotes == null) {
             return 0;
-        else
+        } else {
             return mNotes.size();
+        }
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {
@@ -162,9 +163,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                             null);
 
                     mNotes.remove(getAdapterPosition());
-                    notifyDataSetChanged();
                     notifyItemRemoved(getAdapterPosition());
-                    customDialog.startAnimation(R.anim.scale_in);
                     customDialog.dismiss();
                 }
             });

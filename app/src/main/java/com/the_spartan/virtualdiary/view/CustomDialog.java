@@ -27,6 +27,7 @@ public class CustomDialog {
     private Animation closingAnimation;
     private TextView titleView;
     private TextView messageView;
+    private boolean defaultAnim;
 
     public CustomDialog(Context context,
                         ViewGroup viewGroup,
@@ -39,6 +40,7 @@ public class CustomDialog {
         this(context,
                 viewGroup,
                 layout,
+                true,
                 R.anim.scale_in,
                 R.anim.scale_out,
                 title == 0 ? null : context.getString(title),
@@ -50,6 +52,7 @@ public class CustomDialog {
     public CustomDialog(Context context,
                         ViewGroup viewGroup,
                         int layout,
+                        boolean defaultAnim,
                         int openingAnimResId,
                         int closingAnimResId,
                         String title,
@@ -67,13 +70,18 @@ public class CustomDialog {
 
     private void init(String title, String message, String posText, String negText) {
         this.dialogView = LayoutInflater.from(context).inflate(layoutResId, viewGroup, false);
-        dialogView.startAnimation(openingAnimation);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
 
         this.alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (defaultAnim) {
+            alertDialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+        } else {
+            dialogView.startAnimation(openingAnimation);
+        }
         alertDialog.setCancelable(false);
 
         this.titleView = dialogView.findViewById(R.id.dialog_title);
@@ -101,6 +109,11 @@ public class CustomDialog {
         this.negBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (defaultAnim) {
+                    dismiss();
+                    return;
+                }
+
                 closingAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
