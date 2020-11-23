@@ -75,11 +75,7 @@ dependencies {
     implementation 'com.github.wangjiegulu:rfab:2.0.0'
     implementation 'com.1gravity:android-colorpicker:2.1.0'
     implementation 'com.facebook.android:audience-network-sdk:5.+'
-
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-
-
+//    implementation 'com.google.android.play:core-ktx';
 
     implementation('com.google.api-client:google-api-client-android:1.30.4') {
         exclude group: 'org.apache.httpcomponents'
@@ -87,7 +83,4 @@ dependencies {
     implementation('com.google.apis:google-api-services-drive:v3-rev99-1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-
-
-
 }

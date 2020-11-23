@@ -55,7 +55,8 @@
         android:textColor="@android:color/white"
         android:background="@drawable/button_shape"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"/>
+        android:paddingRight="10dp"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:id="@+id/backup_restore_help_text"
