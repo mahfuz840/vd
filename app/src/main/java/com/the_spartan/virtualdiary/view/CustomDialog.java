@@ -16,34 +16,33 @@ import com.the_spartan.virtualdiary.R;
 
 public class CustomDialog {
 
-    private Context context;
-
-    private AlertDialog alertDialog;
-
-    private ViewGroup viewGroup;
-    private View dialogView;
-
-    private int layoutResId;
-
-    private Animation openingAnimation;
-    private Animation closingAnimation;
-
-    private TextView titleView;
     public TextView posBtn;
     public TextView negBtn;
+    private Context context;
+    private AlertDialog alertDialog;
+    private ViewGroup viewGroup;
+    private View dialogView;
+    private int layoutResId;
+    private Animation openingAnimation;
+    private Animation closingAnimation;
+    private TextView titleView;
+    private TextView messageView;
 
     public CustomDialog(Context context,
                         ViewGroup viewGroup,
                         int layout,
                         int title,
+                        int message,
                         int posText,
                         int negText) {
+
         this(context,
                 viewGroup,
                 layout,
                 R.anim.scale_in,
                 R.anim.scale_out,
                 context.getString(title),
+                message == 0 ? null : context.getString(message),
                 context.getString(posText),
                 context.getString(negText));
     }
@@ -54,6 +53,7 @@ public class CustomDialog {
                         int openingAnimResId,
                         int closingAnimResId,
                         String title,
+                        String message,
                         String posText,
                         String negText) {
         this.context = context;
@@ -62,10 +62,10 @@ public class CustomDialog {
         this.openingAnimation = AnimationUtils.loadAnimation(context, openingAnimResId);
         this.closingAnimation = AnimationUtils.loadAnimation(context, closingAnimResId);
 
-        init(title, posText, negText);
+        init(title, message, posText, negText);
     }
 
-    private void init(String title, String posText, String negText) {
+    private void init(String title, String message, String posText, String negText) {
         this.dialogView = LayoutInflater.from(context).inflate(layoutResId, viewGroup, false);
         dialogView.startAnimation(openingAnimation);
 
@@ -76,8 +76,15 @@ public class CustomDialog {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.setCancelable(false);
 
-        this.titleView = dialogView.findViewById(R.id.text_dialog);
+        this.titleView = dialogView.findViewById(R.id.dialog_title);
         titleView.setText(title);
+
+        this.messageView = dialogView.findViewById(R.id.dialog_message);
+        if (message != null) {
+            messageView.setText(message);
+        } else {
+            messageView.setVisibility(View.GONE);
+        }
 
         this.posBtn = dialogView.findViewById(R.id.pos_btn);
         posBtn.setText(posText);

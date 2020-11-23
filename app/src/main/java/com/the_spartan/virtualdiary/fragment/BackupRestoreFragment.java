@@ -62,15 +62,13 @@ public class BackupRestoreFragment extends Fragment {
     TextView emailTextView;
     ImageView DPImageView;
     Button changeAccountBtn;
+    MainActivity mainActivity;
+    ProgressDialog dialog;
+    com.google.api.services.drive.Drive googleDriveService;
     private Button backupButton;
     private Drive mDriveServiceHelper;
     private Button restoreButton;
     private Toolbar toolbar;
-    MainActivity mainActivity;
-
-    ProgressDialog dialog;
-    com.google.api.services.drive.Drive googleDriveService;
-
 
     @Nullable
     @Override
@@ -92,7 +90,7 @@ public class BackupRestoreFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mainActivity = (MainActivity)getActivity();
+        mainActivity = (MainActivity) getActivity();
         mainActivity.setToolbar(toolbar);
         mainActivity.setTitle("");
 
@@ -103,14 +101,11 @@ public class BackupRestoreFragment extends Fragment {
                     dialog.setMessage(getContext().getString(R.string.dialog_backing_up_data));
                     dialog.show();
                 }
-                if (checkConnection()) {
-                    boolean isLoggedIn = checkLogin();
-                    if (isLoggedIn)
-                        new BackupAsyncTask().execute(googleDriveService);
-//                        new ClearAsyncTask().execute(googleDriveService);
-                } else if (dialog.isShowing())
-                    dialog.cancel();
-
+                if (checkConnection() && checkLogin()) {
+                    new BackupAsyncTask().execute(googleDriveService);
+                } else {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -121,17 +116,16 @@ public class BackupRestoreFragment extends Fragment {
                     dialog.setMessage(getContext().getString(R.string.dialog_restoring_data));
                     dialog.show();
                 }
-                if (checkConnection()) {
-                    boolean isLoggedIn = checkLogin();
-                    if (isLoggedIn)
-                        new RestoreAsyncTask().execute(googleDriveService);
+
+                if (checkConnection() && checkLogin()) {
+                    new RestoreAsyncTask().execute(googleDriveService);
+                } else {
+                    dialog.dismiss();
                 }
             }
         });
 
         dialog = new ProgressDialog(getContext());
-
-
 
         account = GoogleSignIn.getLastSignedInAccount(getContext());
         GoogleAccountCredential credential =
@@ -154,7 +148,6 @@ public class BackupRestoreFragment extends Fragment {
                 credential)
                 .setApplicationName(this.getString(R.string.app_name))
                 .build();
-
 
 
         changeAccountBtn.setOnClickListener(new View.OnClickListener() {
@@ -198,8 +191,9 @@ public class BackupRestoreFragment extends Fragment {
         if (account == null) {
             Toast.makeText(getContext(), R.string.sign_in_warning, Toast.LENGTH_SHORT).show();
             return false;
-        } else
-            return true;
+        }
+
+        return true;
     }
 
     private void signOut() {
@@ -328,8 +322,9 @@ public class BackupRestoreFragment extends Fragment {
         @Override
         protected void onPostExecute(File file) {
             super.onPostExecute(file);
-            if (dialog.isShowing())
-                dialog.cancel();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
             if (file != null) {
                 String fileID = file.getId();
@@ -365,7 +360,7 @@ public class BackupRestoreFragment extends Fragment {
                         String fileName = "note.db";
                         java.io.File path = new java.io.File(directory + "/" + fileName);
                         OutputStream outputStream = new FileOutputStream(path);
-                        if(fileID.equals(""))
+                        if (fileID.equals(""))
                             fileID = file.getId();
                         services[0].files().get(fileID)
                                 .executeMediaAndDownloadTo(outputStream);
@@ -388,16 +383,17 @@ public class BackupRestoreFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (dialog.isShowing())
-                dialog.cancel();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
-            if (integer == 1)
+            if (integer == 1) {
                 Toast.makeText(getContext(), R.string.toast_restored, Toast.LENGTH_SHORT).show();
-            else
+            } else {
                 Toast.makeText(getContext(), R.string.toast_failed, Toast.LENGTH_SHORT).show();
+            }
         }
     }
-
 
 
 }

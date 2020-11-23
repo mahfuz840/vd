@@ -31,7 +31,7 @@
     <string name="save_item">Save</string>
     <string name="share_item">Share</string>
     <string name="delete_items">delete items</string>
-    <string name="confirm_delete">Confirm Delete</string>
+    <string name="confirm_delete">CONFIRM DELETE</string>
 
     <string name="toast_deleted">Deleted!</string>
     <string name="toast_successful">Successful!</string>
@@ -53,13 +53,15 @@
     <string name="dialog_backing_up_data">Backing up your data…</string>
     <string name="dialog_restoring_data">Restoring your data…</string>
     <string name="dialog_title_are_you_sure">Are you sure?</string>
-    <string name="dialog_title_delete_note">Do you want to delete this note?</string>
+    <string name="dialog_msg_note_single_delete">Do you want to delete this note?</string>
     <string name="dialog_title_save_changes">Do you want to save the changes?</string>
-    <string name="dialog_btn_save">SAVE</string>
-    <string name="dialog_btn_yes">YES</string>
-    <string name="dialog_btn_no">NO</string>
-    <string name="dialog_btn_cancel">CANCEL</string>
-    <string name="dialog_btn_delete">DELETE</string>
+    <string name="dialog_msg_todo_single_delete">Do you want to delete this to-do?</string>
+    <string name="dialog_msg_todo_multi_delete">The marked items will be deleted</string>
+    <string name="dialog_btn_save">Save</string>
+    <string name="dialog_btn_yes">Yes</string>
+    <string name="dialog_btn_no">No</string>
+    <string name="dialog_btn_cancel">Cancel</string>
+    <string name="dialog_btn_delete">Delete</string>
     <string name="dialog_choose_font">Choose your custom font</string>
 
     <string name="label_font_style">Font Style</string>

@@ -3,7 +3,6 @@ package com.the_spartan.virtualdiary.fragment;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
@@ -42,6 +40,7 @@ import com.the_spartan.virtualdiary.data.ToDoDbHelper;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
 import com.the_spartan.virtualdiary.model.ToDoItem;
 import com.the_spartan.virtualdiary.util.DeleteListCollector;
+import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,22 +49,23 @@ import java.util.List;
 
 public class ToDoFragment extends Fragment implements DeleteListCollector {
 
+    public static ArrayList<ToDoItem> deleteList = new ArrayList<>();
+    private static Context mContext;
+    LinearLayout todoEmptyLayout;
     private CustomItemsAdapter toDoAdapter;
     private ListView listView;
     private Button quickAddButton;
     private EditText editText;
     private MenuItem deleteItems;
     private MenuItem searchItem;
-    private MenuItem shareItem;
-
-    LinearLayout todoEmptyLayout;
-    private static Context mContext;
     private ArrayList<ToDoItem> listItems;
-
-    public static ArrayList<ToDoItem> deleteList = new ArrayList<>();
 
     public ToDoFragment() {
 
+    }
+
+    public static Context getToDoContext() {
+        return mContext;
     }
 
     @Nullable
@@ -99,28 +99,34 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int pos = position;
-                new AlertDialog.Builder(mContext)
-                        .setTitle(R.string.confirm_delete)
-                        .setMessage(R.string.dialog_title_are_you_sure)
-                        .setPositiveButton(R.string.dialog_btn_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // change here
-                                ToDoItem itemToBeDeleted = toDoAdapter.getItem(pos);
-                                String[] selectionArgs = new String[]{String.valueOf(itemToBeDeleted.getID())};
-                                Uri uri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, String.valueOf(ToDoProvider.DELETE_A_TODO)); //300 is for deleting a single item
-                                mContext.getContentResolver().delete(uri, null, selectionArgs);
-                                populateItems();
-                                Toast.makeText(mContext, R.string.toast_deleted, Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton(R.string.dialog_btn_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing actually :p
-                            }
-                        })
-                        .show();
+
+                View parentView = (View) view.getParent();
+                if (parentView == null) {
+                    return false;
+                }
+
+                ViewGroup viewGroup = parentView.findViewById(android.R.id.content);
+                CustomDialog customDialog = new CustomDialog(mContext,
+                        viewGroup,
+                        R.layout.dialog,
+                        R.string.confirm_delete,
+                        R.string.dialog_msg_todo_single_delete,
+                        R.string.dialog_btn_yes,
+                        R.string.dialog_btn_cancel);
+
+                customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ToDoItem itemToBeDeleted = toDoAdapter.getItem(pos);
+                        String[] selectionArgs = new String[]{String.valueOf(itemToBeDeleted.getID())};
+                        Uri uri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, String.valueOf(ToDoProvider.DELETE_A_TODO)); //300 is for deleting a single item
+                        mContext.getContentResolver().delete(uri, null, selectionArgs);
+                        populateItems();
+                        Toast.makeText(mContext, R.string.toast_deleted, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                customDialog.show();
 
                 return true;
             }
@@ -249,6 +255,18 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
         listView.onRestoreInstanceState(state);
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        switch (id) {
+//            case android.R.id.home:
+//                onBackPressed();
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
@@ -317,19 +335,6 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
         checkForDeleteVisibility();
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        switch (id) {
-//            case android.R.id.home:
-//                onBackPressed();
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-
-
     public void onShareClick(MenuItem view) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -344,23 +349,41 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
     }
 
     public void showDeleteConfirmDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                .setTitle("Do you really want to delete?")
-                .setMessage("The marked items will be deleted")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteItems();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+//                .setTitle("Do you really want to delete?")
+//                .setMessage("The marked items will be deleted")
+//                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        deleteItems();
+//                    }
+//                })
+//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//
+//        builder.show();
 
-                    }
-                });
+        ViewGroup viewGroup = getView().findViewById(android.R.id.content);
+        CustomDialog dialog = new CustomDialog(mContext,
+                viewGroup,
+                R.layout.dialog,
+                R.string.confirm_delete,
+                R.string.dialog_msg_todo_multi_delete,
+                R.string.dialog_btn_delete,
+                R.string.dialog_btn_cancel);
 
-        builder.show();
+        dialog.posBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteItems();
+            }
+        });
+
+        dialog.show();
     }
 
     public void deleteItems() {
@@ -376,15 +399,10 @@ public class ToDoFragment extends Fragment implements DeleteListCollector {
         populateItems();
     }
 
-
     @Override
     public void onResume() {
         populateItems();
         super.onResume();
-    }
-
-    public static Context getToDoContext() {
-        return mContext;
     }
 
     private void checkForDeleteVisibility() {

@@ -31,9 +31,8 @@ import java.util.ArrayList;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
 
-    Context mContext;
-
     private static ClickListener clickListener;
+    Context mContext;
     private ArrayList<Note> mNotes;
 
     public MyRecyclerAdapter(Context context, ArrayList<Note> notes) {
@@ -95,6 +94,15 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             return mNotes.size();
     }
 
+    public void setOnItemClickListener(ClickListener clickListener) {
+        MyRecyclerAdapter.clickListener = clickListener;
+    }
+
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView dateView;
@@ -141,9 +149,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             final CustomDialog customDialog = new CustomDialog(mContext,
                     viewGroup,
                     R.layout.dialog,
-                    R.string.dialog_title_delete_note,
+                    R.string.confirm_delete,
+                    R.string.dialog_msg_note_single_delete,
                     R.string.dialog_btn_yes,
-                    R.string.dialog_btn_no);
+                    R.string.dialog_btn_cancel);
 
             customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,15 +171,5 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
             customDialog.show();
         }
-    }
-
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-        MyRecyclerAdapter.clickListener = clickListener;
-    }
-
-
-    public interface ClickListener {
-        void onItemClick(int position, View v);
     }
 }

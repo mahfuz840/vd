@@ -28,7 +28,6 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
 import com.the_spartan.virtualdiary.data.NoteDbHelper;
 import com.the_spartan.virtualdiary.data.NoteProvider;
-import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.util.FontUtil;
 import com.the_spartan.virtualdiary.util.StringUtil;
 import com.the_spartan.virtualdiary.view.CustomDialog;
@@ -40,14 +39,14 @@ import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
+    int mDay, mMonth, mYear;
+    int id;
     private EditText etTitle;
     private EditText etContent;
     private ImageView tvDateIndicator;
     private ImageView tvTitleIndicator;
     private TextView dateView;
     private TextView timeView;
-    int mDay, mMonth, mYear;
-    int id;
     private AdView adView;
     private String content;
     private String title;
@@ -255,9 +254,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         CustomDialog customDialog = new CustomDialog(this,
                 viewGroup,
                 R.layout.dialog,
-                R.string.dialog_title_delete_note,
+                R.string.confirm_delete,
+                R.string.dialog_msg_note_single_delete,
                 R.string.dialog_btn_yes,
-                R.string.dialog_btn_no);
+                R.string.dialog_btn_cancel);
 
         customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,6 +288,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 viewGroup,
                 R.layout.dialog,
                 R.string.dialog_title_save_changes,
+                0,
                 R.string.dialog_btn_save,
                 R.string.dialog_btn_cancel);
 
