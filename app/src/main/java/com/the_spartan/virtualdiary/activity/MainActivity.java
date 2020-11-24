@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,10 +46,10 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NavigationView navigationView;
-    private DrawerLayout mDrawerLayout;
     ActionBarDrawerToggle drawerToggle;
     Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout mDrawerLayout;
     private int backPressed = 0;
 
     @Override
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout.addDrawerListener(drawerToggle);
 
-        if(mDrawerLayout != null) {
+        if (mDrawerLayout != null) {
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open,  R.string.close);
+        return new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
     }
 
     @Override
@@ -131,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_todo:
                 fragmentClass = ToDoFragment.class;
                 break;
+            case R.id.rating:
+                openPlaystore();
+                fragmentClass = MainFragment.class;
+                break;
             default:
                 fragmentClass = AboutFragment.class;
         }
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         try {
-            fragment = (Fragment)fragmentClass.newInstance();
+            fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,5 +239,18 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         else
             Toast.makeText(this, "Press Back Again to Exit", Toast.LENGTH_SHORT).show();
+    }
+
+    private void openPlaystore() {
+        try {
+            String market_uri = "https://play.google.com/store/apps/details?id=" + getPackageName();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(market_uri));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                    .FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Sorry! unable to access playstore", Toast.LENGTH_SHORT).show();
+        }
     }
 }
