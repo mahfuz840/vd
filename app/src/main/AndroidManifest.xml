@@ -76,7 +76,8 @@
 
         <activity
             android:name=".activity.PasswordActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar">
+            android:theme="@style/ToolbarThemeWithNoActionBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

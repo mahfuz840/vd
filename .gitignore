@@ -7,3 +7,6 @@
 /release
 gradlew
 gradlew.bat
+/app/debug/
+/app/release/
+/app/.externalNativeBuild/
