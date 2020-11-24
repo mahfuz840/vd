@@ -47,6 +47,10 @@ import java.util.Locale;
 public class CreateNoteActivity extends AppCompatActivity {
 
     private static final String NO_OF_TIMES_USED = "noOfTimesSaved";
+    private static final int FIRST_MILESTONE = 15;
+    private static final int SECOND_MILESTONE = 40;
+    private static final int THIRD_MILESTONE = 65;
+    private static final int FOURTH_MILESTONE = 90;
 
     int mDay, mMonth, mYear;
     int id;
@@ -262,8 +266,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 values,
                 null,
                 null);
-
-        checkForReview();
     }
 
     private void deleteNote() {
@@ -341,13 +343,18 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void checkForReview() {
         int noOfTimesUsed = preferences.getInt(NO_OF_TIMES_USED, 0);
-        if (noOfTimesUsed > 2) {
-            showReview();
-        } else {
+        if (noOfTimesUsed < FIRST_MILESTONE
+                || (noOfTimesUsed > FIRST_MILESTONE && noOfTimesUsed < SECOND_MILESTONE)
+                || (noOfTimesUsed > SECOND_MILESTONE && noOfTimesUsed < THIRD_MILESTONE)
+                || (noOfTimesUsed > THIRD_MILESTONE && noOfTimesUsed < FOURTH_MILESTONE)) {
             editor = preferences.edit();
             editor.putInt(NO_OF_TIMES_USED, ++noOfTimesUsed);
             editor.apply();
+
+            return;
         }
+
+        showReview();
     }
 
     private void showReview() {
