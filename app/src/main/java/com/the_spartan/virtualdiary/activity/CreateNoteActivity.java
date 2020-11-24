@@ -4,10 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +19,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
 import com.the_spartan.virtualdiary.data.NoteDbHelper;
@@ -38,6 +46,8 @@ import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
+    private static final String NO_OF_TIMES_USED = "noOfTimesSaved";
+
     int mDay, mMonth, mYear;
     int id;
     private EditText etTitle;
@@ -49,6 +59,9 @@ public class CreateNoteActivity extends AppCompatActivity {
     private String title;
     private Calendar mCalendar;
     private boolean isExiting;
+
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +159,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -223,6 +238,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         Uri uri = getContentResolver().insert(NoteProvider.CONTENT_URI, values);
         id = (int) ContentUris.parseId(uri);
+
+        checkForReview();
     }
 
     private void updateNote() {
@@ -245,6 +262,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                 values,
                 null,
                 null);
+
+        checkForReview();
     }
 
     private void deleteNote() {
@@ -318,6 +337,39 @@ public class CreateNoteActivity extends AppCompatActivity {
         });
 
         customDialog.show();
+    }
+
+    private void checkForReview() {
+        int noOfTimesUsed = preferences.getInt(NO_OF_TIMES_USED, 0);
+        if (noOfTimesUsed > 2) {
+            showReview();
+        } else {
+            editor = preferences.edit();
+            editor.putInt(NO_OF_TIMES_USED, ++noOfTimesUsed);
+            editor.apply();
+        }
+    }
+
+    private void showReview() {
+        final ReviewManager reviewManager = ReviewManagerFactory.create(this);
+
+        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+        request.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
+            @Override
+            public void onComplete(Task<ReviewInfo> task) {
+                if (task.isSuccessful()) {
+                    Task<Void> flow = reviewManager.launchReviewFlow(CreateNoteActivity.this, task.getResult());
+                    flow.addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(Task<Void> task) {
+
+                        }
+                    });
+                } else {
+                    Toast.makeText(CreateNoteActivity.this, "Error in review", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void loadAd() {
