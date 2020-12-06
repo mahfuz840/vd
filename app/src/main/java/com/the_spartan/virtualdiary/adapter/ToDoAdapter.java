@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,13 +25,15 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
 import com.the_spartan.virtualdiary.model.ToDoItem;
-import com.the_spartan.virtualdiary.util.DeleteListCollector;
+import com.the_spartan.virtualdiary.interfacing.DeleteListCollector;
 import com.the_spartan.virtualdiary.util.FontUtil;
+import com.the_spartan.virtualdiary.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.the_spartan.virtualdiary.fragment.ToDoFragment.deleteList;
+import static com.the_spartan.virtualdiary.fragment.ToDoActiveFragment.deleteList;
+import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
 
 public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
@@ -37,8 +42,12 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
     private Context context;
     private DeleteListCollector deleteListCollector;
     private ToDoFilter mFilter;
+    private ListView listView;
 
-    public ToDoAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector) {
+    private boolean activeItemAdapter;
+
+    public ToDoAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector,
+                       boolean activeItemAdapter) {
         super(context, 0, items);
         this.originalToDoList = new ArrayList<>();
         this.originalToDoList.addAll(items);
@@ -46,17 +55,22 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         this.filteredToDoList.addAll(items);
         this.deleteListCollector = deleteListCollector;
         this.context = context;
+        this.activeItemAdapter = activeItemAdapter;
 
         mFilter = new ToDoFilter();
     }
 
     @Override
     public int getCount() {
-        return filteredToDoList == null ? 0 : filteredToDoList.size();
+        int val = filteredToDoList == null ? 0 : filteredToDoList.size();
+        Log.d("Adapter", "Size " + val);
+
+        return val;
     }
 
     @Override
     public ToDoItem getItem(int position) {
+        Log.d("adapter", "position " + position);
         return filteredToDoList.get(position);
     }
 
@@ -71,9 +85,13 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         TextView tvName;
         TextView tvPriority;
         TextView dueDate;
+        TextView tvTime;
+        listView = (ListView) parent;
+
+        Log.d("adapter", "hi " + position);
 
         if (v == null) {
-            v = LayoutInflater.from(context).inflate(R.layout.item, null);
+            v = LayoutInflater.from(context).inflate(R.layout.todo_list_item, null);
         }
 
         Typeface myFont = FontUtil.initializeFonts(context);
@@ -83,7 +101,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             tvName = v.findViewById(R.id.tvItem);
             tvPriority = v.findViewById(R.id.tvItemPriority);
 
-            int isChecked = item.getIsDone();
+            int isChecked = item.isDone();
             boolean isCheckedBool = isChecked == 1;
 
             CheckBox cb = v.findViewById(R.id.cbItemCheck);
@@ -104,7 +122,12 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             } else if (!isCheckedBool && found) {
                 deleteList.remove(index);
             }
-            deleteListCollector.updateDeleteList(deleteList);
+
+            if (activeItemAdapter) {
+                deleteListCollector.updateActiveItemDeleteList(deleteList);
+            } else {
+                deleteListCollector.updateOldItemDeleteList(deleteList);
+            }
 
             cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -123,7 +146,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
                     Uri uri = ToDoProvider.CONTENT_URI;
 
                     getContext().getContentResolver().update(uri, values, selection, selectionArgs);
-                    item.setIsDone(isCheckedInt);
+                    item.isDone(isCheckedInt);
                     filteredToDoList.set(pos, item);
                     notifyDataSetChanged();
                 }
@@ -131,7 +154,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
             tvName.setText(item.getSubject());
 
-            if (item.getIsDone() == 1) {
+            if (item.isDone() == 1) {
                 tvName.setPaintFlags(tvName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
                 tvName.setPaintFlags(0);
@@ -149,31 +172,40 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
                     break;
             }
 
-//            tvPriority.setTextColor(item.priority.getColor());
             dueDate = v.findViewById(R.id.tvDueDate);
+            tvTime = v.findViewById(R.id.tv_todo_time);
             if (!TextUtils.isEmpty(item.getDueDate())) {
-                dueDate.setVisibility(View.VISIBLE);
-                if (!TextUtils.isEmpty(item.getTime())) {
-                    dueDate.setText(item.getDueDate());
-                } else {
-                    dueDate.setText(item.getDueDate());
-                }
+                dueDate.setText(item.getDueDate());
+            } else if (!TextUtils.isEmpty(item.getTime())) {
+                dueDate.setText(TimeUtil.getTwelveHourFormattedTime(item.getTime()));
+                tvTime.setVisibility(View.GONE);
+                tvTime = null;
             } else {
                 dueDate.setVisibility(View.GONE);
+                tvTime.setVisibility(View.GONE);
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams) tvName.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                tvName.setLayoutParams(layoutParams);
+            }
+
+            if (!TextUtils.isEmpty(item.getTime()) && tvTime != null) {
+                tvTime.setText(TimeUtil.getTwelveHourFormattedTime(item.getTime()));
             }
 
             if (myFont != null) {
                 tvName.setTypeface(myFont);
                 tvPriority.setTypeface(myFont);
                 dueDate.setTypeface(myFont);
-
+                if (tvTime != null) {
+                    tvTime.setTypeface(myFont);
+                }
             }
 
             int color = FontUtil.initializeColor(context);
 
             if (color != 0) {
                 tvName.setTextColor(color);
-//                EtTitle.setTextColor(color);
             }
 
             String fontSize = FontUtil.initializeFontSize(context);
@@ -195,7 +227,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return 0;
     }
 
     @NonNull
@@ -230,6 +262,15 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             filteredToDoList = (ArrayList<ToDoItem>) filterResults.values;
             notifyDataSetChanged();
+            setListViewHeightBasedOnChildren(listView);
         }
+    }
+
+    public void notify(ArrayList<ToDoItem> list) {
+        this.filteredToDoList.clear();
+        this.originalToDoList.clear();
+        this.filteredToDoList.addAll(list);
+        this.originalToDoList.addAll(list);
+        notifyDataSetChanged();
     }
 }

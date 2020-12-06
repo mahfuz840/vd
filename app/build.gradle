@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.1gravity:android-colorpicker:2.1.0'
     implementation 'com.facebook.android:audience-network-sdk:5.+'
     implementation 'com.google.android.play:core:1.8.3'
+    implementation "androidx.cardview:cardview:1.0.0"
 
 
     implementation('com.google.api-client:google-api-client-android:1.30.4') {

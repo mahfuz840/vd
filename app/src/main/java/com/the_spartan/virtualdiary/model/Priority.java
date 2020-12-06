@@ -2,7 +2,7 @@ package com.the_spartan.virtualdiary.model;
 
 import android.graphics.Color;
 
-import com.the_spartan.virtualdiary.fragment.ToDoFragment;
+import com.the_spartan.virtualdiary.fragment.ToDoActiveFragment;
 
 ;
 
@@ -25,15 +25,15 @@ public enum Priority {
         return value;
     }
 
-    public String getName() {
-        return ToDoFragment.getToDoContext().getString(ToDoFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoFragment.getToDoContext().getPackageName()));
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public String toString(){
-        return ToDoFragment.getToDoContext().getString(ToDoFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoFragment.getToDoContext().getPackageName()));
-    }
+//    public String getName() {
+//        return ToDoActiveFragment.getToDoContext().getString(ToDoActiveFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoActiveFragment.getToDoContext().getPackageName()));
+//    }
+//
+//    public int getColor() {
+//        return color;
+//    }
+//
+//    public String toString(){
+//        return ToDoActiveFragment.getToDoContext().getString(ToDoActiveFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoActiveFragment.getToDoContext().getPackageName()));
+//    }
 }

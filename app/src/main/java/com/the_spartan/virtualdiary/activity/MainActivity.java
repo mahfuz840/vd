@@ -29,7 +29,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.material.navigation.NavigationView;
@@ -40,7 +39,7 @@ import com.the_spartan.virtualdiary.fragment.CustomizationFragment;
 import com.the_spartan.virtualdiary.fragment.MainFragment;
 import com.the_spartan.virtualdiary.fragment.NotificationFragment;
 import com.the_spartan.virtualdiary.fragment.PasswordSettingsFragment;
-import com.the_spartan.virtualdiary.fragment.ToDoFragment;
+import com.the_spartan.virtualdiary.fragment.ToDoParentFragment;
 
 import java.util.Objects;
 
@@ -130,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = MainFragment.class;
                 break;
             case R.id.nav_todo:
-                fragmentClass = ToDoFragment.class;
+                fragmentClass = ToDoParentFragment.class;
                 break;
             case R.id.rating:
                 openPlaystore();
@@ -148,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment)
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment, fragment)
                 .commit();
 
         menuItem.setChecked(true);
@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        Log.d("TAG", "onPostCreate");
         drawerToggle.syncState();
     }
 

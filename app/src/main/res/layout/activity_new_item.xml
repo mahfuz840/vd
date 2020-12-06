@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".activity.NewItemActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activity.NewItemActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -19,168 +19,113 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            android:theme="@style/ToolbarTheme" >
+            android:theme="@style/ToolbarTheme">
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Task"
                 android:layout_gravity="center"
+                android:text="New Task"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/title_bar_font_size" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="12dp"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tvNewTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/task_to_be_done"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/etNewTask"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvNewTask"
-        android:hint="@string/enter_task_here"
-        android:textColorHint="#B8BFC2"
-        android:background="@drawable/edit_text_bg"
-        android:padding="5dp"/>
+        <!--    <TextView-->
+        <!--        android:id="@+id/tvNewTask"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_alignParentStart="true"-->
+        <!--        android:layout_alignParentTop="true"-->
+        <!--        android:layout_marginTop="20dp"-->
+        <!--        android:layout_marginBottom="5dp"-->
+        <!--        android:text="@string/task_to_be_done"-->
+        <!--        android:textColor="@color/colorPrimary"-->
+        <!--        android:textStyle="bold" />-->
 
-
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etNewTask"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/due_date"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/etDisplayDate"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/date_not_set"
-            android:onClick="onDateSet"
-            android:textColorHint="#B8BFC2"
-            tools:ignore="TextFields"
-            android:background="@drawable/edit_text_bg"
-            android:padding="5dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Task name">
 
-        <ImageView
-            android:id="@+id/imgDate"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_below="@+id/tvDate"
-            android:contentDescription="@string/click_to_set_date"
-            android:src="@drawable/ic_event_black_24dp"
-            android:tint="@color/colorPrimary" />
+            <EditText
+                android:id="@+id/etNewTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/imgDateClear"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/cancel_date"
-            android:onClick="clearDate"
-            android:src="@drawable/ic_highlight_off_black_24dp"
-            android:tint="@color/colorPrimary" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/etDisplayTime"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
             android:layout_marginTop="20dp"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/time_not_set"
-            android:onClick="onTimeSet"
-            android:textColor="@android:color/black"
-            android:textColorHint="#B8BFC2"
-            android:background="@drawable/edit_text_bg"
-            android:padding="5dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Date">
 
-        <ImageView
-            android:id="@+id/imgTime"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_below="@+id/etDisplayDate"
+            <EditText
+                android:id="@+id/etDisplayDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
-            android:contentDescription="@string/click_to_set_time"
-            android:src="@drawable/ic_schedule_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:layout_marginRight="10dp"
+            android:hint="Time">
 
-        <ImageView
-            android:id="@+id/imgTimeClear"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_below="@+id/etDisplayDate"
-            android:layout_marginTop="20dp"
-            android:contentDescription="@string/cancel_time"
-            android:onClick="clearTime"
-            android:src="@drawable/ic_highlight_off_black_24dp"
-            android:tint="@color/colorPrimary" />
+            <EditText
+                android:id="@+id/etDisplayTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/tvPriority"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:text="@string/enter_priority"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold" />-->
 
-    <TextView
-        android:id="@+id/tvPriority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/enter_priority"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:prompt="@string/priority_prompt"-->
+<!--            android:spinnerMode="dropdown" />-->
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:prompt="@string/priority_prompt"
-        android:spinnerMode="dropdown" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Low, Medium, High">
+
+            <AutoCompleteTextView
+                android:id="@+id/filled_exposed_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 </LinearLayout>

@@ -52,11 +52,11 @@ public class ToDoItem implements Serializable {
         this.priority = priority;
     }
 
-    public int getIsDone() {
+    public int isDone() {
         return isDone;
     }
 
-    public void setIsDone(int isDone) {
+    public void isDone(int isDone) {
         this.isDone = isDone;
     }
 

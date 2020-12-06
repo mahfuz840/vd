@@ -3,9 +3,11 @@ package com.the_spartan.virtualdiary.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,12 +15,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -33,19 +36,19 @@ import com.the_spartan.virtualdiary.data.ToDoProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class NewItemActivity extends AppCompatActivity implements View.OnClickListener{
+public class NewItemActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText etNewTask;
-    private EditText timeTextView;
-    private EditText dateTextView;
-    private Spinner spinner;
     int isDone;
-    private int ID;
-
     int position;
     int priorityHigh = 2;
     int priorityMedium = 1;
     int priorityLow = 0;
+    private EditText etNewTask;
+    private EditText timeTextView;
+    private EditText dateTextView;
+    private Spinner spinner;
+    private int ID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,53 +68,35 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
         spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, priorityValues));
 
         // Find our View instances
-        etNewTask = (EditText)findViewById(R.id.etNewTask);
-        timeTextView = (EditText)findViewById(R.id.etDisplayTime);
-        dateTextView = (EditText)findViewById(R.id.etDisplayDate);
-        ImageView timeButton = (ImageView)findViewById(R.id.imgTime);
-        ImageView dateButton = (ImageView)findViewById(R.id.imgDate);
+        etNewTask = (EditText) findViewById(R.id.etNewTask);
+        timeTextView = (EditText) findViewById(R.id.etDisplayTime);
+        dateTextView = (EditText) findViewById(R.id.etDisplayDate);
 
 
         ID = getIntent().getIntExtra("ID", 0);
         String subject = getIntent().getStringExtra("subject");
         position = getIntent().getIntExtra("position", -1);
         int priority = getIntent().getIntExtra("priority", 1);
-        Log.d("Priority", ""+priority);
+        Log.d("Priority", "" + priority);
         String date = getIntent().getStringExtra("date");
         String time = getIntent().getStringExtra("time");
         isDone = getIntent().getIntExtra("done", 0);
 
 
-        if(!TextUtils.isEmpty(subject)) {
+        if (!TextUtils.isEmpty(subject)) {
             etNewTask.append(subject);
         }
 
-        if(priority == priorityHigh) {
+        if (priority == priorityHigh) {
             spinner.setSelection(2);
-        } else if(priority == priorityMedium) {
+        } else if (priority == priorityMedium) {
             spinner.setSelection(1);
         } else {
             spinner.setSelection(0);
         }
 
-            dateTextView.setText(date);
-            timeTextView.setText(time);
-
-        // Show a timepicker when the timeButton is clicked
-        timeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onTimeSet();
-            }
-        });
-
-        // Show a datepicker when the dateButton is clicked
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDateSet();
-            }
-        });
+        dateTextView.setText(date);
+        timeTextView.setText(time);
     }
 
     @Override
@@ -134,7 +119,7 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
+        if (item.getItemId() == android.R.id.home)
             onBackPressed();
         return true;
     }
@@ -159,7 +144,7 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void onAddNewSaveClick(MenuItem item) {
-        if(TextUtils.isEmpty(etNewTask.getText().toString().trim())) {
+        if (TextUtils.isEmpty(etNewTask.getText().toString().trim())) {
             Toast.makeText(NewItemActivity.this, "Task cannot be empty", Toast.LENGTH_SHORT).show();
         } else {
             String subject = etNewTask.getText().toString().trim();
@@ -194,7 +179,7 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private void onDateSet(){
+    private void onDateSet() {
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
@@ -208,7 +193,7 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        String date = (dayOfMonth)+"/"+(monthOfYear+1)+"/"+year;
+                        String date = (dayOfMonth) + "/" + (monthOfYear + 1) + "/" + year;
                         Log.w("MyApp", "onDateSet: " + date);
                         dateTextView.setText(date);
 
@@ -217,7 +202,7 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
         datePickerDialog.show();
     }
 
-    private void onTimeSet(){
+    private void onTimeSet() {
         final Calendar c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
@@ -229,9 +214,9 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
-                        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
-                        String minuteString = minute < 10 ? "0"+minute : ""+minute;
-                        String time = hourString+":"+minuteString;
+                        String hourString = hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay;
+                        String minuteString = minute < 10 ? "0" + minute : "" + minute;
+                        String time = hourString + ":" + minuteString;
                         timeTextView.setText(time);
                     }
                 }, mHour, mMinute, false);
@@ -239,16 +224,15 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-
     public void onShareClick(MenuItem view) {
-        if(!TextUtils.isEmpty(etNewTask.getText().toString())) {
+        if (!TextUtils.isEmpty(etNewTask.getText().toString())) {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBody = "";
             shareBody += etNewTask.getText().toString();
-            if(!TextUtils.isEmpty(timeTextView.getText().toString())) {
+            if (!TextUtils.isEmpty(timeTextView.getText().toString())) {
                 shareBody += "\n" + timeTextView.getText().toString();
-                if(!TextUtils.isEmpty(dateTextView.getText().toString())) {
+                if (!TextUtils.isEmpty(dateTextView.getText().toString())) {
                     shareBody += "\n" + dateTextView.getText().toString();
                 }
             }
@@ -256,6 +240,23 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
     }
 
 }
