@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg"
     android:orientation="vertical"
     tools:context=".activity.NewItemActivity">
@@ -38,18 +39,6 @@
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
-        <!--    <TextView-->
-        <!--        android:id="@+id/tvNewTask"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_alignParentStart="true"-->
-        <!--        android:layout_alignParentTop="true"-->
-        <!--        android:layout_marginTop="20dp"-->
-        <!--        android:layout_marginBottom="5dp"-->
-        <!--        android:text="@string/task_to_be_done"-->
-        <!--        android:textColor="@color/colorPrimary"-->
-        <!--        android:textStyle="bold" />-->
-
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -77,7 +66,9 @@
             <EditText
                 android:id="@+id/etDisplayDate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -93,37 +84,26 @@
                 android:id="@+id/etDisplayTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberPassword" />
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-<!--        <TextView-->
-<!--            android:id="@+id/tvPriority"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            android:text="@string/enter_priority"-->
-<!--            android:textColor="@color/colorPrimary"-->
-<!--            android:textSize="16sp"-->
-<!--            android:textStyle="bold" />-->
-
-<!--        <Spinner-->
-<!--            android:id="@+id/spinner"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:prompt="@string/priority_prompt"-->
-<!--            android:spinnerMode="dropdown" />-->
-
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Low, Medium, High">
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="Priority">
 
             <AutoCompleteTextView
-                android:id="@+id/filled_exposed_dropdown"
+                android:id="@+id/dropdown_priority"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:focusable="false"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -19,10 +19,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -35,19 +36,29 @@ import com.the_spartan.virtualdiary.data.ToDoProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import static com.the_spartan.virtualdiary.util.TimeUtil.formatTime;
+import static com.the_spartan.virtualdiary.util.TimeUtil.getTwelveHourFormattedTime;
+import static com.the_spartan.virtualdiary.util.TimeUtil.getTwentyFourHourFormattedTime;
 
 public class NewItemActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int INVALID = -1;
+
+    private final int PRIORITY_HIGH = 2;
+    private final int PRIORITY_MEDIUM = 1;
+    private final int PRIORITY_LOW = 0;
     int isDone;
     int position;
-    int priorityHigh = 2;
-    int priorityMedium = 1;
-    int priorityLow = 0;
     private EditText etNewTask;
-    private EditText timeTextView;
-    private EditText dateTextView;
-    private Spinner spinner;
+    private EditText etTime;
+    private EditText etDate;
+    private AutoCompleteTextView priorityDropDown;
     private int ID;
+    private int priority;
+
+    private List<String> priorityValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,48 +71,88 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayList<String> priorityValues = new ArrayList<>();
-        priorityValues.add("low");
-        priorityValues.add("medium");
-        priorityValues.add("high");
-        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, priorityValues));
+        initView();
+        setListener();;
+    }
 
-        // Find our View instances
-        etNewTask = (EditText) findViewById(R.id.etNewTask);
-        timeTextView = (EditText) findViewById(R.id.etDisplayTime);
-        dateTextView = (EditText) findViewById(R.id.etDisplayDate);
+    private void initView() {
+        priorityDropDown = findViewById(R.id.dropdown_priority);
+        priorityValues = new ArrayList<>();
+        priorityValues.add("Low");
+        priorityValues.add("Medium");
+        priorityValues.add("High");
 
+        etNewTask = findViewById(R.id.etNewTask);
+        etTime = findViewById(R.id.etDisplayTime);
+        etDate = findViewById(R.id.etDisplayDate);
 
-        ID = getIntent().getIntExtra("ID", 0);
+        ID = getIntent().getIntExtra("ID", INVALID);
         String subject = getIntent().getStringExtra("subject");
         position = getIntent().getIntExtra("position", -1);
-        int priority = getIntent().getIntExtra("priority", 1);
-        Log.d("Priority", "" + priority);
-        String date = getIntent().getStringExtra("date");
+        priority = getIntent().getIntExtra("priority", 1);
+        final String date = getIntent().getStringExtra("date");
         String time = getIntent().getStringExtra("time");
         isDone = getIntent().getIntExtra("done", 0);
-
 
         if (!TextUtils.isEmpty(subject)) {
             etNewTask.append(subject);
         }
 
-        if (priority == priorityHigh) {
-            spinner.setSelection(2);
-        } else if (priority == priorityMedium) {
-            spinner.setSelection(1);
-        } else {
-            spinner.setSelection(0);
+//        if (priority == PRIORITY_HIGH) {
+//            priorityDropDown.setText(priorityValues.get(2));
+//        } else if (priority == PRIORITY_MEDIUM) {
+//            priorityDropDown.setText(priorityValues.get(1));
+//        } else {
+//            priorityDropDown.setText(priorityValues.get(0));
+//        }
+
+        if (!TextUtils.isEmpty(date)) {
+            etDate.setText(date);
         }
 
-        dateTextView.setText(date);
-        timeTextView.setText(time);
+        if (!TextUtils.isEmpty(time)) {
+            etTime.setText(getTwelveHourFormattedTime(time));
+        }
+    }
+
+    private void setListener() {
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priorityValues);
+        priorityDropDown.setAdapter(adapter);
+        adapter.getFilter().filter(null);
+        priorityDropDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                adapter.getFilter().filter(null);
+                priorityDropDown.showDropDown();
+
+                return true;
+            }
+        });
+
+        priorityDropDown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                priority = i;
+            }
+        });
+
+        etDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePicker();
+            }
+        });
+
+        etTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimePicker();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.to_do_menu_new, menu);
         Drawable drawable = menu.findItem(R.id.newadd).getIcon();
         if (drawable != null) {
@@ -119,8 +170,10 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        }
+
         return true;
     }
 
@@ -134,92 +187,78 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
         super.onResume();
     }
 
-
-    public void clearDate(View view) {
-        dateTextView.setText("");
-    }
-
-    public void clearTime(View view) {
-        timeTextView.setText("");
-    }
-
-    public void onAddNewSaveClick(MenuItem item) {
+    public void saveOrUpdate(MenuItem item) {
         if (TextUtils.isEmpty(etNewTask.getText().toString().trim())) {
             Toast.makeText(NewItemActivity.this, "Task cannot be empty", Toast.LENGTH_SHORT).show();
-        } else {
-            String subject = etNewTask.getText().toString().trim();
-            String dueDate = dateTextView.getText().toString();
-            String time = timeTextView.getText().toString();
-            int priority = spinner.getSelectedItemPosition();
-
-            ContentValues values = new ContentValues();
-            values.put(ToDoContract.ToDoEntry.COLUMN_SUBJECT, subject);
-            values.put(ToDoContract.ToDoEntry.COLUMN_DUE, dueDate);
-            values.put(ToDoContract.ToDoEntry.COLUMN_TIME, time);
-            values.put(ToDoContract.ToDoEntry.COLUMN_PRIORITY, priority);
-            values.put(ToDoContract.ToDoEntry.COLUMN_ISDONE, isDone);
-
-            String[] selectionArgs = new String[]{String.valueOf(ID)};
-            String selection = ToDoContract.ToDoEntry.COLUMN_ID + "=?";
-
-            Uri uri = ToDoProvider.CONTENT_URI;
-
-            getContentResolver().update(uri, values, selection, selectionArgs);
-
-            this.finish();
+            return;
         }
+
+        String subject = etNewTask.getText().toString().trim();
+        String dueDate = etDate.getText().toString();
+        String time = getTwentyFourHourFormattedTime(etTime.getText().toString());
+
+        ContentValues values = new ContentValues();
+        values.put(ToDoContract.ToDoEntry.COLUMN_SUBJECT, subject);
+        values.put(ToDoContract.ToDoEntry.COLUMN_DUE, dueDate);
+        values.put(ToDoContract.ToDoEntry.COLUMN_TIME, time);
+        values.put(ToDoContract.ToDoEntry.COLUMN_PRIORITY, priority);
+        values.put(ToDoContract.ToDoEntry.COLUMN_ISDONE, isDone);
+
+        if (ID == INVALID) {
+            save(values);
+        } else {
+            update(values);
+        }
+
+        this.finish();
     }
 
-    public void onDateSet(View view) {
-        onDateSet();
+    private void save(ContentValues values) {
+        Uri todoUri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, "200");
+        getBaseContext().getContentResolver().insert(todoUri, values);
     }
 
-    public void onTimeSet(View view) {
-        onTimeSet();
+    private void update(ContentValues values) {
+        String[] selectionArgs = new String[]{String.valueOf(ID)};
+        String selection = ToDoContract.ToDoEntry.COLUMN_ID + "=?";
+
+        Uri uri = ToDoProvider.CONTENT_URI;
+
+        getContentResolver().update(uri, values, selection, selectionArgs);
     }
 
-
-    private void onDateSet() {
+    private void showDatePicker() {
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(NewItemActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
-
                     @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-
-                        String date = (dayOfMonth) + "/" + (monthOfYear + 1) + "/" + year;
-                        Log.w("MyApp", "onDateSet: " + date);
-                        dateTextView.setText(date);
-
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String date = (dayOfMonth)+"/"+(monthOfYear+1)+"/"+year;
+                        etDate.setText(date);
                     }
                 }, mYear, mMonth, mDay);
+
         datePickerDialog.show();
     }
 
-    private void onTimeSet() {
+    private void showTimePicker() {
         final Calendar c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
 
-        // Launch Time Picker Dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(NewItemActivity.this,
                 new TimePickerDialog.OnTimeSetListener() {
-
                     @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay,
-                                          int minute) {
-                        String hourString = hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay;
-                        String minuteString = minute < 10 ? "0" + minute : "" + minute;
-                        String time = hourString + ":" + minuteString;
-                        timeTextView.setText(time);
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String formattedTime = formatTime(hourOfDay, minute);
+                        etTime.setText(formattedTime);
                     }
                 }, mHour, mMinute, false);
+
         timePickerDialog.show();
     }
 
@@ -230,10 +269,10 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
             sharingIntent.setType("text/plain");
             String shareBody = "";
             shareBody += etNewTask.getText().toString();
-            if (!TextUtils.isEmpty(timeTextView.getText().toString())) {
-                shareBody += "\n" + timeTextView.getText().toString();
-                if (!TextUtils.isEmpty(dateTextView.getText().toString())) {
-                    shareBody += "\n" + dateTextView.getText().toString();
+            if (!TextUtils.isEmpty(etTime.getText().toString())) {
+                shareBody += "\n" + etTime.getText().toString();
+                if (!TextUtils.isEmpty(etDate.getText().toString())) {
+                    shareBody += "\n" + etDate.getText().toString();
                 }
             }
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "ToDo task");
@@ -246,17 +285,17 @@ public class NewItemActivity extends AppCompatActivity implements View.OnClickLi
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if ( v instanceof EditText) {
+            if (v instanceof EditText) {
                 Rect outRect = new Rect();
                 v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
         }
-        return super.dispatchTouchEvent( event );
+        return super.dispatchTouchEvent(event);
     }
 
 }

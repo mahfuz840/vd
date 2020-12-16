@@ -1,6 +1,5 @@
 package com.the_spartan.virtualdiary.fragment;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,9 +28,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.NewItemActivity;
 import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
@@ -47,14 +45,13 @@ import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
 import static com.the_spartan.virtualdiary.util.ViewUtil.hideViewsOfaDay;
 import static com.the_spartan.virtualdiary.util.ViewUtil.setVisibility;
 import static com.the_spartan.virtualdiary.util.ViewUtil.showViewsOfaDay;
 
-public class ToDoActiveFragment extends Fragment {
+public class ToDoActiveFragment extends Fragment implements DeleteListCollector {
 
     private static final String TAG = "ToDoFragment";
 
@@ -67,7 +64,7 @@ public class ToDoActiveFragment extends Fragment {
     private ListView listViewToday;
     private ListView listViewTomorrow;
     private ListView listViewNext;
-    private Button quickAddButton;
+    private FloatingActionButton newButton;
     private EditText editText;
     private MenuItem deleteMenu;
     private MenuItem searchItem;
@@ -81,14 +78,8 @@ public class ToDoActiveFragment extends Fragment {
     private TextView tvTomorrow;
     private TextView tvNext;
 
-    private DeleteListCollector deleteListCollector;
-
     public ToDoActiveFragment() {
 
-    }
-
-    public ToDoActiveFragment(DeleteListCollector deleteListCollector) {
-        this.deleteListCollector = deleteListCollector;
     }
 
     @Nullable
@@ -96,8 +87,7 @@ public class ToDoActiveFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_active_to_do, container, false);
 
-        editText = view.findViewById(R.id.edit_text);
-        quickAddButton = view.findViewById(R.id.quick_add_button);
+        newButton = view.findViewById(R.id.fab_new_item);
         listViewToday = view.findViewById(R.id.list_view_today);
         listViewTomorrow = view.findViewById(R.id.list_view_tomorrow);
         listViewNext = view.findViewById(R.id.list_view_next);
@@ -114,7 +104,7 @@ public class ToDoActiveFragment extends Fragment {
 
         todoEmptyLayout = view.findViewById(R.id.active_todo_empty_layout);
 
-//        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -124,27 +114,15 @@ public class ToDoActiveFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mContext = getContext();
 
-        quickAddButton.setOnClickListener(new View.OnClickListener() {
+        newButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String newItem = editText.getText().toString().trim();
-                if (!TextUtils.isEmpty(newItem)) {
-                    int priority = 0;
-                    ContentValues values = new ContentValues();
-                    values.put(ToDoContract.ToDoEntry.COLUMN_SUBJECT, newItem);
-                    values.put(ToDoContract.ToDoEntry.COLUMN_DUE, "");
-                    values.put(ToDoContract.ToDoEntry.COLUMN_TIME, "");
-                    values.put(ToDoContract.ToDoEntry.COLUMN_PRIORITY, priority);
-                    values.put(ToDoContract.ToDoEntry.COLUMN_ISDONE, 0);
-
-                    Uri todoUri = Uri.withAppendedPath(ToDoProvider.CONTENT_URI, "200");
-
-                    Uri uri = mContext.getContentResolver().insert(todoUri, values);
-                    editText.setText("");
-                    onResume();
-                }
+            public void onClick(View view) {
+                Intent newItemIntent = new Intent(mContext, NewItemActivity.class);
+                startActivity(newItemIntent);
             }
         });
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     public void populateItems() {
@@ -246,7 +224,7 @@ public class ToDoActiveFragment extends Fragment {
     private ToDoAdapter populateViewsOfaDay(CardView emptyCardView, TextView textView, ListView listView,
                                             ToDoAdapter adapter, ArrayList<ToDoItem> items) {
         if (adapter == null) {
-            adapter = new ToDoAdapter(mContext, items, deleteListCollector, true);
+            adapter = new ToDoAdapter(mContext, items, this, true);
             listView.setAdapter(adapter);
         }
 
@@ -265,6 +243,7 @@ public class ToDoActiveFragment extends Fragment {
         if (drawable != null) {
             drawable.mutate();
         }
+
         Drawable drawableDelete = menu.findItem(R.id.deleteItems).getIcon();
         if (drawableDelete != null) {
             drawableDelete.mutate();
@@ -274,22 +253,6 @@ public class ToDoActiveFragment extends Fragment {
 
         deleteMenu = menu.findItem(R.id.deleteItems);
         deleteMenu.setVisible(false);
-
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                editText.setVisibility(View.INVISIBLE);
-                quickAddButton.setVisibility(View.INVISIBLE);
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                editText.setVisibility(View.VISIBLE);
-                quickAddButton.setVisibility(View.VISIBLE);
-                return true;
-            }
-        });
 
         deleteMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -320,6 +283,10 @@ public class ToDoActiveFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "today adapter " + todayAdapter);
+                Log.d(TAG, "tomorrow adapter " + tomorrowAdapter);
+                Log.d(TAG, "next adapter " + nextAdapter);
+
                 if (todayAdapter != null) {
                     todayAdapter.getFilter().filter(newText);
                 }
@@ -352,6 +319,7 @@ public class ToDoActiveFragment extends Fragment {
             public void onClick(View view) {
                 deleteItems();
                 dialog.dismiss();
+                onResume();
             }
         });
 
@@ -373,15 +341,12 @@ public class ToDoActiveFragment extends Fragment {
     @Override
     public void onResume() {
         populateItems();
+        checkForDeleteVisibility();
 
         super.onResume();
     }
 
     private void checkForDeleteVisibility() {
-        checkForDeleteVisibility(deleteList);
-    }
-
-    private void checkForDeleteVisibility(List<ToDoItem> deleteList) {
         if (deleteMenu == null) {
             return;
         }
@@ -482,5 +447,12 @@ public class ToDoActiveFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void updateDeleteList(ArrayList<ToDoItem> newDeleteList) {
+        deleteList.clear();
+        deleteList.addAll(newDeleteList);
+        checkForDeleteVisibility();
     }
 }

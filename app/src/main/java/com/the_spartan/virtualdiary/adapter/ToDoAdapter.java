@@ -24,21 +24,21 @@ import androidx.annotation.NonNull;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.ToDoContract;
 import com.the_spartan.virtualdiary.data.ToDoProvider;
-import com.the_spartan.virtualdiary.model.ToDoItem;
 import com.the_spartan.virtualdiary.interfacing.DeleteListCollector;
+import com.the_spartan.virtualdiary.model.ToDoItem;
 import com.the_spartan.virtualdiary.util.FontUtil;
 import com.the_spartan.virtualdiary.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.the_spartan.virtualdiary.fragment.ToDoActiveFragment.deleteList;
 import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
 
 public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
     private ArrayList<ToDoItem> filteredToDoList;
     private ArrayList<ToDoItem> originalToDoList;
+    private ArrayList<ToDoItem> deleteList;
     private Context context;
     private DeleteListCollector deleteListCollector;
     private ToDoFilter mFilter;
@@ -56,6 +56,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         this.deleteListCollector = deleteListCollector;
         this.context = context;
         this.activeItemAdapter = activeItemAdapter;
+        this.deleteList = new ArrayList<>();
 
         mFilter = new ToDoFilter();
     }
@@ -108,26 +109,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             cb.setTag(position);
             cb.setChecked(isCheckedBool);
 
-            boolean found = false;
-            int index = 0;
-            for (int i = 0; i < deleteList.size(); i++) {
-                if (item.getID() == deleteList.get(i).getID()) {
-                    found = true;
-                    index = i;
-                }
-            }
-
-            if (isCheckedBool && !found) {
-                deleteList.add(item);
-            } else if (!isCheckedBool && found) {
-                deleteList.remove(index);
-            }
-
-            if (activeItemAdapter) {
-                deleteListCollector.updateActiveItemDeleteList(deleteList);
-            } else {
-                deleteListCollector.updateOldItemDeleteList(deleteList);
-            }
+            updateDeleteList(item, isCheckedBool);
 
             cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -148,6 +130,9 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
                     getContext().getContentResolver().update(uri, values, selection, selectionArgs);
                     item.isDone(isCheckedInt);
                     filteredToDoList.set(pos, item);
+
+                    updateDeleteList(item, isChecked);
+
                     notifyDataSetChanged();
                 }
             });
@@ -212,12 +197,32 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
             if (fontSize != null) {
                 tvName.setTextSize(Float.parseFloat(fontSize));
-                tvPriority.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 4)));
-                dueDate.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 6)));
+                tvPriority.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 3)));
+                dueDate.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 3)));
+                tvTime.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 3)));
             }
         }
 
         return v;
+    }
+
+    private void updateDeleteList(ToDoItem item, boolean isChecked) {
+        boolean found = false;
+        int index = 0;
+        for (int i = 0; i < deleteList.size(); i++) {
+            if (item.getID() == deleteList.get(i).getID()) {
+                found = true;
+                index = i;
+            }
+        }
+
+        if (isChecked && !found) {
+            deleteList.add(item);
+        } else if (!isChecked && found) {
+            deleteList.remove(index);
+        }
+
+        deleteListCollector.updateDeleteList(deleteList);
     }
 
     @Override
@@ -236,6 +241,14 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         return mFilter;
     }
 
+    public void notify(ArrayList<ToDoItem> list) {
+        this.filteredToDoList.clear();
+        this.originalToDoList.clear();
+        this.filteredToDoList.addAll(list);
+        this.originalToDoList.addAll(list);
+        notifyDataSetChanged();
+    }
+
     private class ToDoFilter extends Filter {
 
         @Override
@@ -246,7 +259,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             String filterableString = null;
 
             for (ToDoItem item : originalToDoList) {
-                filterableString = item.getSubject();
+                filterableString = item.getSubject().toLowerCase();
                 if (filterableString.contains(queryString)) {
                     nList.add(item);
                 }
@@ -264,13 +277,5 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             notifyDataSetChanged();
             setListViewHeightBasedOnChildren(listView);
         }
-    }
-
-    public void notify(ArrayList<ToDoItem> list) {
-        this.filteredToDoList.clear();
-        this.originalToDoList.clear();
-        this.filteredToDoList.addAll(list);
-        this.originalToDoList.addAll(list);
-        notifyDataSetChanged();
     }
 }

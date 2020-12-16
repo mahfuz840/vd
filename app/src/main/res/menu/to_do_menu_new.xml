@@ -4,10 +4,11 @@
     tools:context="com.codepath.doit.activities.NewItem" >
     <item android:id="@+id/newadd"
         android:title="@string/save_item"
-        android:onClick="onAddNewSaveClick"
+        android:onClick="saveOrUpdate"
         android:orderInCategory="98"
         android:icon="@drawable/ic_done"
         app:showAsAction="ifRoom" />
+
     <item android:id="@+id/shareNew"
         android:title="@string/share_item"
         android:onClick="onShareClick"
