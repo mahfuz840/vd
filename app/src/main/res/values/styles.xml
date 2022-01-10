@@ -1,11 +1,16 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="VirtualDiaryTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationTheme</item>
+    </style>
+
+    <style name="BottomNavigationTheme" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="itemBackground">@android:color/white</item>
+        <item name="itemTextColor">@color/bottom_nav_item_color</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color</item>
     </style>
 
     <style name="MyPreferenceTheme" parent="PreferenceFixTheme.DayNight.DarkActionBar">
@@ -51,5 +56,4 @@
         <item name="android:windowEnterAnimation">@anim/scale_in</item>
         <item name="android:windowExitAnimation">@anim/scale_out</item>
     </style>
-
 </resources>
