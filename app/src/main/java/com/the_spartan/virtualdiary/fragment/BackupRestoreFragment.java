@@ -91,7 +91,7 @@ public class BackupRestoreFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         mainActivity = (MainActivity) getActivity();
-        mainActivity.setToolbar(toolbar);
+//        mainActivity.setToolbar(toolbar);
         mainActivity.setTitle("");
 
         backupButton.setOnClickListener(new View.OnClickListener() {

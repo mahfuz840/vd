@@ -50,12 +50,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
         String dateOnly[] = dateWithTime.split("/");
-        String title = mNotes.get(position).getMtitle();
+        String title = mNotes.get(position).getTitle();
         if (!title.equals("")) {
             title = title + "...";
             holder.titleView.setText(title);
         } else {
-            String content = mNotes.get(position).getmContent();
+            String content = mNotes.get(position).getDescription();
             if (content.equals("")) {
                 holder.titleView.setText("(no title)");
             } else {
@@ -66,7 +66,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
 
         holder.dateView.setText(dateOnly[0]);
-        int month = mNotes.get(position).getmMonth();
+        int month = mNotes.get(position).getMonth();
         String monthString = StringUtil.getMonthNameFromInt(month);
         holder.monthView.setText(monthString);
 

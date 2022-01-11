@@ -38,7 +38,7 @@ public class AboutFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         toolbar = view.findViewById(R.id.my_toolbar);
 
-        ((MainActivity)getActivity()).setToolbar(toolbar);
+//        ((MainActivity)getActivity()).setToolbar(toolbar);
 
         ActionBar bar = ((MainActivity)getActivity()).getSupportActionBar();
         getActivity().setTitle("");

@@ -72,7 +72,7 @@ public class MainFragment extends Fragment {
         floatingActionButton = view.findViewById(R.id.fab);
         homepageEmptyLayout = view.findViewById(R.id.home_page_empty_relative_layout);
         toolbar = view.findViewById(R.id.my_toolbar);
-        ((MainActivity)getActivity()).setToolbar(toolbar);
+//        ((MainActivity)getActivity()).setToolbar(toolbar);
         ((MainActivity)getActivity()).setTitle("");
 
         noteView = view.findViewById(R.id.notes_grid_view);
@@ -228,10 +228,10 @@ public class MainFragment extends Fragment {
                 Note note = notes.get(position);
                 Intent intent = new Intent(getContext(), CreateNoteActivity.class);
                 intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getmDateTime());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
                 intent.putExtra("formatted_time", note.getDateTimeFormatted(getContext()));
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getMtitle());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getmContent());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
                 startActivity(intent);
             }
         });

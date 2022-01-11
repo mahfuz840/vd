@@ -54,7 +54,7 @@ public class CustomizationFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ((MainActivity)getActivity()).setToolbar(toolbar);
+//        ((MainActivity)getActivity()).setToolbar(toolbar);
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("");
 
         final ArrayList<String> titles = new ArrayList<>();
@@ -170,7 +170,7 @@ public class CustomizationFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        ((MainActivity)getActivity()).setToolbar(null);
+//        ((MainActivity)getActivity()).setToolbar(null);
         super.onDestroyView();
     }
 

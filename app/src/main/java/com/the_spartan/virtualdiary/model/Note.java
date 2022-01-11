@@ -2,6 +2,8 @@ package com.the_spartan.virtualdiary.model;
 
 import android.content.Context;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,81 +16,103 @@ import java.util.TimeZone;
 
 public class Note implements Serializable {
 
-    private long mDateTime;
-    private String mTitle;
-    private String mContent;
-    private Calendar mCalendar;
-    private int mDay, mMonth, mYear;
     private int ID;
 
-    public Note(long dateTime, String title, String content, Calendar calendar){
-        mDateTime = dateTime;
-        mTitle = title;
-        mContent = content;
-        mCalendar = calendar;
+    private long dateTime;
 
-        mMonth = mCalendar.get(Calendar.MONTH) + 1;
-        mYear = mCalendar.get(Calendar.YEAR);
+    private String title;
+
+    private String description;
+
+    @Exclude
+    private Calendar calendar;
+
+    private long timestamp;
+
+    private int day, month, year;
+
+    public Note() {
+        this.timestamp = Calendar.getInstance().getTimeInMillis();
     }
 
-    public Note(int ID,long dateTime, String title, String content){
+    public Note(long dateTime, String title, String description, Calendar calendar) {
+        this.dateTime = dateTime;
+        this.title = title;
+        this.description = description;
+        this.calendar = calendar;
+        this.timestamp = calendar.getTimeInMillis();
+
+        month = this.calendar.get(Calendar.MONTH) + 1;
+        year = this.calendar.get(Calendar.YEAR);
+    }
+
+    public Note(int ID, long dateTime, String title, String description) {
         this.ID = ID;
-        mDateTime = dateTime;
-        mTitle = title;
-        mContent = content;
-        mCalendar = Calendar.getInstance();
-        mCalendar.setTimeInMillis(dateTime);
+        this.dateTime = dateTime;
+        this.title = title;
+        this.description = description;
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateTime);
 
-        mMonth = mCalendar.get(Calendar.MONTH) + 1;
-        mYear = mCalendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) + 1;
+        year = calendar.get(Calendar.YEAR);
     }
 
-    public long getmDateTime() {
-        return mDateTime;
+    public long getDateTime() {
+        return dateTime;
     }
 
-    public void setmDateTime(long mDateTime) {
-        this.mDateTime = mDateTime;
+    public void setDateTime(long dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public String getMtitle() {
-        return mTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setMtitle(String mtitle) {
-        this.mTitle = mtitle;
+    public void setTitle(String mtitle) {
+        this.title = mtitle;
     }
 
-    public String getmContent() {
-        return mContent;
+    public String getDescription() {
+        return description;
     }
 
-    public void setmContent(String mContent) {
-        this.mContent = mContent;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Calendar getmCalendar() {
-        return mCalendar;
+    @Exclude
+    public Calendar getCalendar() {
+        return calendar;
     }
 
-    public void setmCalendar(Calendar mCalendar) {
-        this.mCalendar = mCalendar;
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 
-    public int getmMonth() {
-        return mMonth;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setmMonth(int mMonth) {
-        this.mMonth = mMonth;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public int getmYear() {
-        return mYear;
+    public int getMonth() {
+        return month;
     }
 
-    public void setmYear(int mYear) {
-        this.mYear = mYear;
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public int getID() {
@@ -99,10 +123,24 @@ public class Note implements Serializable {
         this.ID = ID;
     }
 
-    public String getDateTimeFormatted(Context context){
+    public String getDateTimeFormatted(Context context) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mma"
                 , context.getResources().getConfiguration().locale);
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
-        return  simpleDateFormat.format(new Date(mCalendar.getTimeInMillis()));
+        return simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
+    }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "dateTime=" + dateTime +
+                ", title='" + title + '\'' +
+                ", content='" + description + '\'' +
+                ", calendar=" + calendar +
+                ", day=" + day +
+                ", month=" + month +
+                ", year=" + year +
+                ", ID=" + ID +
+                '}';
     }
 }

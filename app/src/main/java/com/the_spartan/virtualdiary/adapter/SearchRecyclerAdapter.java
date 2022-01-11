@@ -44,7 +44,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         String dateOnly[] = dateWithTime.split("/");
 
         String monthString;
-        int month = mNotes.get(position).getmMonth();
+        int month = mNotes.get(position).getMonth();
         switch (month){
             case 1:
                 monthString = "Jan";
@@ -87,8 +87,8 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         }
         holder.dateView.setText(dateOnly[0]);
         holder.monthView.setText(monthString);
-        holder.titleView.setText(mNotes.get(position).getMtitle());
-        holder.contentView.setText(mNotes.get(position).getmContent());
+        holder.titleView.setText(mNotes.get(position).getTitle());
+        holder.contentView.setText(mNotes.get(position).getDescription());
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);

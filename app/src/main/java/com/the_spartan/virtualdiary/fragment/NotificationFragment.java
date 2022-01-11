@@ -26,7 +26,7 @@ public class NotificationFragment extends Fragment {
 
         Toolbar toolbar = view.findViewById(R.id.my_toolbar);
         MainActivity mainActivity = (MainActivity)getActivity();
-        mainActivity.setToolbar(toolbar);
+//        mainActivity.setToolbar(toolbar);
         mainActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
 //        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

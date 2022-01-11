@@ -72,7 +72,7 @@ public class PasswordSettingsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setToolbar(toolbar);
+//        mainActivity.setToolbar(toolbar);
         mainActivity.setTitle("");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());

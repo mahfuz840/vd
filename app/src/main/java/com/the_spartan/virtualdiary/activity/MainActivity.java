@@ -6,9 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,150 +17,89 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.facebook.ads.AudienceNetworkAds;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.fragment.AboutFragment;
-import com.the_spartan.virtualdiary.fragment.BackupRestoreFragment;
-import com.the_spartan.virtualdiary.fragment.CustomizationFragment;
-import com.the_spartan.virtualdiary.fragment.MainFragment;
-import com.the_spartan.virtualdiary.fragment.NotificationFragment;
-import com.the_spartan.virtualdiary.fragment.PasswordSettingsFragment;
+import com.the_spartan.virtualdiary.fragment.MainFragmentNew;
 import com.the_spartan.virtualdiary.fragment.ToDoParentFragment;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActionBarDrawerToggle drawerToggle;
-    Toolbar toolbar;
-    private NavigationView navigationView;
-    private DrawerLayout mDrawerLayout;
     private int backPressed = 0;
+
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_new);
 
-        toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-        navigationView = findViewById(R.id.navigation_view);
-
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerToggle.syncState();
-
-        mDrawerLayout.addDrawerListener(drawerToggle);
-
-        if (mDrawerLayout != null) {
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    selectDrawerItem(menuItem);
-                    mDrawerLayout.closeDrawers();
-
-                    return true;
-                }
-            });
-        }
+        initBottomNavigationView();
+//        toolbar = findViewById(R.id.my_toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//
+//        mDrawerLayout = findViewById(R.id.drawer_layout);
+//        drawerToggle = setupDrawerToggle();
+//        navigationView = findViewById(R.id.navigation_view);
+//
+//        drawerToggle.setDrawerIndicatorEnabled(true);
+//        drawerToggle.syncState();
+//
+//        mDrawerLayout.addDrawerListener(drawerToggle);
+//
+//        if (mDrawerLayout != null) {
+//            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//                @Override
+//                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+//                    selectDrawerItem(menuItem);
+//                    mDrawerLayout.closeDrawers();
+//
+//                    return true;
+//                }
+//            });
+//        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment, MainFragment.newInstance())
+                .replace(R.id.activity_fragment_container, MainFragmentNew.getInstance())
                 .commit();
-        getSupportActionBar().hide();
     }
 
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
+    private void initBottomNavigationView() {
+        bottomNavigationView = findViewById(R.id.bottom_nav_main);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Fragment fragment;
+
+            switch (item.getItemId()) {
+                case R.id.nav_todo:
+                    fragment = ToDoParentFragment.getInstance();
+                    break;
+
+                case R.id.nav_notes:
+                    fragment = MainFragmentNew.getInstance();
+                    break;
+
+                default:
+                    fragment = MainFragmentNew.getInstance();
+                    break;
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.activity_fragment_container, fragment)
+                    .commit();
+
+            return true;
+        });
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    public void setToolbar(Toolbar toolbar) {
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.open, R.string.close);
-        mDrawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void selectDrawerItem(MenuItem menuItem) {
-        Fragment fragment = null;
-        Class fragmentClass;
-        switch (menuItem.getItemId()) {
-            case R.id.nav_customiation:
-                fragmentClass = CustomizationFragment.class;
-                break;
-            case R.id.nav_notification:
-                fragmentClass = NotificationFragment.class;
-                break;
-            case R.id.nav_password_lock:
-                fragmentClass = PasswordSettingsFragment.class;
-                break;
-            case R.id.nav_about:
-                fragmentClass = AboutFragment.class;
-                break;
-            case R.id.backup_restore:
-                fragmentClass = BackupRestoreFragment.class;
-                break;
-            case R.id.nav_notes:
-                fragmentClass = MainFragment.class;
-                break;
-            case R.id.nav_todo:
-                fragmentClass = ToDoParentFragment.class;
-                break;
-            case R.id.rating:
-                openPlaystore();
-                fragmentClass = MainFragment.class;
-                break;
-            default:
-                fragmentClass = AboutFragment.class;
-        }
-
-        Objects.requireNonNull(getSupportActionBar()).hide();
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment, fragment)
-                .commit();
-
-        menuItem.setChecked(true);
-        mDrawerLayout.closeDrawers();
-
-        AudienceNetworkAds.initialize(this);
-    }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
     }
 
     @Override
@@ -224,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+//                mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
         }
 

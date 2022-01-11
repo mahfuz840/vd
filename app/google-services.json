@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479084448783",
+    "project_id": "virtual-diary-96963",
+    "storage_bucket": "virtual-diary-96963.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479084448783:android:70637953b3b5dbd6abe77a",
+        "android_client_info": {
+          "package_name": "com.the_spartan.virtualdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479084448783-8f7ttjlqk03u62vmqpoas1r4kdsoqu6t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy4c-ed371-Y46QeL7IXIpjIfQiDgBC-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479084448783-8f7ttjlqk03u62vmqpoas1r4kdsoqu6t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -63,10 +63,10 @@ public class SearchActivity extends AppCompatActivity {
                 Note note = notes.get(position);
                 Intent intent = new Intent(SearchActivity.this, CreateNoteActivity.class);
                 intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getmDateTime());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
                 intent.putExtra("formatted_time", note.getDateTimeFormatted(SearchActivity.this));
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getMtitle());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getmContent());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
+                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
                 startActivity(intent);
             }
         });

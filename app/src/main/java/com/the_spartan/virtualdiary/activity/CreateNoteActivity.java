@@ -32,9 +32,11 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.play.core.tasks.OnCompleteListener;
 import com.google.android.play.core.tasks.Task;
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.data.FirebaseHelper;
 import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
 import com.the_spartan.virtualdiary.data.NoteDbHelper;
 import com.the_spartan.virtualdiary.data.NoteProvider;
+import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.util.FontUtil;
 import com.the_spartan.virtualdiary.util.StringUtil;
 import com.the_spartan.virtualdiary.view.CustomDialog;
@@ -222,7 +224,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
-
         Long date = mCalendar.getTimeInMillis();
         int month = mCalendar.get(Calendar.MONTH) + 1;
         int year = mCalendar.get(Calendar.YEAR);
@@ -240,10 +241,14 @@ public class CreateNoteActivity extends AppCompatActivity {
         values.put(NoteEntry.COLUMN_MONTH, month);
         values.put(NoteEntry.COLUMN_YEAR, year);
 
+        Note note = new Note(date, title, content, mCalendar);
+
         Uri uri = getContentResolver().insert(NoteProvider.CONTENT_URI, values);
         id = (int) ContentUris.parseId(uri);
 
         checkForReview();
+
+        FirebaseHelper.getReference().child("Note").push().setValue(note);
     }
 
     private void updateNote() {

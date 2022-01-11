@@ -50,7 +50,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
         monthView = listItemView.findViewById(R.id.search_month_view);
 
         String monthString;
-        int month = currentNoteAdapter.getmMonth();
+        int month = currentNoteAdapter.getMonth();
         switch (month) {
             case 1:
                 monthString = "Jan";
@@ -95,19 +95,19 @@ public class NoteAdapter extends ArrayAdapter<Note> {
         monthView.setText(monthString);
 
         titleView = listItemView.findViewById(R.id.search_title_view);
-        String title = currentNoteAdapter.getMtitle();
+        String title = currentNoteAdapter.getTitle();
         if (title == null || title.equals("")) {
             titleView.setText("(no title)");
         } else {
-            titleView.setText(currentNoteAdapter.getMtitle());
+            titleView.setText(currentNoteAdapter.getTitle());
         }
 
         contentView = listItemView.findViewById(R.id.search_content_view);
-        String content = currentNoteAdapter.getmContent();
+        String content = currentNoteAdapter.getDescription();
         if (content.isEmpty())
             contentView.setText("(no description)");
         else
-            contentView.setText(currentNoteAdapter.getmContent());
+            contentView.setText(currentNoteAdapter.getDescription());
 
         return listItemView;
     }

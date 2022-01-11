@@ -7,8 +7,8 @@ import android.provider.BaseColumns;
  */
 
 public final class NoteContract{
-    private NoteContract(){
 
+    private NoteContract(){
     }
 
     public static final class NoteEntry implements BaseColumns{
