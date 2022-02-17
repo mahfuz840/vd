@@ -31,20 +31,41 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view_note"
+            android:theme="@style/searchViewStyle"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginRight="5dp"
-            android:layout_weight="2"
+            android:layout_weight="7"
             android:background="@drawable/shape_rounded_input"
             app:iconifiedByDefault="false"
             app:queryHint="Search Note" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/picker_note_month_year"
             android:layout_width="0dp"
             android:layout_height="35dp"
+            android:layout_weight="6"
             android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/shape_rounded_input" />
+            android:background="@drawable/shape_rounded_input"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tv_month_year_picker"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:textSize="16sp"
+                android:gravity="center|left"
+                android:text="September, 2022"/>
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

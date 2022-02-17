@@ -48,8 +48,8 @@ public class Note implements Serializable {
         this.calendar = calendar;
         this.timestamp = calendar.getTimeInMillis();
 
-        month = this.calendar.get(Calendar.MONTH) + 1;
-        year = this.calendar.get(Calendar.YEAR);
+        this.month = calendar.get(Calendar.MONTH) + 1;
+        this.year = calendar.get(Calendar.YEAR);
     }
 
     public Note(int ID, long dateTime, String title, String description) {

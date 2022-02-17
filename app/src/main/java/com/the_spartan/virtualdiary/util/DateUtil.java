@@ -8,6 +8,9 @@ import java.util.Locale;
 
 public class DateUtil {
 
+    public static final String MONTH_YEAR_SEPARATOR = "-";
+    public static final String MONTH_YEAR_PREFIX = "#DATE#";
+
     public static Date getDateFromString(String dateString) throws ParseException {
         if (dateString.trim().length() == 0) {
             return null;
@@ -41,5 +44,19 @@ public class DateUtil {
         calendar.add(Calendar.DATE, -30);
 
         return calendar.getTime();
+    }
+
+    public static String getEncodedMonthYearWithPrefix(int month, int year) {
+        return MONTH_YEAR_PREFIX + month + MONTH_YEAR_SEPARATOR + year;
+    }
+
+    public static int getDecodedMonthFromMonthYearStr(String encodedStr) {
+        String[] splittedQuery = encodedStr.replace(MONTH_YEAR_PREFIX, "").split(DateUtil.MONTH_YEAR_SEPARATOR);
+        return Integer.parseInt(splittedQuery[0]);
+    }
+
+    public static int getDecodedYearFromMonthYearStr(String encodedStr) {
+        String[] splittedQuery = encodedStr.replace(MONTH_YEAR_PREFIX, "").split(DateUtil.MONTH_YEAR_SEPARATOR);
+        return Integer.parseInt(splittedQuery[1]);
     }
 }

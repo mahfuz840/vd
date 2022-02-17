@@ -1,5 +1,9 @@
 package com.the_spartan.virtualdiary.adapter;
 
+import static com.the_spartan.virtualdiary.model.Action.SEARCH_BY_MONTH;
+import static com.the_spartan.virtualdiary.model.Action.SEARCH_BY_QUERY;
+import static com.the_spartan.virtualdiary.util.DateUtil.MONTH_YEAR_PREFIX;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.model.Action;
 import com.the_spartan.virtualdiary.model.Note;
+import com.the_spartan.virtualdiary.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -86,14 +92,13 @@ public class NoteAdapterNew extends ArrayAdapter<Note> implements Filterable {
                 }
 
                 ArrayList<Note> matchedNotes = new ArrayList<>();
-                String queryText = constraint.toString().toLowerCase();
+                String queryText = constraint.toString();
 
-                for (Note note : notes) {
-                    if (note.getTitle().toLowerCase().contains(queryText)
-                            || note.getDescription().toLowerCase().contains(queryText)) {
-
-                        matchedNotes.add(note);
-                    }
+                Action action = queryText.startsWith(MONTH_YEAR_PREFIX) ? SEARCH_BY_MONTH : SEARCH_BY_QUERY;
+                if (action.is(SEARCH_BY_MONTH)) {
+                    filterByMonth(matchedNotes, queryText);
+                } else {
+                    filterByQuery(matchedNotes, queryText);
                 }
 
                 results.count = matchedNotes.size();
@@ -110,5 +115,28 @@ public class NoteAdapterNew extends ArrayAdapter<Note> implements Filterable {
         };
 
         return filter;
+    }
+
+    private void filterByMonth(ArrayList<Note> matchedNotes, String queryText) {
+        int month = DateUtil.getDecodedMonthFromMonthYearStr(queryText);
+        int year = DateUtil.getDecodedYearFromMonthYearStr(queryText);
+
+        for (Note note : notes) {
+            if (note.getMonth() == month && note.getYear() == year) {
+                matchedNotes.add(note);
+            }
+        }
+    }
+
+    private void filterByQuery(ArrayList<Note> matchedNotes, String queryText) {
+        queryText = queryText.toLowerCase();
+
+        for (Note note : notes) {
+            if (note.getTitle().toLowerCase().contains(queryText)
+                    || note.getDescription().toLowerCase().contains(queryText)) {
+
+                matchedNotes.add(note);
+            }
+        }
     }
 }
