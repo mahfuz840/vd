@@ -1,5 +1,7 @@
 package com.the_spartan.virtualdiary.activity;
 
+import static android.provider.ContactsContract.CommonDataKinds.Note.NOTE;
+
 import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -15,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -58,8 +59,8 @@ public class CreateNoteActivity extends AppCompatActivity {
     int id;
     private EditText etTitle;
     private EditText etContent;
-    private TextView dateView;
-    private TextView timeView;
+    private TextView tvDate;
+    private TextView tvTime;
     private AdView adView;
     private String content;
     private String title;
@@ -93,17 +94,15 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.title_edit_text);
         etContent = findViewById(R.id.content_edit_text);
-        dateView = findViewById(R.id.date);
-        timeView = findViewById(R.id.time);
-
+        tvDate = findViewById(R.id.date);
+        tvTime = findViewById(R.id.time);
 
         Typeface myFont = FontUtil.initializeFonts(CreateNoteActivity.this);
 
         if (myFont != null) {
             etContent.setTypeface(myFont);
             etTitle.setTypeface(myFont);
-            dateView.setTypeface(myFont);
-
+            tvDate.setTypeface(myFont);
         }
 
         int color = FontUtil.initializeColor(CreateNoteActivity.this);
@@ -125,45 +124,38 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         String monthString = StringUtil.getMonthNameFromInt(mMonth + 1);
 
-        dateView.setText(mDay + " " + monthString + ", " + mYear);
-        timeView.setText(currentDateandTime);
+        tvDate.setText(mDay + " " + monthString + ", " + mYear);
+        tvTime.setText(currentDateandTime);
 
-        if (getIntent().getExtras() != null) {
-            id = getIntent().getIntExtra(NoteEntry.COLUMN_ID, 10);
+        Note note = (Note) getIntent().getSerializableExtra(NOTE);
+        if (note != null) {
+            id = note.getID();
             Log.d("ID", " " + id);
-            String date = getIntent().getStringExtra("formatted_time");
-            String[] dates = date.split("/");
-            monthString = StringUtil.getMonthNameFromInt(Integer.parseInt(dates[1]));
+//            String date = getIntent().getStringExtra("formatted_time");
+//            String[] dates = date.split("/");
+//            monthString = StringUtil.getMonthNameFromInt(Integer.parseInt(dates[1]));
+//
+//            String[] timeString = dates[2].split(" ");
+//            timeView.setText(timeString[1]);
+//            dates[2] = timeString[0];
+//            dateView.setText(dates[0] + " " + monthString + ", " + dates[2]);
 
-            String[] timeString = dates[2].split(" ");
-            timeView.setText(timeString[1]);
-            dates[2] = timeString[0];
-            dateView.setText(dates[0] + " " + monthString + ", " + dates[2]);
+//            title = getIntent().getStringExtra(NoteEntry.COLUMN_TITLE);
+//            content = getIntent().getStringExtra(NoteEntry.COLUMN_DESCRIPTION);
 
-            title = getIntent().getStringExtra(NoteEntry.COLUMN_TITLE);
-            content = getIntent().getStringExtra(NoteEntry.COLUMN_DESCRIPTION);
-
-            etTitle.setText(title);
-            etContent.setText(content);
-
+            etTitle.setText(note.getTitle());
+            etContent.setText(note.getDescription());
         }
 
-
-        dateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog dialog = new DatePickerDialog(CreateNoteActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String monthString = StringUtil.getMonthNameFromInt(month + 1);
-                        dateView.setText(dayOfMonth + " " + monthString + ", " + year);
-                        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        mCalendar.set(Calendar.MONTH, month);
-                        mCalendar.set(Calendar.YEAR, year);
-                    }
-                }, mYear, mMonth, mDay);
-                dialog.show();
-            }
+        tvDate.setOnClickListener(v -> {
+            DatePickerDialog dialog = new DatePickerDialog(CreateNoteActivity.this, (view, year, month, dayOfMonth) -> {
+                String monthString1 = StringUtil.getMonthNameFromInt(month + 1);
+                tvDate.setText(dayOfMonth + " " + monthString1 + ", " + year);
+                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mCalendar.set(Calendar.MONTH, month);
+                mCalendar.set(Calendar.YEAR, year);
+            }, mYear, mMonth, mDay);
+            dialog.show();
         });
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -206,8 +198,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 break;
 
             case R.id.create_note_activity_action_share:
-
-                String dateForIntent = dateView.getText().toString();
+                String dateForIntent = tvDate.getText().toString();
                 String titleForIntent = etTitle.getText().toString();
                 String descriptionForIntent = etContent.getText().toString();
                 String message = dateForIntent + "\n" + titleForIntent + "\n" + descriptionForIntent;

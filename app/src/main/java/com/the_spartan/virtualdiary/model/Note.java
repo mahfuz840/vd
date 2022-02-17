@@ -16,6 +16,12 @@ import java.util.TimeZone;
 
 public class Note implements Serializable {
 
+    @Exclude
+    private static final long serialVersionUID = 1L;
+
+    @Exclude
+    private static final String NOTE = "note";
+
     private int ID;
 
     private long dateTime;

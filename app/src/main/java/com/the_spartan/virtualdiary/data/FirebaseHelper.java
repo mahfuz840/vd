@@ -1,5 +1,9 @@
 package com.the_spartan.virtualdiary.data;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -27,7 +31,9 @@ public class FirebaseHelper {
         if (reference == null) {
             FirebaseDatabase db = FirebaseDatabase.getInstance();
             db.setPersistenceEnabled(true);
+
             reference = db.getReference();
+            reference.keepSynced(true);
         }
 
         return reference;

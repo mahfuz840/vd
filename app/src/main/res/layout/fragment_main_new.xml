@@ -67,6 +67,10 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
-            android:contentDescription="+" />
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            app:borderWidth="0dp"
+            app:tint="@android:color/white"
+            android:src="@drawable/ic_add_note"/>
     </RelativeLayout>
 </LinearLayout>

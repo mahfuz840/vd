@@ -23,7 +23,8 @@ public class NoteItemLongClickListener implements AdapterView.OnItemLongClickLis
 
     public void showDialog(AdapterView<?> adapterView, View itemView, int position) {
         NoteAdapterNew noteAdapter = (NoteAdapterNew) adapterView.getAdapter();
-        ArrayList<Note> notes = noteAdapter.getItems();
+        ArrayList<Note> filteredNotes = noteAdapter.getItems();
+        ArrayList<Note> originalNotes = noteAdapter.getOriginalItems();
         Context context = itemView.getContext();
 
         ViewGroup viewGroup = itemView.findViewById(android.R.id.content);
@@ -36,10 +37,14 @@ public class NoteItemLongClickListener implements AdapterView.OnItemLongClickLis
                 R.string.dialog_btn_cancel);
 
         customDialog.posBtn.setOnClickListener(v -> {
-            notes.remove(position);
-            noteAdapter.notifyDataSetChanged();
+            Note noteToDelete = filteredNotes.get(position);
+            int originalPosition = originalNotes.indexOf(noteToDelete);
+            System.out.println(originalNotes.get(originalPosition).getTitle());
+            originalNotes.remove(noteToDelete);
+            filteredNotes.remove(noteToDelete);
+            FirebaseHelper.removeNote(originalPosition);
 
-            FirebaseHelper.removeNote(position);
+            noteAdapter.notifyDataSetChanged();
 
             customDialog.dismiss();
         });

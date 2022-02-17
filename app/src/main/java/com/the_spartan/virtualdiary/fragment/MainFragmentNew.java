@@ -1,5 +1,7 @@
 package com.the_spartan.virtualdiary.fragment;
 
+import static android.provider.ContactsContract.CommonDataKinds.Note.NOTE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +11,10 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.CreateNoteActivity;
 import com.the_spartan.virtualdiary.adapter.NoteAdapterNew;
@@ -27,6 +31,8 @@ public class MainFragmentNew extends Fragment {
 
     private NoteAdapterNew noteAdapter;
     private ListView lvNote;
+    private FloatingActionButton floatingActionButton;
+    private SearchView noteSearchView;
 
     private MainFragmentNew() {
     }
@@ -45,6 +51,8 @@ public class MainFragmentNew extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_new, container, false);
 
         lvNote = view.findViewById(R.id.list_view_notes);
+        floatingActionButton = view.findViewById(R.id.floating_btn_add_note);
+        noteSearchView = view.findViewById(R.id.search_view_note);
 
         return view;
     }
@@ -77,10 +85,29 @@ public class MainFragmentNew extends Fragment {
     }
 
     private void registerListeners() {
-        lvNote.setOnItemClickListener((adapterView, view, i, l) ->
-                MainFragmentNew.this
-                        .startActivity(new Intent(MainFragmentNew.this.getContext(),
-                                CreateNoteActivity.class)));
+        lvNote.setOnItemClickListener((adapterView, view, position, l) -> {
+            Intent noteIntent = new Intent(MainFragmentNew.this.getContext(), CreateNoteActivity.class);
+            noteIntent.putExtra(NOTE, noteAdapter.getItem(position));
+            MainFragmentNew.this.startActivity(noteIntent);
+        });
         lvNote.setOnItemLongClickListener(new NoteItemLongClickListener());
+
+        floatingActionButton.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), CreateNoteActivity.class));
+        });
+
+        noteSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String queryText) {
+                noteAdapter.getFilter().filter(queryText);
+
+                return true;
+            }
+        });
     }
 }
