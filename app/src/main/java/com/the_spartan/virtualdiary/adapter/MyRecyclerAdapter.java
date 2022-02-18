@@ -3,15 +3,11 @@ package com.the_spartan.virtualdiary.adapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +16,6 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.util.FontUtil;
-import com.the_spartan.virtualdiary.util.StringUtil;
 import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
@@ -158,7 +153,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mContext.getContentResolver().delete(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(mNotes.get(getAdapterPosition()).getID())),
+                    mContext.getContentResolver().delete(Uri.withAppendedPath(NoteProvider.CONTENT_URI, String.valueOf(mNotes.get(getAdapterPosition()).getKey())),
                             null,
                             null);
 

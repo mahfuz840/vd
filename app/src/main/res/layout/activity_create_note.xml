@@ -1,64 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_note_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg"
-    android:orientation="vertical"
-    tools:context="com.the_spartan.virtualdiary.activity.CreateNoteActivity"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:id="@+id/create_note_fragment">
+    android:orientation="vertical"
+    tools:context="com.the_spartan.virtualdiary.activity.CreateNoteActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ToolbarTheme">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
 
-        <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:titleTextColor="@android:color/white"
-            android:theme="@style/ToolbarTheme" >
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Note"
-                android:textSize="@dimen/title_bar_font_size"
-                android:layout_gravity="left"
-                android:textColor="@android:color/white" />
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+        <ImageView
+            android:id="@+id/iv_create_note_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@android:color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_create_note_back"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/rashfeng"
+            android:text="Note"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_create_note_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/ic_delete"
+            app:tint="@android:color/black"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/iv_create_note_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_share"
+            app:tint="@android:color/black"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_create_note_delete"/>
+
+        <ImageView
+            android:id="@+id/iv_create_note_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_done_black_30dp"
+            app:tint="@android:color/black"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_create_note_share"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
-            android:src="@drawable/ic_time_black_24dp"
             android:id="@+id/date_indicator"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_time_black_24dp" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:paddingLeft="4dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:layout_marginRight="10dp"
-            android:textSize="16sp"
-            android:text="21 Jan, 2020"/>
+            android:text="21 Jan, 2020"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/time"
@@ -66,8 +102,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:textSize="12sp"
-            android:text="08:42AM"/>
+            android:text="08:42AM"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -80,14 +116,14 @@
         android:paddingLeft="10dp">
 
         <ImageView
-            android:src="@drawable/ic_note"
             android:id="@+id/title_indicator"
-            android:tint="#ab6767"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:src="@drawable/ic_note"
             android:text="Title: "
+            android:textColor="@android:color/black"
             android:textSize="18sp"
-            android:textColor="@android:color/black"/>
+            android:tint="#ab6767" />
 
         <EditText
             android:id="@+id/title_edit_text"
@@ -109,24 +145,23 @@
             class="com.the_spartan.virtualdiary.model.LinedEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="50dp"
             android:capitalize="sentences"
             android:fadingEdge="vertical"
             android:gravity="top"
             android:hint="Description"
-            android:layout_marginLeft="5dp"
             android:scrollbars="vertical" />
 
         <LinearLayout
             android:id="@+id/banner_container"
-            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
     </RelativeLayout>
 

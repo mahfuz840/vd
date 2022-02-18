@@ -39,7 +39,6 @@ public class NoteItemLongClickListener implements AdapterView.OnItemLongClickLis
         customDialog.posBtn.setOnClickListener(v -> {
             Note noteToDelete = filteredNotes.get(position);
             int originalPosition = originalNotes.indexOf(noteToDelete);
-            System.out.println(originalNotes.get(originalPosition).getTitle());
             originalNotes.remove(noteToDelete);
             filteredNotes.remove(noteToDelete);
             FirebaseHelper.removeNote(originalPosition);

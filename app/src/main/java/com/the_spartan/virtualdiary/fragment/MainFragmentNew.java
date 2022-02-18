@@ -1,6 +1,6 @@
 package com.the_spartan.virtualdiary.fragment;
 
-import static android.provider.ContactsContract.CommonDataKinds.Note.NOTE;
+import static com.the_spartan.virtualdiary.model.Note.NOTE;
 
 import android.content.Intent;
 import android.os.Bundle;

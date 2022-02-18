@@ -3,6 +3,7 @@ package com.the_spartan.virtualdiary.listener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.the_spartan.virtualdiary.adapter.NoteAdapterNew;
@@ -11,7 +12,7 @@ import com.the_spartan.virtualdiary.model.Note;
 
 import java.util.ArrayList;
 
-public class NoteChildEventListener implements com.google.firebase.database.ChildEventListener {
+public class NoteChildEventListener implements ChildEventListener {
 
     private ArrayList<Note> notes;
     private NoteAdapterNew noteAdapter;
@@ -23,7 +24,9 @@ public class NoteChildEventListener implements com.google.firebase.database.Chil
 
     @Override
     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-        notes.add(dataSnapshot.getValue(Note.class));
+        Note note = dataSnapshot.getValue(Note.class);
+        note.setKey(dataSnapshot.getKey());
+        notes.add(note);
         noteAdapter.notifyDataSetChanged();
 
         FirebaseHelper.getNoteKeys().add(dataSnapshot.getKey());
@@ -31,12 +34,26 @@ public class NoteChildEventListener implements com.google.firebase.database.Chil
 
     @Override
     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        Note note = dataSnapshot.getValue(Note.class);
 
+        for (Note currentNote : notes) {
+            if (currentNote.getKey().equals(dataSnapshot.getKey())) {
+                currentNote.setTitle(note.getTitle());
+                currentNote.setDescription(note.getDescription());
+                currentNote.setTimestamp(note.getTimestamp());
+            }
+        }
+
+        noteAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-        notes.remove(dataSnapshot.getValue(Note.class));
+        for (Note currentNote : notes) {
+            if (currentNote.getKey().equals(dataSnapshot.getKey())) {
+                notes.remove(currentNote);
+            }
+        }
         noteAdapter.notifyDataSetChanged();
 
         FirebaseHelper.getNoteKeys().remove(dataSnapshot.getKey());

@@ -13,7 +13,10 @@ public class Note implements Serializable {
     @Exclude
     private static final long serialVersionUID = 1L;
 
-    private int ID;
+    @Exclude
+    public static final String NOTE = "Note";
+
+    private String key;
 
     private String title;
 
@@ -31,24 +34,40 @@ public class Note implements Serializable {
         this.timestamp = noteBuilder.timestamp;
     }
 
-    public int getID() {
-        return ID;
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public long getTimestamp() {
         return timestamp;
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public boolean isNew() {
-        return getID() == 0;
+        return getKey() == null;
     }
 
     public static class NoteBuilder {
