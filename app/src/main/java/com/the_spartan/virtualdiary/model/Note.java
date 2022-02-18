@@ -1,14 +1,8 @@
 package com.the_spartan.virtualdiary.model;
 
-import android.content.Context;
-
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by the_spartan on 3/7/18.
@@ -19,134 +13,72 @@ public class Note implements Serializable {
     @Exclude
     private static final long serialVersionUID = 1L;
 
-    @Exclude
-    private static final String NOTE = "note";
-
     private int ID;
-
-    private long dateTime;
 
     private String title;
 
     private String description;
 
-    @Exclude
-    private Calendar calendar;
-
     private long timestamp;
 
-    private int day, month, year;
-
     public Note() {
-        this.timestamp = Calendar.getInstance().getTimeInMillis();
+
     }
 
-    public Note(long dateTime, String title, String description, Calendar calendar) {
-        this.dateTime = dateTime;
-        this.title = title;
-        this.description = description;
-        this.calendar = calendar;
-        this.timestamp = calendar.getTimeInMillis();
-
-        this.month = calendar.get(Calendar.MONTH) + 1;
-        this.year = calendar.get(Calendar.YEAR);
-    }
-
-    public Note(int ID, long dateTime, String title, String description) {
-        this.ID = ID;
-        this.dateTime = dateTime;
-        this.title = title;
-        this.description = description;
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(dateTime);
-
-        month = calendar.get(Calendar.MONTH) + 1;
-        year = calendar.get(Calendar.YEAR);
-    }
-
-    public long getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(long dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String mtitle) {
-        this.title = mtitle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Exclude
-    public Calendar getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
+    public Note(NoteBuilder noteBuilder) {
+        this.title = noteBuilder.title;
+        this.description = noteBuilder.description;
+        this.timestamp = noteBuilder.timestamp;
     }
 
     public int getID() {
         return ID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public String getTitle() {
+        return title;
     }
 
-    public String getDateTimeFormatted(Context context) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mma"
-                , context.getResources().getConfiguration().locale);
-        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-        return simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
+    public String getDescription() {
+        return description;
     }
 
-    @Override
-    public String toString() {
-        return "Note{" +
-                "dateTime=" + dateTime +
-                ", title='" + title + '\'' +
-                ", content='" + description + '\'' +
-                ", calendar=" + calendar +
-                ", day=" + day +
-                ", month=" + month +
-                ", year=" + year +
-                ", ID=" + ID +
-                '}';
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public boolean isNew() {
+        return getID() == 0;
+    }
+
+    public static class NoteBuilder {
+
+        private String title;
+        private String description;
+        private long timestamp;
+
+        public NoteBuilder setTitle(String title) {
+            this.title = title;
+
+            return this;
+        }
+
+        public NoteBuilder setDescription(String description) {
+            this.description = description;
+
+            return this;
+        }
+
+        public NoteBuilder setTimeStamp(long timestamp) {
+            this.timestamp = timestamp;
+
+            return this;
+        }
+
+        public Note build() {
+            Note note = new Note(this);
+
+            return note;
+        }
     }
 }

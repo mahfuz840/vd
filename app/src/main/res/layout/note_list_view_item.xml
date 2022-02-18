@@ -14,6 +14,7 @@
         android:background="@drawable/note_list_item_date_box">
 
         <TextView
+            android:id="@+id/tv_note_date_list_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -22,11 +23,12 @@
             android:textColor="@android:color/white"/>
 
         <TextView
+            android:id="@+id/tv_note_year_list_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="top|center"
-            android:text="2022"
+            android:text="2024"
             android:textColor="@android:color/white"/>
     </LinearLayout>
 

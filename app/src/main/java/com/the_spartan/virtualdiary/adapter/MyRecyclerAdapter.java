@@ -48,42 +48,42 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
-        String dateOnly[] = dateWithTime.split("/");
-        String title = mNotes.get(position).getTitle();
-        if (!title.equals("")) {
-            title = title + "...";
-            holder.titleView.setText(title);
-        } else {
-            String content = mNotes.get(position).getDescription();
-            if (content.equals("")) {
-                holder.titleView.setText("(no title)");
-            } else {
-                content = content + "...";
-                holder.titleView.setText(content);
-            }
-        }
-
-
-        holder.dateView.setText(dateOnly[0]);
-        int month = mNotes.get(position).getMonth();
-        String monthString = StringUtil.getMonthNameFromInt(month);
-        holder.monthView.setText(monthString);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-        params.height = (int) (height / 5.5);
-        params.width = (int) (width / 3.35);
-        params.topMargin = 10;
-        params.bottomMargin = 10;
-
-        holder.itemView.setLayoutParams(params);
+//        String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
+//        String dateOnly[] = dateWithTime.split("/");
+//        String title = mNotes.get(position).getTitle();
+//        if (!title.equals("")) {
+//            title = title + "...";
+//            holder.titleView.setText(title);
+//        } else {
+//            String content = mNotes.get(position).getDescription();
+//            if (content.equals("")) {
+//                holder.titleView.setText("(no title)");
+//            } else {
+//                content = content + "...";
+//                holder.titleView.setText(content);
+//            }
+//        }
+//
+//
+//        holder.dateView.setText(dateOnly[0]);
+//        int month = mNotes.get(position).getMonth();
+//        String monthString = StringUtil.getMonthNameFromInt(month);
+//        holder.monthView.setText(monthString);
+//
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//        Display display = wm.getDefaultDisplay();
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        display.getMetrics(metrics);
+//        int width = metrics.widthPixels;
+//        int height = metrics.heightPixels;
+//        params.height = (int) (height / 5.5);
+//        params.width = (int) (width / 3.35);
+//        params.topMargin = 10;
+//        params.bottomMargin = 10;
+//
+//        holder.itemView.setLayoutParams(params);
     }
 
     @Override

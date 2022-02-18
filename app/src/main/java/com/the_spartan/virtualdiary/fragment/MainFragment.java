@@ -202,14 +202,14 @@ public class MainFragment extends Fragment {
             if (cursor.getCount() == 0)
                 Log.d("cursor", "null");
             notes = new ArrayList<>();
-            while (cursor.moveToNext()) {
-                Note note = new Note(cursor.getInt(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_ID)),
-                        cursor.getLong(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DATE)),
-                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_TITLE)),
-                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DESCRIPTION)));
-
-                notes.add(note);
-            }
+//            while (cursor.moveToNext()) {
+//                Note note = new Note(cursor.getInt(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_ID)),
+//                        cursor.getLong(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DATE)),
+//                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_TITLE)),
+//                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DESCRIPTION)));
+//
+//                notes.add(note);
+//            }
 
             cursor.close();
             db.close();
@@ -225,14 +225,14 @@ public class MainFragment extends Fragment {
         adapter.setOnItemClickListener(new MyRecyclerAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Note note = notes.get(position);
-                Intent intent = new Intent(getContext(), CreateNoteActivity.class);
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
-                intent.putExtra("formatted_time", note.getDateTimeFormatted(getContext()));
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
-                startActivity(intent);
+//                Note note = notes.get(position);
+//                Intent intent = new Intent(getContext(), CreateNoteActivity.class);
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
+//                intent.putExtra("formatted_time", note.getDateTimeFormatted(getContext()));
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
+//                startActivity(intent);
             }
         });
 

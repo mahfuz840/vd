@@ -40,63 +40,63 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 
     @Override
     public void onBindViewHolder(SearchRecyclerAdapter.ViewHolder holder, int position) {
-        String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
-        String dateOnly[] = dateWithTime.split("/");
-
-        String monthString;
-        int month = mNotes.get(position).getMonth();
-        switch (month){
-            case 1:
-                monthString = "Jan";
-                break;
-            case 2:
-                monthString = "Feb";
-                break;
-            case 3:
-                monthString = "Mar";
-                break;
-            case 4:
-                monthString = "Apr";
-                break;
-            case 5:
-                monthString = "May";
-                break;
-            case 6:
-                monthString = "Jun";
-                break;
-            case 7:
-                monthString = "Jul";
-                break;
-            case 8:
-                monthString = "Aug";
-                break;
-            case 9:
-                monthString = "Sep";
-                break;
-            case 10:
-                monthString = "Oct";
-                break;
-            case 11:
-                monthString = "Nov";
-                break;
-            case 12:
-                monthString = "Dec";
-                break;
-            default:
-                monthString = "Unknown";
-        }
-        holder.dateView.setText(dateOnly[0]);
-        holder.monthView.setText(monthString);
-        holder.titleView.setText(mNotes.get(position).getTitle());
-        holder.contentView.setText(mNotes.get(position).getDescription());
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.height = 200;
-        params.topMargin = 10;
-        params.bottomMargin = 10;
-
-        holder.itemView.setLayoutParams(params);
+//        String dateWithTime = mNotes.get(position).getDateTimeFormatted(mContext);
+//        String dateOnly[] = dateWithTime.split("/");
+//
+//        String monthString;
+//        int month = mNotes.get(position).getMonth();
+//        switch (month){
+//            case 1:
+//                monthString = "Jan";
+//                break;
+//            case 2:
+//                monthString = "Feb";
+//                break;
+//            case 3:
+//                monthString = "Mar";
+//                break;
+//            case 4:
+//                monthString = "Apr";
+//                break;
+//            case 5:
+//                monthString = "May";
+//                break;
+//            case 6:
+//                monthString = "Jun";
+//                break;
+//            case 7:
+//                monthString = "Jul";
+//                break;
+//            case 8:
+//                monthString = "Aug";
+//                break;
+//            case 9:
+//                monthString = "Sep";
+//                break;
+//            case 10:
+//                monthString = "Oct";
+//                break;
+//            case 11:
+//                monthString = "Nov";
+//                break;
+//            case 12:
+//                monthString = "Dec";
+//                break;
+//            default:
+//                monthString = "Unknown";
+//        }
+//        holder.dateView.setText(dateOnly[0]);
+//        holder.monthView.setText(monthString);
+//        holder.titleView.setText(mNotes.get(position).getTitle());
+//        holder.contentView.setText(mNotes.get(position).getDescription());
+//
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        params.height = 200;
+//        params.topMargin = 10;
+//        params.bottomMargin = 10;
+//
+//        holder.itemView.setLayoutParams(params);
     }
 
     @Override

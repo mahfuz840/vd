@@ -104,10 +104,10 @@ public class MainFragmentNew extends Fragment {
         lvNote.setAdapter(noteAdapter);
     }
 
-    private void testWrite() {
-        Note note = new Note(0, 0, "Title", "Content");
-        FirebaseHelper.getReference().push().setValue(note);
-    }
+//    private void testWrite() {
+//        Note note = new Note(0, 0, "Title", "Content");
+//        FirebaseHelper.getReference().push().setValue(note);
+//    }
 
     private void populateNotes(ArrayList<Note> notes) {
         FirebaseHelper.getQueryForNotes()

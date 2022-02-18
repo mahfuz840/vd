@@ -3,16 +3,13 @@ package com.the_spartan.virtualdiary.activity;
 import static android.provider.ContactsContract.CommonDataKinds.Note.NOTE;
 
 import android.app.DatePickerDialog;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,17 +32,15 @@ import com.google.android.play.core.tasks.Task;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.data.FirebaseHelper;
 import com.the_spartan.virtualdiary.data.NoteContract.NoteEntry;
-import com.the_spartan.virtualdiary.data.NoteDbHelper;
 import com.the_spartan.virtualdiary.data.NoteProvider;
 import com.the_spartan.virtualdiary.model.Note;
+import com.the_spartan.virtualdiary.util.DateUtil;
 import com.the_spartan.virtualdiary.util.FontUtil;
 import com.the_spartan.virtualdiary.util.StringUtil;
 import com.the_spartan.virtualdiary.view.CustomDialog;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -62,7 +57,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private TextView tvDate;
     private TextView tvTime;
     private AdView adView;
-    private String content;
+    private String description;
     private String title;
     private Calendar mCalendar;
     private boolean isExiting;
@@ -81,11 +76,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         loadAd();
-
-        isExiting = false;
-        id = -1;
-        title = "";
-        content = "";
 
         mCalendar = Calendar.getInstance();
         mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
@@ -119,29 +109,15 @@ public class CreateNoteActivity extends AppCompatActivity {
             etTitle.setTextSize(Float.parseFloat(fontSize));
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mma", Locale.getDefault());
-        String currentDateandTime = sdf.format(new Date());
-
-        String monthString = StringUtil.getMonthNameFromInt(mMonth + 1);
-
-        tvDate.setText(mDay + " " + monthString + ", " + mYear);
-        tvTime.setText(currentDateandTime);
+        tvDate.setText(DateUtil.getFormattedDateStrFromMillis(mCalendar.getTimeInMillis()));
+        tvTime.setText(DateUtil.getFormattedDateStrFromMillis(mCalendar.getTimeInMillis()));
 
         Note note = (Note) getIntent().getSerializableExtra(NOTE);
         if (note != null) {
             id = note.getID();
-            Log.d("ID", " " + id);
-//            String date = getIntent().getStringExtra("formatted_time");
-//            String[] dates = date.split("/");
-//            monthString = StringUtil.getMonthNameFromInt(Integer.parseInt(dates[1]));
-//
-//            String[] timeString = dates[2].split(" ");
-//            timeView.setText(timeString[1]);
-//            dates[2] = timeString[0];
-//            dateView.setText(dates[0] + " " + monthString + ", " + dates[2]);
 
-//            title = getIntent().getStringExtra(NoteEntry.COLUMN_TITLE);
-//            content = getIntent().getStringExtra(NoteEntry.COLUMN_DESCRIPTION);
+            tvDate.setText(DateUtil.getFormattedDateStrFromMillis(note.getTimestamp()));
+            tvTime.setText(DateUtil.getFormattedTimeStrFromMillis(note.getTimestamp()));
 
             etTitle.setText(note.getTitle());
             etContent.setText(note.getDescription());
@@ -170,7 +146,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (getIntent().getExtras() == null) {
-            menu.findItem(R.id.note_delete).setVisible(false);
+            menu.findItem(R.id.action_delete).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -182,22 +158,29 @@ public class CreateNoteActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 break;
-            case R.id.create_note_activity_action_save:
+            case R.id.action_save:
                 if (getIntent().getExtras() == null) {
-                    saveNote();
+                    try {
+                        saveNote();
+                    } catch (ParseException e) {
+                        Toast.makeText(getApplicationContext(),
+                                "Something wrong happened!",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 } else {
                     updateNote();
                 }
                 finish();
                 break;
 
-            case R.id.note_delete:
+            case R.id.action_delete:
                 if (getIntent().getExtras() != null) {
                     showDeleteDialog();
                 }
                 break;
 
-            case R.id.create_note_activity_action_share:
+            case R.id.action_share:
                 String dateForIntent = tvDate.getText().toString();
                 String titleForIntent = etTitle.getText().toString();
                 String descriptionForIntent = etContent.getText().toString();
@@ -214,28 +197,15 @@ public class CreateNoteActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveNote() {
-        Long date = mCalendar.getTimeInMillis();
-        int month = mCalendar.get(Calendar.MONTH) + 1;
-        int year = mCalendar.get(Calendar.YEAR);
-
+    private void saveNote() throws ParseException {
         title = etTitle.getText().toString();
-        content = etContent.getText().toString();
+        description = etContent.getText().toString();
 
-        NoteDbHelper helper = new NoteDbHelper(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(NoteEntry.COLUMN_DATE, date);
-        values.put(NoteEntry.COLUMN_TITLE, title);
-        values.put(NoteEntry.COLUMN_DESCRIPTION, content);
-        values.put(NoteEntry.COLUMN_MONTH, month);
-        values.put(NoteEntry.COLUMN_YEAR, year);
-
-        Note note = new Note(date, title, content, mCalendar);
-
-        Uri uri = getContentResolver().insert(NoteProvider.CONTENT_URI, values);
-        id = (int) ContentUris.parseId(uri);
+        Note note = new Note.NoteBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setTimeStamp(mCalendar.getTimeInMillis())
+                .build();
 
         checkForReview();
 
@@ -295,7 +265,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isExiting) {
             super.onBackPressed();
-        } else if (!etTitle.getText().toString().equals(title) || !etContent.getText().toString().equals(content)) {
+        } else if (!etTitle.getText().toString().equals(title) || !etContent.getText().toString().equals(description)) {
             showSaveDialog();
         } else {
             super.onBackPressed();
@@ -312,26 +282,24 @@ public class CreateNoteActivity extends AppCompatActivity {
                 R.string.dialog_btn_save,
                 R.string.dialog_btn_cancel);
 
-        customDialog.posBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (id != -1) {
-                    updateNote();
-                } else {
+        customDialog.posBtn.setOnClickListener(v -> {
+            if (id != -1) {
+                updateNote();
+            } else {
+                try {
                     saveNote();
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                isExiting = true;
-                onBackPressed();
             }
+            isExiting = true;
+            onBackPressed();
         });
 
-        customDialog.negBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customDialog.dismiss();
-                isExiting = true;
-                onBackPressed();
-            }
+        customDialog.negBtn.setOnClickListener(v -> {
+            customDialog.dismiss();
+            isExiting = true;
+            onBackPressed();
         });
 
         customDialog.show();

@@ -18,16 +18,20 @@ import androidx.annotation.Nullable;
 
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.model.Action;
+import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NoteAdapterNew extends ArrayAdapter<Note> implements Filterable {
 
     private Context context;
     private TextView tvTitle;
     private TextView tvContent;
+    private TextView tvDate;
+    private TextView tvYear;
     private ArrayList<Note> notes;
     private ArrayList<Note> filteredNotes;
 
@@ -48,11 +52,14 @@ public class NoteAdapterNew extends ArrayAdapter<Note> implements Filterable {
 
         tvTitle = listItemView.findViewById(R.id.note_list_item_title);
         tvContent = listItemView.findViewById(R.id.note_list_item_content);
+        tvDate = listItemView.findViewById(R.id.tv_note_date_list_view);
+        tvYear = listItemView.findViewById(R.id.tv_note_year_list_view);
 
         Note currentNote = filteredNotes.get(position);
-
         tvTitle.setText(currentNote.getTitle());
         tvContent.setText(currentNote.getDescription());
+        tvDate.setText(DateUtil.getFormattedDayAndMonthStrFromMillis(currentNote.getTimestamp()));
+        tvYear.setText(String.valueOf(DateUtil.getYearFromMillis(currentNote.getTimestamp())));
 
         return listItemView;
     }
@@ -118,11 +125,16 @@ public class NoteAdapterNew extends ArrayAdapter<Note> implements Filterable {
     }
 
     private void filterByMonth(ArrayList<Note> matchedNotes, String queryText) {
-        int month = DateUtil.getDecodedMonthFromMonthYearStr(queryText);
+        Month month = DateUtil.getDecodedMonthFromMonthYearStr(queryText);
         int year = DateUtil.getDecodedYearFromMonthYearStr(queryText);
+        Calendar calendar = Calendar.getInstance();
 
         for (Note note : notes) {
-            if (note.getMonth() == month && note.getYear() == year) {
+            calendar.setTimeInMillis(note.getTimestamp());
+            Month noteMonth = Month.fromIntValue(calendar.get(Calendar.MONTH));
+            int noteYear = calendar.get(Calendar.YEAR);
+
+            if (noteMonth == month && noteYear == year) {
                 matchedNotes.add(note);
             }
         }

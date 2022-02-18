@@ -61,13 +61,13 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Note note = notes.get(position);
-                Intent intent = new Intent(SearchActivity.this, CreateNoteActivity.class);
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
-                intent.putExtra("formatted_time", note.getDateTimeFormatted(SearchActivity.this));
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
-                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
-                startActivity(intent);
+//                Intent intent = new Intent(SearchActivity.this, CreateNoteActivity.class);
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
+//                intent.putExtra("formatted_time", note.getDateTimeFormatted(SearchActivity.this));
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
+//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
+//                startActivity(intent);
             }
         });
     }
@@ -108,13 +108,13 @@ public class SearchActivity extends AppCompatActivity {
                 NoteContract.NoteEntry.COLUMN_DATE + " ASC");
         Log.v("CURSOR", cursor.getCount() + " ");
         notes = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Note note = new Note(cursor.getInt(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_ID)),
-                    cursor.getLong(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DATE)),
-                    cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_TITLE)),
-                    cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DESCRIPTION)));
-            notes.add(note);
-        }
+//        while (cursor.moveToNext()) {
+//            Note note = new Note(cursor.getInt(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_ID)),
+//                    cursor.getLong(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DATE)),
+//                    cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_TITLE)),
+//                    cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DESCRIPTION)));
+//            notes.add(note);
+//        }
 
         cursor.close();
 
