@@ -47,7 +47,8 @@
             android:layout_weight="6"
             android:layout_marginLeft="5dp"
             android:background="@drawable/shape_rounded_input"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true">
 
             <ImageView
                 android:layout_width="0dp"

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,10 +50,10 @@ public class CreateNoteActivity extends AppCompatActivity {
     private EditText etDescription;
     private TextView tvDate;
     private TextView tvTime;
-    private ImageView ivBackArrow;
-    private ImageView ivDone;
-    private ImageView ivShare;
-    private ImageView ivDelete;
+    private ImageButton ivBackArrow;
+    private ImageButton ivDone;
+    private ImageButton ivShare;
+    private ImageButton ivDelete;
 
     private String description;
     private String title;
@@ -200,6 +200,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         customDialog.posBtn.setOnClickListener(view -> {
             noteService.delete(note);
+            customDialog.dismiss();
             finish();
         });
 
