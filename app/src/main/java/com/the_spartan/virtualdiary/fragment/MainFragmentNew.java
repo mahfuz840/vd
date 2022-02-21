@@ -79,7 +79,7 @@ public class MainFragmentNew extends Fragment {
     private void populateMonthYearPicker() {
         Calendar now = Calendar.getInstance();
         StringBuilder monthYearStrBuiler = new StringBuilder()
-                .append(Objects.requireNonNull(Month.fromIntValue(now.get(Calendar.MONTH) + 1))
+                .append(Objects.requireNonNull(Month.fromIntValue(now.get(Calendar.MONTH)))
                         .getFullName())
                 .append(", ")
                 .append(now.get(Calendar.YEAR));
@@ -89,7 +89,7 @@ public class MainFragmentNew extends Fragment {
 
     private void populateMonthYearPicker(int month, int year) {
         StringBuilder monthYearStringBuilder = new StringBuilder()
-                .append(Month.fromIntValue(month + 1).getFullName())
+                .append(Month.fromIntValue(month).getFullName())
                 .append(", ")
                 .append(year);
 
@@ -148,7 +148,7 @@ public class MainFragmentNew extends Fragment {
             MonthPickerDialog.Builder builder = new MonthPickerDialog.Builder(getContext(),
                     (selectedMonth, selectedYear) -> {
                         noteAdapter.getFilter()
-                                .filter(DateUtil.getEncodedMonthYearWithPrefix(selectedMonth + 1, selectedYear));
+                                .filter(DateUtil.getEncodedMonthYearWithPrefix(selectedMonth, selectedYear));
 
                         populateMonthYearPicker(selectedMonth, selectedYear);
                     }, today.get(Calendar.YEAR), today.get(Calendar.MONTH));

@@ -2,18 +2,18 @@ package com.the_spartan.virtualdiary.model;
 
 public enum Month {
 
-    JANUARY("January", "Jan", 1),
-    FEBRUARY("February", "Feb", 2),
-    MARCH("March", "Mar", 3),
-    APRIL("April", "Apr", 4),
-    MAY("May", "May", 5),
-    JUNE("June", "Jun", 6),
-    JULY("July", "Jul", 7),
-    AUGUST("August", "Aug", 8),
-    SEPTEMBER("September", "Sep", 9),
-    OCTOBER("October", "Oct", 10),
-    NOVEMBER("November", "Nov", 11),
-    DECEMBER("December", "Dec", 12);
+    JANUARY("January", "Jan", 0),
+    FEBRUARY("February", "Feb", 1),
+    MARCH("March", "Mar", 2),
+    APRIL("April", "Apr", 3),
+    MAY("May", "May", 4),
+    JUNE("June", "Jun", 5),
+    JULY("July", "Jul", 6),
+    AUGUST("August", "Aug", 7),
+    SEPTEMBER("September", "Sep", 8),
+    OCTOBER("October", "Oct", 9),
+    NOVEMBER("November", "Nov", 10),
+    DECEMBER("December", "Dec", 11);
 
     private String fullName;
     private String shortName;
