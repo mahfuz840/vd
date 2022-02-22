@@ -21,10 +21,10 @@
             android:name=".activity.MainActivityNew"
             android:exported="false" />
         <activity
-            android:name=".activity.NewItemActivity"
+            android:name=".activity.NewToDoActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
         <activity
-            android:name=".fragment.ToDoActiveFragment"
+            android:name=".fragment.ToDoFragment"
             android:theme="@style/ToolbarThemeWithNoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -63,9 +63,6 @@
 
         <activity
             android:name=".activity.settings.FontColorActivity"
-            android:theme="@style/ToolbarThemeWithNoActionBar" />
-        <activity
-            android:name=".activity.SearchActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
 
         <receiver android:name=".service.NotificationBroadcastReceiver" />

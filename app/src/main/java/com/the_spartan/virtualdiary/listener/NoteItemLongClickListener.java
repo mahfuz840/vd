@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.adapter.NoteAdapterNew;
+import com.the_spartan.virtualdiary.adapter.NoteAdapter;
 import com.the_spartan.virtualdiary.data.FirebaseHelper;
 import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.view.CustomDialog;
@@ -22,7 +22,7 @@ public class NoteItemLongClickListener implements AdapterView.OnItemLongClickLis
     }
 
     public void showDialog(AdapterView<?> adapterView, View itemView, int position) {
-        NoteAdapterNew noteAdapter = (NoteAdapterNew) adapterView.getAdapter();
+        NoteAdapter noteAdapter = (NoteAdapter) adapterView.getAdapter();
         ArrayList<Note> filteredNotes = noteAdapter.getItems();
         ArrayList<Note> originalNotes = noteAdapter.getOriginalItems();
         Context context = itemView.getContext();

@@ -1,170 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:background="@drawable/bg"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ToolbarTheme">
-
-        <androidx.appcompat.widget.Toolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ToolbarTheme">
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/title_bar_font_size" />
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/rashfeng"
+        android:text="@string/app_name"
+        android:textAlignment="textStart"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        android:background="@drawable/bg"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view_note"
+            android:theme="@style/searchViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="7"
+            android:background="@drawable/shape_rounded_input"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search Note" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/picker_note_month_year"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="6"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/shape_rounded_input"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:src="@drawable/ic_filter"
+                app:tint="@color/colorPrimary" />
 
             <TextView
+                android:id="@+id/tv_month_year_picker"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="5dp"
-                android:text="@string/select_date"
-                android:textSize="14sp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/month_spinner"
-                    android:background="@drawable/spinner_shape"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_margin="5dp"
-                    android:padding="5dp"
-                    android:popupBackground="@color/colorPrimary" >
-                </Spinner>
-
-                <Spinner
-                    android:id="@+id/year_spinner"
-                    android:background="@drawable/spinner_shape"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:padding="5dp"
-                    android:popupBackground="@color/colorPrimary">
-                </Spinner>
-
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/notes_grid_view"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="true"
-                android:padding="5dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <RelativeLayout
-                android:id="@+id/home_page_empty_relative_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/empty_image_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/empty" />
-
-                <TextView
-                    android:id="@+id/home_page_empty_text_view_line1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/empty_image_view"
-                    android:layout_centerHorizontal="true"
-                    android:text="Uh oh! looks like a little empty here..."
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/home_page_empty_text_view_line2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/home_page_empty_text_view_line1"
-                    android:layout_centerHorizontal="true"
-                    android:text="Tap on the pen icon to create new notes!" />
-            </RelativeLayout>
-
-        </FrameLayout>
-
-
+                android:layout_weight="4"
+                android:textSize="16sp"
+                android:gravity="center|left"
+                android:text="September, 2022"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!--<com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout xmlns:rfal="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/activity_main_rfal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--rfal:rfal_frame_alpha="0.7"-->
-        <!--rfal:rfal_frame_color="#ffffff">-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1">
 
-        <!--<com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton xmlns:rfab="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/activity_main_rfab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginRight="15dp"-->
-            <!--android:layout_marginBottom="15dp"-->
-            <!--android:padding="8dp"-->
-            <!--rfab:rfab_color_normal="#7A6151"-->
-            <!--rfab:rfab_color_pressed="#7A6151"-->
-            <!--rfab:rfab_drawable="@drawable/rfab__drawable_rfab_default"-->
-            <!--rfab:rfab_shadow_color="#999999"-->
-            <!--rfab:rfab_shadow_dx="0dp"-->
-            <!--rfab:rfab_shadow_dy="5dp"-->
-            <!--rfab:rfab_shadow_radius="7dp"-->
-            <!--rfab:rfab_size="normal" />-->
-    <!--</com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout>-->
+        <ListView
+            android:id="@+id/list_view_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:contentDescription="+"
-        android:src="@drawable/ic_add_note"
-        android:layout_margin="16dp" />
-
-</RelativeLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_btn_add_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="@color/colorPrimary"
+            app:borderWidth="0dp"
+            app:tint="@android:color/white"
+            android:src="@drawable/ic_add_note"/>
+    </RelativeLayout>
+</LinearLayout>

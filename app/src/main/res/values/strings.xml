@@ -75,4 +75,5 @@
     <string name="ok">OK</string>
     <string name="sign_in_warning">Please sign in first</string>
     <string name="change_account">Change account</string>
+    <string name="todo_name">To-Do</string>
 </resources>

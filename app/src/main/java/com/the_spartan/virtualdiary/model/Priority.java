@@ -2,38 +2,33 @@ package com.the_spartan.virtualdiary.model;
 
 import android.graphics.Color;
 
-import com.the_spartan.virtualdiary.fragment.ToDoActiveFragment;
-
 ;
 
 public enum Priority {
-    LOW("low", 0, Color.rgb(204, 214, 0)),
-    MEDIUM("medium", 1, Color.rgb(255, 170, 0)),
-    HIGH("high", 2, Color.rgb(255, 0, 0));
 
-    private final int value;
-    private final String name;
+    LOW("Low", 0, Color.rgb(204, 214, 0)),
+    MEDIUM("Medium", 1, Color.rgb(255, 170, 0)),
+    HIGH("High", 2, Color.rgb(255, 0, 0));
+
+    private final int intValue;
     private final int color;
+    private String displayName;
 
-    Priority(final String newName, final int newValue, final int newColor) {
-        name = newName;
-        value = newValue;
-        color = newColor;
+    Priority(String displayName, int intValue, int color) {
+        this.displayName = displayName;
+        this.intValue = intValue;
+        this.color = color;
     }
 
-    public int getValue() {
-        return value;
+    public String getDisplayName() {
+        return displayName;
     }
 
-//    public String getName() {
-//        return ToDoActiveFragment.getToDoContext().getString(ToDoActiveFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoActiveFragment.getToDoContext().getPackageName()));
-//    }
-//
-//    public int getColor() {
-//        return color;
-//    }
-//
-//    public String toString(){
-//        return ToDoActiveFragment.getToDoContext().getString(ToDoActiveFragment.getToDoContext().getResources().getIdentifier(name, "string",  ToDoActiveFragment.getToDoContext().getPackageName()));
-//    }
+    public int getIntValue() {
+        return intValue;
+    }
+
+    public int getColor() {
+        return color;
+    }
 }

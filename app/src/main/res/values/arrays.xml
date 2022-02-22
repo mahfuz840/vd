@@ -81,4 +81,8 @@
         <item>21</item>
     </string-array>
 
+    <string-array name="todo_types">
+        <item>Active</item>
+        <item>Last 30 Days</item>
+    </string-array>
 </resources>

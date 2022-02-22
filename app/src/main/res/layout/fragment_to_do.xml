@@ -1,10 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rashfeng"
+            android:text="@string/todo_name"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"/>
+
+        <ImageButton
+            android:id="@+id/iv_todo_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/ic_delete"
+            app:tint="@android:color/black"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view_todo"
+            android:theme="@style/searchViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="7"
+            android:background="@drawable/shape_rounded_input"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search To-Do" />
+
+        <LinearLayout
+            android:id="@+id/picker_todo_month_year"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="6"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/shape_rounded_input"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <Spinner
+                android:id="@+id/spinner_todo_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -40,10 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="top"
-                    android:layout_marginBottom="10dp"
-                    android:background="@android:color/transparent"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="5dp" />
+                    android:layout_marginBottom="10dp"/>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/empty_todo_today"
@@ -170,14 +238,14 @@
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_new_item"
+        android:id="@+id/floating_btn_add_todo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:contentDescription="+"
-        android:src="@drawable/ic_add_note"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/colorAccent"
-        card_view:borderWidth="0dp" />
-
+        android:layout_gravity="right"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:tint="@android:color/white"
+        android:src="@drawable/ic_add_note"/>
 </LinearLayout>

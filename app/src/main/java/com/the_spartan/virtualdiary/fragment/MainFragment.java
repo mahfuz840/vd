@@ -1,303 +1,165 @@
 package com.the_spartan.virtualdiary.fragment;
 
-import android.content.Context;
+import static com.the_spartan.virtualdiary.model.Note.NOTE;
+
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.CreateNoteActivity;
-import com.the_spartan.virtualdiary.activity.GoogleSigninActivity;
-import com.the_spartan.virtualdiary.activity.MainActivity;
-import com.the_spartan.virtualdiary.adapter.AddOptionsAdapter;
-import com.the_spartan.virtualdiary.adapter.MyRecyclerAdapter;
-import com.the_spartan.virtualdiary.data.NoteContract;
-import com.the_spartan.virtualdiary.data.NoteDbHelper;
-import com.the_spartan.virtualdiary.data.NoteProvider;
+import com.the_spartan.virtualdiary.adapter.NoteAdapter;
+import com.the_spartan.virtualdiary.data.FirebaseHelper;
+import com.the_spartan.virtualdiary.listener.NoteChildEventListener;
+import com.the_spartan.virtualdiary.listener.NoteItemLongClickListener;
+import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
+import com.the_spartan.virtualdiary.util.DateUtil;
+import com.whiteelephant.monthpicker.MonthPickerDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class MainFragment extends Fragment {
 
-    private RecyclerView noteView;
-    private Spinner monthSpinner;
-    private Spinner yearSpinner;
-    private ArrayList<Note> notes;
-    private int month, year;
-    private ArrayAdapter<CharSequence> yearAdapter;
-    private ArrayAdapter<CharSequence> monthAdapter;
-    private Toolbar toolbar;
+    private static MainFragment instance;
 
-    private RelativeLayout homepageEmptyLayout;
+    private NoteAdapter noteAdapter;
+    private ListView lvNote;
     private FloatingActionButton floatingActionButton;
+    private SearchView noteSearchView;
+    private LinearLayout lvMonthYearPicker;
+    private TextView tvMonthYearPicker;
 
-    public MainFragment() {
-
+    private MainFragment() {
     }
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static MainFragment getInstance() {
+        if (instance == null) {
+            instance = new MainFragment();
+        }
+
+        return instance;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        floatingActionButton = view.findViewById(R.id.fab);
-        homepageEmptyLayout = view.findViewById(R.id.home_page_empty_relative_layout);
-        toolbar = view.findViewById(R.id.my_toolbar);
-//        ((MainActivity)getActivity()).setToolbar(toolbar);
-        ((MainActivity)getActivity()).setTitle("");
 
-        noteView = view.findViewById(R.id.notes_grid_view);
-        monthSpinner = view.findViewById(R.id.month_spinner);
-        yearSpinner = view.findViewById(R.id.year_spinner);
-
-        setHasOptionsMenu(true);
+        lvNote = view.findViewById(R.id.list_view_notes);
+        floatingActionButton = view.findViewById(R.id.floating_btn_add_note);
+        noteSearchView = view.findViewById(R.id.search_view_note);
+        lvMonthYearPicker = view.findViewById(R.id.picker_note_month_year);
+        tvMonthYearPicker = view.findViewById(R.id.tv_month_year_picker);
 
         return view;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
-        monthAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.months_array, R.layout.spinner_item);
-        monthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        monthSpinner.setAdapter(monthAdapter);
-
-        yearAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.year_array, R.layout.spinner_item);
-        yearAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        yearSpinner.setAdapter(yearAdapter);
-        setSpinnerDefaults();
-
-        month = monthSpinner.getSelectedItemPosition();
-        year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-
-        ArrayList<String> addOptions = new ArrayList<>();
-        addOptions.add("Text");
-        addOptions.add("To-Do");
-
-        final AddOptionsAdapter addOptionsAdapter = new AddOptionsAdapter(getContext(), addOptions);
-
-        displayDatabaseInfo(month, year);
+        populateMonthYearPicker();
+        populateNotesAndSetAdapter();
+        registerListeners();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.main_activity_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    private void populateMonthYearPicker() {
+        Calendar now = Calendar.getInstance();
+        StringBuilder monthYearStrBuiler = new StringBuilder()
+                .append(Objects.requireNonNull(Month.fromIntValue(now.get(Calendar.MONTH)))
+                        .getFullName())
+                .append(", ")
+                .append(now.get(Calendar.YEAR));
+
+        tvMonthYearPicker.setText(monthYearStrBuiler.toString());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
+    private void populateMonthYearPicker(int month, int year) {
+        StringBuilder monthYearStringBuilder = new StringBuilder()
+                .append(Month.fromIntValue(month).getFullName())
+                .append(", ")
+                .append(year);
+
+        tvMonthYearPicker.setText(monthYearStringBuilder.toString());
     }
 
+    private void populateNotesAndSetAdapter() {
+        ArrayList<Note> notes = new ArrayList<>();
+        noteAdapter = new NoteAdapter(getContext(), notes);
 
-    @Override
-    public void onResume() {
-        super.onResume();
+        populateNotes(notes);
+        lvNote.setAdapter(noteAdapter);
+    }
 
-        monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//    private void testWrite() {
+//        Note note = new Note(0, 0, "Title", "Content");
+//        FirebaseHelper.getReference().push().setValue(note);
+//    }
+
+    private void populateNotes(ArrayList<Note> notes) {
+        FirebaseHelper.getQueryForNotes()
+                .addChildEventListener(
+                        new NoteChildEventListener(notes, noteAdapter)
+                );
+    }
+
+    private void registerListeners() {
+        lvNote.setOnItemClickListener((adapterView, view, position, l) -> {
+            Intent noteIntent = new Intent(MainFragment.this.getContext(), CreateNoteActivity.class);
+            noteIntent.putExtra(NOTE, noteAdapter.getItem(position));
+            MainFragment.this.startActivity(noteIntent);
+        });
+        lvNote.setOnItemLongClickListener(new NoteItemLongClickListener());
+
+        floatingActionButton.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), CreateNoteActivity.class));
+        });
+
+        noteSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int month = position;
-                int year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-                displayDatabaseInfo(month, year);
+            public boolean onQueryTextSubmit(String s) {
+                return false;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public boolean onQueryTextChange(String queryText) {
+                noteAdapter.getFilter().filter(queryText);
 
+                return true;
             }
         });
 
-        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int year = Integer.parseInt(parent.getItemAtPosition(position).toString());
-                int month = monthSpinner.getSelectedItemPosition();
-                displayDatabaseInfo(month, year);
-            }
+        lvMonthYearPicker.setOnClickListener(view -> {
+            Calendar today = Calendar.getInstance();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            MonthPickerDialog.Builder builder = new MonthPickerDialog.Builder(getContext(),
+                    (selectedMonth, selectedYear) -> {
+                        noteAdapter.getFilter()
+                                .filter(DateUtil.getEncodedMonthYearWithPrefix(selectedMonth, selectedYear));
 
-            }
+                        populateMonthYearPicker(selectedMonth, selectedYear);
+                    }, today.get(Calendar.YEAR), today.get(Calendar.MONTH));
+
+            builder.setActivatedMonth(today.get(Calendar.MONTH))
+                    .setActivatedYear(today.get(Calendar.YEAR))
+                    .setMinYear(2015)
+                    .setMaxYear(2030)
+                    .setTitle("Select Month For Notes")
+                    .build()
+                    .show();
         });
-
-
-        month = monthSpinner.getSelectedItemPosition();
-        year = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-        displayDatabaseInfo(month, year);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), CreateNoteActivity.class));
-            }
-        });
-
-    }
-
-    private void displayDatabaseInfo(int month, int year) {
-
-        Log.d("MainActivity", month + " " + year);
-
-        NoteDbHelper mDbHelper = new NoteDbHelper(getContext());
-
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                NoteContract.NoteEntry.COLUMN_ID,
-                NoteContract.NoteEntry.COLUMN_DATE,
-                NoteContract.NoteEntry.COLUMN_TITLE,
-                NoteContract.NoteEntry.COLUMN_DESCRIPTION,
-                NoteContract.NoteEntry.COLUMN_MONTH,
-                NoteContract.NoteEntry.COLUMN_YEAR
-        };
-
-        Cursor cursor = null;
-        try {
-            cursor = getContext().getContentResolver().query(
-                    NoteProvider.CONTENT_URI,
-                    projection,
-                    NoteContract.NoteEntry.COLUMN_MONTH + "=? AND " + NoteContract.NoteEntry.COLUMN_YEAR + " =?",
-                    new String[]{String.valueOf(month + 1), String.valueOf(year)},
-                    NoteContract.NoteEntry.COLUMN_DATE + " ASC");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor.getCount() == 0)
-                Log.d("cursor", "null");
-            notes = new ArrayList<>();
-//            while (cursor.moveToNext()) {
-//                Note note = new Note(cursor.getInt(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_ID)),
-//                        cursor.getLong(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DATE)),
-//                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_TITLE)),
-//                        cursor.getString(cursor.getColumnIndex(NoteContract.NoteEntry.COLUMN_DESCRIPTION)));
-//
-//                notes.add(note);
-//            }
-
-            cursor.close();
-            db.close();
-        }
-
-        checkEmpty();
-
-        int numOfColumns = calculateNoOfColumns(getContext(), 150);
-        noteView.setLayoutManager(new GridLayoutManager(getContext(), numOfColumns));
-        noteView.hasFixedSize();
-        final MyRecyclerAdapter adapter = new MyRecyclerAdapter(getContext(), notes);
-
-        adapter.setOnItemClickListener(new MyRecyclerAdapter.ClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-//                Note note = notes.get(position);
-//                Intent intent = new Intent(getContext(), CreateNoteActivity.class);
-//                intent.putExtra(NoteContract.NoteEntry.COLUMN_ID, note.getID());
-//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DATE, note.getDateTime());
-//                intent.putExtra("formatted_time", note.getDateTimeFormatted(getContext()));
-//                intent.putExtra(NoteContract.NoteEntry.COLUMN_TITLE, note.getTitle());
-//                intent.putExtra(NoteContract.NoteEntry.COLUMN_DESCRIPTION, note.getDescription());
-//                startActivity(intent);
-            }
-        });
-
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                super.onItemRangeRemoved(positionStart, itemCount);
-                checkEmpty();
-            }
-        });
-        noteView.setAdapter(adapter);
-    }
-
-    private void setSpinnerDefaults() {
-        Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
-        monthSpinner.setSelection(month);
-
-        int year = calendar.get(Calendar.YEAR);
-
-        for (int i = 0; i < yearAdapter.getCount(); i++) {
-            if (yearAdapter.getItem(i).equals(String.valueOf(year))) {
-                yearSpinner.setSelection(i);
-                break;
-            }
-        }
-    }
-
-    private void checkEmpty() {
-        if (notes.isEmpty()) {
-            homepageEmptyLayout.setVisibility(View.VISIBLE);
-            homepageEmptyLayout.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.scale_in));
-            noteView.setVisibility(View.INVISIBLE);
-            return;
-        } else {
-            homepageEmptyLayout.setVisibility(View.INVISIBLE);
-            noteView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        notes.clear();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        notes.clear();
-        super.onDestroy();
-    }
-
-    private void checkSignin() {
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if (account == null)
-            startActivity(new Intent(getContext(), GoogleSigninActivity.class));
-    }
-
-    public static int calculateNoOfColumns(Context context, float columnWidthDp) { // For example columnWidthdp=180
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        if (displayMetrics.widthPixels > displayMetrics.heightPixels) {
-            columnWidthDp /= 1.8;
-        }
-        float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.
-        return noOfColumns;
     }
 }

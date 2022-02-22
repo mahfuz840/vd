@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.the_spartan.virtualdiary.adapter.NoteAdapterNew;
+import com.the_spartan.virtualdiary.adapter.NoteAdapter;
 import com.the_spartan.virtualdiary.data.FirebaseHelper;
 import com.the_spartan.virtualdiary.model.Note;
 
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 public class NoteChildEventListener implements ChildEventListener {
 
     private ArrayList<Note> notes;
-    private NoteAdapterNew noteAdapter;
+    private NoteAdapter noteAdapter;
 
-    public NoteChildEventListener(ArrayList<Note> notes, NoteAdapterNew noteAdapter) {
+    public NoteChildEventListener(ArrayList<Note> notes, NoteAdapter noteAdapter) {
         this.notes = notes;
         this.noteAdapter = noteAdapter;
     }

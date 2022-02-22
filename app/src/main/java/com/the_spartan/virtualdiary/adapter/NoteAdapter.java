@@ -1,114 +1,154 @@
 package com.the_spartan.virtualdiary.adapter;
 
+import static com.the_spartan.virtualdiary.model.Action.SEARCH_BY_MONTH;
+import static com.the_spartan.virtualdiary.model.Action.SEARCH_BY_QUERY;
+import static com.the_spartan.virtualdiary.util.DateUtil.MONTH_YEAR_PREFIX;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.model.Action;
+import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
+import com.the_spartan.virtualdiary.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
-/**
- * Created by the_spartan on 4/1/18.
- */
+public class NoteAdapter extends ArrayAdapter<Note> implements Filterable {
 
-public class NoteAdapter extends ArrayAdapter<Note> {
-
-    Context mContext;
-    ArrayList<Note> notes;
-    TextView contentView;
-    TextView titleView;
-    TextView dateView;
-    TextView monthView;
+    private Context context;
+    private TextView tvTitle;
+    private TextView tvContent;
+    private TextView tvDate;
+    private TextView tvYear;
+    private ArrayList<Note> notes;
+    private ArrayList<Note> filteredNotes;
 
     public NoteAdapter(@NonNull Context context, ArrayList<Note> notes) {
         super(context, 0, notes);
+        this.context = context;
         this.notes = notes;
-        mContext = context;
+        this.filteredNotes = notes;
     }
 
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if (listItemView == null) {
-            listItemView = LayoutInflater.from(mContext).inflate(R.layout.note_recycler_search, null);
+            listItemView = LayoutInflater.from(context).inflate(R.layout.note_list_view_item, null);
         }
-        Note currentNoteAdapter = notes.get(position);
 
-//        dateView = listItemView.findViewById(R.id.search_date_view);
-//        String[] splittedDates = currentNoteAdapter.getDateTimeFormatted(mContext).split("/");
-//        dateView.setText(splittedDates[0]);
-//
-//        monthView = listItemView.findViewById(R.id.search_month_view);
-//
-//        String monthString;
-//        int month = currentNoteAdapter.getMonth();
-//        switch (month) {
-//            case 1:
-//                monthString = "Jan";
-//                break;
-//            case 2:
-//                monthString = "Feb";
-//                break;
-//            case 3:
-//                monthString = "Mar";
-//                break;
-//            case 4:
-//                monthString = "Apr";
-//                break;
-//            case 5:
-//                monthString = "May";
-//                break;
-//            case 6:
-//                monthString = "Jun";
-//                break;
-//            case 7:
-//                monthString = "Jul";
-//                break;
-//            case 8:
-//                monthString = "Aug";
-//                break;
-//            case 9:
-//                monthString = "Sep";
-//                break;
-//            case 10:
-//                monthString = "Oct";
-//                break;
-//            case 11:
-//                monthString = "Nov";
-//                break;
-//            case 12:
-//                monthString = "Dec";
-//                break;
-//            default:
-//                monthString = "Unknown";
-//        }
-//
-//        monthView.setText(monthString);
-//
-//        titleView = listItemView.findViewById(R.id.search_title_view);
-//        String title = currentNoteAdapter.getTitle();
-//        if (title == null || title.equals("")) {
-//            titleView.setText("(no title)");
-//        } else {
-//            titleView.setText(currentNoteAdapter.getTitle());
-//        }
-//
-//        contentView = listItemView.findViewById(R.id.search_content_view);
-//        String content = currentNoteAdapter.getDescription();
-//        if (content.isEmpty())
-//            contentView.setText("(no description)");
-//        else
-//            contentView.setText(currentNoteAdapter.getDescription());
+        tvTitle = listItemView.findViewById(R.id.note_list_item_title);
+        tvContent = listItemView.findViewById(R.id.note_list_item_content);
+        tvDate = listItemView.findViewById(R.id.tv_note_date_list_view);
+        tvYear = listItemView.findViewById(R.id.tv_note_year_list_view);
+
+        Note currentNote = filteredNotes.get(position);
+        tvTitle.setText(currentNote.getTitle());
+        tvContent.setText(currentNote.getDescription());
+        tvDate.setText(DateUtil.getFormattedDayAndMonthStrFromMillis(currentNote.getTimestamp()));
+        tvYear.setText(String.valueOf(DateUtil.getYearFromMillis(currentNote.getTimestamp())));
 
         return listItemView;
+    }
+
+    public ArrayList<Note> getItems() {
+        return filteredNotes;
+    }
+
+    public ArrayList<Note> getOriginalItems() {
+        return notes;
+    }
+
+    @Override
+    public int getCount() {
+        return filteredNotes.size();
+    }
+
+    @Nullable
+    @Override
+    public Note getItem(int position) {
+        return filteredNotes.get(position);
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+
+                if (constraint == null || constraint.length() == 0) {
+                    results.count = notes.size();
+                    results.values = notes;
+
+                    return results;
+                }
+
+                ArrayList<Note> matchedNotes = new ArrayList<>();
+                String queryText = constraint.toString();
+
+                Action action = queryText.startsWith(MONTH_YEAR_PREFIX) ? SEARCH_BY_MONTH : SEARCH_BY_QUERY;
+                if (action.is(SEARCH_BY_MONTH)) {
+                    filterByMonth(matchedNotes, queryText);
+                } else {
+                    filterByQuery(matchedNotes, queryText);
+                }
+
+                results.count = matchedNotes.size();
+                results.values = matchedNotes;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults results) {
+                filteredNotes = (ArrayList<Note>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+
+        return filter;
+    }
+
+    private void filterByMonth(ArrayList<Note> matchedNotes, String queryText) {
+        Month month = DateUtil.getDecodedMonthFromMonthYearStr(queryText);
+        int year = DateUtil.getDecodedYearFromMonthYearStr(queryText);
+        Calendar calendar = Calendar.getInstance();
+
+        for (Note note : notes) {
+            calendar.setTimeInMillis(note.getTimestamp());
+            Month noteMonth = Month.fromIntValue(calendar.get(Calendar.MONTH));
+            int noteYear = calendar.get(Calendar.YEAR);
+
+            if (noteMonth == month && noteYear == year) {
+                matchedNotes.add(note);
+            }
+        }
+    }
+
+    private void filterByQuery(ArrayList<Note> matchedNotes, String queryText) {
+        queryText = queryText.toLowerCase();
+
+        for (Note note : notes) {
+            if (note.getTitle().toLowerCase().contains(queryText)
+                    || note.getDescription().toLowerCase().contains(queryText)) {
+
+                matchedNotes.add(note);
+            }
+        }
     }
 }

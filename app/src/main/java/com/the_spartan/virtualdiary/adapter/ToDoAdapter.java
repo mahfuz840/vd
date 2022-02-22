@@ -1,18 +1,16 @@
 package com.the_spartan.virtualdiary.adapter;
 
-import android.content.ContentValues;
+import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
+
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
@@ -22,56 +20,42 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.data.ToDoContract;
-import com.the_spartan.virtualdiary.data.ToDoProvider;
-import com.the_spartan.virtualdiary.interfacing.DeleteListCollector;
-import com.the_spartan.virtualdiary.model.ToDoItem;
+import com.the_spartan.virtualdiary.model.ToDo;
+import com.the_spartan.virtualdiary.service.ToDoService;
 import com.the_spartan.virtualdiary.util.FontUtil;
 import com.the_spartan.virtualdiary.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
+public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
-public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
+    private ArrayList<ToDo> filteredToDoList;
+    private ArrayList<ToDo> originalToDoList;
 
-    private ArrayList<ToDoItem> filteredToDoList;
-    private ArrayList<ToDoItem> originalToDoList;
-    private ArrayList<ToDoItem> deleteList;
     private Context context;
-    private DeleteListCollector deleteListCollector;
-    private ToDoFilter mFilter;
     private ListView listView;
 
-    private boolean activeItemAdapter;
+    private ToDoService toDoService;
 
-    public ToDoAdapter(Context context, ArrayList<ToDoItem> items, DeleteListCollector deleteListCollector,
-                       boolean activeItemAdapter) {
+    public ToDoAdapter(Context context, ArrayList<ToDo> items) {
         super(context, 0, items);
         this.originalToDoList = new ArrayList<>();
         this.originalToDoList.addAll(items);
         this.filteredToDoList = new ArrayList<>();
         this.filteredToDoList.addAll(items);
-        this.deleteListCollector = deleteListCollector;
         this.context = context;
-        this.activeItemAdapter = activeItemAdapter;
-        this.deleteList = new ArrayList<>();
 
-        mFilter = new ToDoFilter();
+        toDoService = new ToDoService();
     }
 
     @Override
     public int getCount() {
-        int val = filteredToDoList == null ? 0 : filteredToDoList.size();
-        Log.d("Adapter", "Size " + val);
-
-        return val;
+        return filteredToDoList == null ? 0 : filteredToDoList.size();
     }
 
     @Override
-    public ToDoItem getItem(int position) {
-        Log.d("adapter", "position " + position);
+    public ToDo getItem(int position) {
         return filteredToDoList.get(position);
     }
 
@@ -82,83 +66,48 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        TextView tvName;
-        TextView tvPriority;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.todo_list_item, null);
+        }
+
+        TextView tvName = convertView.findViewById(R.id.tvItem);
+        TextView tvPriority = convertView.findViewById(R.id.tvItemPriority);
         TextView dueDate;
         TextView tvTime;
         listView = (ListView) parent;
 
-        Log.d("adapter", "hi " + position);
-
-        if (v == null) {
-            v = LayoutInflater.from(context).inflate(R.layout.todo_list_item, null);
-        }
-
         Typeface myFont = FontUtil.initializeFonts(context);
 
-        ToDoItem item = filteredToDoList.get(position);
+        ToDo item = filteredToDoList.get(position);
+
         if (item != null) {
-            tvName = v.findViewById(R.id.tvItem);
-            tvPriority = v.findViewById(R.id.tvItemPriority);
-
-            int isChecked = item.isDone();
-            boolean isCheckedBool = isChecked == 1;
-
-            CheckBox cb = v.findViewById(R.id.cbItemCheck);
+            CheckBox cb = convertView.findViewById(R.id.cbItemCheck);
             cb.setTag(position);
-            cb.setChecked(isCheckedBool);
+            cb.setChecked(item.isDone());
 
-            updateDeleteList(item, isCheckedBool);
+            cb.setOnCheckedChangeListener((button, isChecked) -> {
+                int pos = (int) button.getTag();
+                ToDo tappedTodo = getItem(pos);
+                tappedTodo.setDone(isChecked);
 
-            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                    int pos = (int) button.getTag();
-                    ToDoItem item = getItem(pos);
+                toDoService.saveOrUpdate(tappedTodo);
+                originalToDoList.set(pos, tappedTodo);
 
-                    int isCheckedInt = isChecked ? 1 : 0;
-
-                    ContentValues values = new ContentValues();
-                    values.put(ToDoContract.ToDoEntry.COLUMN_ISDONE, isCheckedInt);
-
-                    String selection = ToDoContract.ToDoEntry.COLUMN_ID + "=?";
-                    String[] selectionArgs = new String[]{String.valueOf(item.getID())};
-
-                    Uri uri = ToDoProvider.CONTENT_URI;
-
-                    getContext().getContentResolver().update(uri, values, selection, selectionArgs);
-                    item.isDone(isCheckedInt);
-                    filteredToDoList.set(pos, item);
-
-                    updateDeleteList(item, isChecked);
-
-                    notifyDataSetChanged();
-                }
+                notifyDataSetChanged();
             });
 
             tvName.setText(item.getSubject());
 
-            if (item.isDone() == 1) {
+            if (item.isDone()) {
                 tvName.setPaintFlags(tvName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
                 tvName.setPaintFlags(0);
             }
 
-            switch (item.getPriority()) {
-                case 0:
-                    tvPriority.setText(R.string.priority_low);
-                    break;
-                case 1:
-                    tvPriority.setText(R.string.priority_med);
-                    break;
-                default:
-                    tvPriority.setText(R.string.priority_high);
-                    break;
-            }
+            tvPriority.setText(item.getPriority().getDisplayName());
 
-            dueDate = v.findViewById(R.id.tvDueDate);
-            tvTime = v.findViewById(R.id.tv_todo_time);
+            dueDate = convertView.findViewById(R.id.tvDueDate);
+            tvTime = convertView.findViewById(R.id.tv_todo_time);
             if (!TextUtils.isEmpty(item.getDueDate())) {
                 dueDate.setText(item.getDueDate());
             } else if (!TextUtils.isEmpty(item.getTime())) {
@@ -203,26 +152,28 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
             }
         }
 
-        return v;
+        return convertView;
     }
 
-    private void updateDeleteList(ToDoItem item, boolean isChecked) {
-        boolean found = false;
-        int index = 0;
-        for (int i = 0; i < deleteList.size(); i++) {
-            if (item.getID() == deleteList.get(i).getID()) {
-                found = true;
-                index = i;
+    public void deleteCompletedTodos() {
+        List<ToDo> todosToDelete = new ArrayList<>();
+        for (ToDo todo : originalToDoList) {
+            if (todo.isDone()) {
+                todosToDelete.add(todo);
             }
         }
 
-        if (isChecked && !found) {
-            deleteList.add(item);
-        } else if (!isChecked && found) {
-            deleteList.remove(index);
+        toDoService.delete(todosToDelete);
+
+        //remove after testing
+        for (ToDo todo : todosToDelete) {
+            if (todo.isDone()) {
+                originalToDoList.remove(todo);
+                filteredToDoList.remove(todo);
+            }
         }
 
-        deleteListCollector.updateDeleteList(deleteList);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -238,10 +189,10 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
     @NonNull
     @Override
     public Filter getFilter() {
-        return mFilter;
+        return new ToDoFilter();
     }
 
-    public void notify(ArrayList<ToDoItem> list) {
+    public void notify(ArrayList<ToDo> list) {
         this.filteredToDoList.clear();
         this.originalToDoList.clear();
         this.filteredToDoList.addAll(list);
@@ -255,10 +206,10 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
         protected FilterResults performFiltering(CharSequence charSequence) {
             String queryString = charSequence.toString().toLowerCase().trim();
             FilterResults results = new FilterResults();
-            List<ToDoItem> nList = new ArrayList<>();
+            List<ToDo> nList = new ArrayList<>();
             String filterableString = null;
 
-            for (ToDoItem item : originalToDoList) {
+            for (ToDo item : originalToDoList) {
                 filterableString = item.getSubject().toLowerCase();
                 if (filterableString.contains(queryString)) {
                     nList.add(item);
@@ -273,7 +224,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> implements Filterable {
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            filteredToDoList = (ArrayList<ToDoItem>) filterResults.values;
+            filteredToDoList = (ArrayList<ToDo>) filterResults.values;
             notifyDataSetChanged();
             setListViewHeightBasedOnChildren(listView);
         }

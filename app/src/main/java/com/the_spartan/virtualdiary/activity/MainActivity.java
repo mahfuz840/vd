@@ -24,8 +24,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_spartan.virtualdiary.R;
-import com.the_spartan.virtualdiary.fragment.MainFragmentNew;
-import com.the_spartan.virtualdiary.fragment.ToDoParentFragment;
+import com.the_spartan.virtualdiary.fragment.MainFragment;
+import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 //            });
 //        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.activity_fragment_container, MainFragmentNew.getInstance())
+                .replace(R.id.activity_fragment_container, MainFragment.getInstance())
                 .commit();
     }
 
@@ -77,15 +77,15 @@ public class MainActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.nav_todo:
-                    fragment = ToDoParentFragment.getInstance();
+                    fragment = ToDoFragment.getInstance();
                     break;
 
                 case R.id.nav_notes:
-                    fragment = MainFragmentNew.getInstance();
+                    fragment = MainFragment.getInstance();
                     break;
 
                 default:
-                    fragment = MainFragmentNew.getInstance();
+                    fragment = MainFragment.getInstance();
                     break;
             }
 
@@ -137,27 +137,27 @@ public class MainActivity extends AppCompatActivity {
 
                 final EditText searchTerm = dialogView.findViewById(R.id.search_edit_text);
 
-                posBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String searchTermString = searchTerm.getText().toString();
-                        if (searchTermString.trim().equals("")) {
-                            searchTerm.setError("Please type something to search for!");
-                        } else {
-                            searchTermString = searchTermString.replace("\\s", "");
-                            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                            intent.putExtra("term", searchTermString);
-                            alertDialog.dismiss();
-                            startActivity(intent);
-                        }
-                    }
-                });
-                negBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
+//                posBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        String searchTermString = searchTerm.getText().toString();
+//                        if (searchTermString.trim().equals("")) {
+//                            searchTerm.setError("Please type something to search for!");
+//                        } else {
+//                            searchTermString = searchTermString.replace("\\s", "");
+//                            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+//                            intent.putExtra("term", searchTermString);
+//                            alertDialog.dismiss();
+//                            startActivity(intent);
+//                        }
+//                    }
+//                });
+//                negBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        alertDialog.dismiss();
+//                    }
+//                });
 
                 alertDialog.show();
 

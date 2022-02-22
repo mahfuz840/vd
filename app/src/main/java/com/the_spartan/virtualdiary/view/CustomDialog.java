@@ -59,6 +59,7 @@ public class CustomDialog {
                         String message,
                         String posText,
                         String negText) {
+
         this.context = context;
         this.viewGroup = viewGroup;
         this.layoutResId = layout;

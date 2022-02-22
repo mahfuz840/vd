@@ -1,17 +1,11 @@
 package com.the_spartan.virtualdiary.util;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.the_spartan.virtualdiary.activity.NewItemActivity;
-import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
-import com.the_spartan.virtualdiary.model.ToDoItem;
+import com.the_spartan.virtualdiary.model.ToDo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,10 +16,10 @@ import java.util.Date;
 
 public class ListViewUtil {
 
-    public static void sortByDateAsc(ArrayList<ToDoItem> itemList) {
-        Collections.sort(itemList, new Comparator<ToDoItem>() {
+    public static void sortByDateAsc(ArrayList<ToDo> itemList) {
+        Collections.sort(itemList, new Comparator<ToDo>() {
             @Override
-            public int compare(ToDoItem o1, ToDoItem o2) {
+            public int compare(ToDo o1, ToDo o2) {
                 if (o1.getDueDate().length() == 0 && o2.getDueDate().length() == 0) {
                     return 0;
                 } else if (o1.getDueDate().length() == 0) {
@@ -62,10 +56,10 @@ public class ListViewUtil {
         });
     }
 
-    public static void sortByTime(ArrayList<ToDoItem> itemList) {
-        Collections.sort(itemList, new Comparator<ToDoItem>() {
+    public static void sortByTime(ArrayList<ToDo> itemList) {
+        Collections.sort(itemList, new Comparator<ToDo>() {
             @Override
-            public int compare(ToDoItem o1, ToDoItem o2) {
+            public int compare(ToDo o1, ToDo o2) {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 long difference = 0;
                 try {
