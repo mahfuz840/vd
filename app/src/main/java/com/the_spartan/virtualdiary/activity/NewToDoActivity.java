@@ -1,6 +1,7 @@
 package com.the_spartan.virtualdiary.activity;
 
 import static com.the_spartan.virtualdiary.model.ToDo.TODO;
+import static com.the_spartan.virtualdiary.util.DateUtil.getCurrentFormattedDateStr;
 import static com.the_spartan.virtualdiary.util.TimeUtil.formatTime;
 import static com.the_spartan.virtualdiary.util.TimeUtil.getTwelveHourFormattedTime;
 import static com.the_spartan.virtualdiary.util.TimeUtil.getTwentyFourHourFormattedTime;
@@ -8,22 +9,18 @@ import static com.the_spartan.virtualdiary.util.TimeUtil.getTwentyFourHourFormat
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,27 +29,23 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.model.Priority;
 import com.the_spartan.virtualdiary.model.ToDo;
 import com.the_spartan.virtualdiary.service.ToDoService;
+import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 public class NewToDoActivity extends AppCompatActivity {
 
-    private static final int INVALID = -1;
-
-    int position;
     private EditText etTaskName;
     private EditText etTime;
     private EditText etDate;
-
     private AutoCompleteTextView priorityDropDown;
+    private ImageButton ibBack;
+    private ImageButton ibDone;
+    private ImageButton ibDelete;
 
-    private int ID;
     private int priority;
-
-    private List<String> priorityValues;
 
     private ToDoService toDoService;
 
@@ -60,25 +53,27 @@ public class NewToDoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_new_item);
+        setContentView(R.layout.activity_new_todo);
 
         initView();
         populateViews();
-        setListener();
+        setListeners();
 
         toDoService = new ToDoService();
     }
 
     private void initView() {
-        priorityDropDown = findViewById(R.id.dropdown_priority);
-        priorityValues = new ArrayList<>();
-        for (Priority priority : Priority.values()) {
-            priorityValues.add(priority.getDisplayName());
-        }
-
         etTaskName = findViewById(R.id.et_new_todo);
         etTime = findViewById(R.id.etDisplayTime);
         etDate = findViewById(R.id.et_new_todo_date);
+        priorityDropDown = findViewById(R.id.dropdown_priority);
+
+        ibBack = findViewById(R.id.ib_new_todo_back);
+        ibDone = findViewById(R.id.ib_new_todo_done);
+        ibDelete = findViewById(R.id.ib_new_todo_delete);
+        if (getIntent().getSerializableExtra(TODO) == null) {
+            ibDelete.setVisibility(View.GONE);
+        }
     }
 
     private void populateViews() {
@@ -90,49 +85,39 @@ public class NewToDoActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(todo.getDueDate())) {
             etDate.setText(todo.getDueDate());
+        } else {
+            etDate.setText(getCurrentFormattedDateStr());
         }
 
         if (!TextUtils.isEmpty(todo.getTime())) {
             etTime.setText(getTwelveHourFormattedTime(todo.getTime()));
         }
+
+        ArrayList<String> priorityValues = new ArrayList<>();
+        for (Priority priority : Priority.values()) {
+            priorityValues.add(priority.getDisplayName());
+        }
+
+        priorityDropDown.setAdapter(
+                new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1,
+                        priorityValues)
+        );
+
+        priorityDropDown.setText(todo.getPriority().getDisplayName(), false);
     }
 
-    private void setListener() {
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priorityValues);
-        priorityDropDown.setAdapter(adapter);
-
+    private void setListeners() {
         priorityDropDown.setOnItemClickListener((adapterView, view, i, l) -> priority = i);
         etDate.setOnClickListener(view -> showDatePicker());
         etTime.setOnClickListener(view -> showTimePicker());
+
+        ibBack.setOnClickListener(view -> finish());
+        ibDone.setOnClickListener(view -> saveOrUpdate());
+        ibDelete.setOnClickListener(view -> showDeleteDialog());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.to_do_menu_new, menu);
-        Drawable drawable = menu.findItem(R.id.newadd).getIcon();
-        if (drawable != null) {
-            drawable.mutate();
-            drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        }
-
-        Drawable drawable1 = menu.findItem(R.id.shareNew).getIcon();
-        if (drawable1 != null) {
-            drawable1.mutate();
-            drawable1.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-
-        return true;
-    }
-
-    public void saveOrUpdate(MenuItem item) {
+    private void saveOrUpdate() {
         if (TextUtils.isEmpty(etTaskName.getText().toString().trim())) {
             Toast.makeText(NewToDoActivity.this, "Task Name cannot be empty", Toast.LENGTH_SHORT).show();
             return;
@@ -147,6 +132,25 @@ public class NewToDoActivity extends AppCompatActivity {
         toDoService.saveOrUpdate(todo);
 
         this.finish();
+    }
+
+    private void showDeleteDialog() {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        CustomDialog customDialog = new CustomDialog(this,
+                viewGroup,
+                R.layout.dialog,
+                R.string.confirm_delete,
+                R.string.dialog_msg_todo_single_delete,
+                R.string.dialog_btn_yes,
+                R.string.dialog_btn_cancel);
+
+        customDialog.posBtn.setOnClickListener(view -> {
+            ToDo todo = (ToDo) getIntent().getSerializableExtra(TODO);
+            toDoService.delete(todo);
+            finish();
+        });
+
+        customDialog.show();
     }
 
     private void showDatePicker() {
@@ -176,25 +180,6 @@ public class NewToDoActivity extends AppCompatActivity {
                 }, mHour, mMinute, false);
 
         timePickerDialog.show();
-    }
-
-
-    public void onShareClick(MenuItem view) {
-        if (!TextUtils.isEmpty(etTaskName.getText().toString())) {
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            String shareBody = "";
-            shareBody += etTaskName.getText().toString();
-            if (!TextUtils.isEmpty(etTime.getText().toString())) {
-                shareBody += "\n" + etTime.getText().toString();
-                if (!TextUtils.isEmpty(etDate.getText().toString())) {
-                    shareBody += "\n" + etDate.getText().toString();
-                }
-            }
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "ToDo task");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(sharingIntent, "Share via"));
-        }
     }
 
     @Override

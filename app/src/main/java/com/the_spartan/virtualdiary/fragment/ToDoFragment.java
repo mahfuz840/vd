@@ -1,22 +1,17 @@
 package com.the_spartan.virtualdiary.fragment;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.the_spartan.virtualdiary.model.ToDo.TODO;
-import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
-import static com.the_spartan.virtualdiary.util.ViewUtil.hideViewsOfaDay;
-import static com.the_spartan.virtualdiary.util.ViewUtil.setVisibility;
-import static com.the_spartan.virtualdiary.util.ViewUtil.showViewsOfaDay;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +24,7 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.NewToDoActivity;
 import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
 import com.the_spartan.virtualdiary.model.ToDo;
+import com.the_spartan.virtualdiary.service.ToDoService;
 import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
@@ -39,33 +35,17 @@ public class ToDoFragment extends Fragment {
 
     private static ToDoFragment instance;
 
-    private LinearLayout todoEmptyLayout;
-
-    private ToDoAdapter todayAdapter;
-    private ToDoAdapter tomorrowAdapter;
-    private ToDoAdapter nextAdapter;
-
-    private ListView lvToday;
-    private ListView lvTomorrow;
-    private ListView lvUpcoming;
+    private ToDoAdapter todoAdapter;
+    private ListView lvTodo;
 
     private FloatingActionButton fabAddTodo;
 
-    private ArrayList<ToDo> todayItems = new ArrayList<>();
-    private ArrayList<ToDo> tomorrowItems = new ArrayList<>();
-    private ArrayList<ToDo> nextItems = new ArrayList<>();
-
-    private CardView emptyCardViewToday;
-    private CardView emptyCardViewTomorrow;
-    private CardView emptyCardViewNext;
-
-    private TextView tvToday;
-    private TextView tvTomorrow;
-    private TextView tvNext;
+    private CardView cvEmpty;
 
     private SearchView svTodo;
-    private Spinner spnTodoType;
     private ImageButton ivDelete;
+
+    private ToDoService todoService;
 
     private ToDoFragment() {
     }
@@ -82,123 +62,40 @@ public class ToDoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_to_do, container, false);
-
         initViews(view);
-        setHasOptionsMenu(true);
 
         return view;
-    }
-
-    private void initViews(View view) {
-        fabAddTodo = view.findViewById(R.id.floating_btn_add_todo);
-        lvToday = view.findViewById(R.id.list_view_today);
-        lvTomorrow = view.findViewById(R.id.list_view_tomorrow);
-        lvUpcoming = view.findViewById(R.id.list_view_next);
-        emptyCardViewToday = view.findViewById(R.id.empty_todo_today);
-        lvToday.setEmptyView(emptyCardViewToday);
-        emptyCardViewTomorrow = view.findViewById(R.id.empty_todo_tomorrow);
-        lvTomorrow.setEmptyView(emptyCardViewTomorrow);
-        emptyCardViewNext = view.findViewById(R.id.empty_todo_next);
-        lvUpcoming.setEmptyView(emptyCardViewNext);
-
-        tvToday = view.findViewById(R.id.tv_today);
-        tvTomorrow = view.findViewById(R.id.tv_tomorrow);
-        tvNext = view.findViewById(R.id.tv_next);
-
-        svTodo = view.findViewById(R.id.search_view_todo);
-        spnTodoType = view.findViewById(R.id.spinner_todo_type);
-        ivDelete = view.findViewById(R.id.iv_todo_delete);
-
-        todoEmptyLayout = view.findViewById(R.id.active_todo_empty_layout);
-    }
-
-    private void populateTypeSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.todo_types, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnTodoType.setAdapter(adapter);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fabAddTodo.setOnClickListener(view -> startActivity(new Intent(getContext(), NewToDoActivity.class)));
-        populateItems();
-        populateListViews();
+        todoService = new ToDoService();
+
+        populateListView();
         registerOnClickListeners();
         registerOnLongClickListeners();
-        populateTypeSpinner();
     }
 
-    public void populateItems() {
-        todayItems.clear();
-        tomorrowItems.clear();
-        nextItems.clear();
+    private void initViews(View view) {
+        fabAddTodo = view.findViewById(R.id.fab_add_todo);
+        lvTodo = view.findViewById(R.id.list_view_today);
+        cvEmpty = view.findViewById(R.id.empty_todo_today);
+        lvTodo.setEmptyView(cvEmpty);
 
-        for (int i = 0; i < 5; i++) {
-            ToDo todo = new ToDo();
-            todo.setSubject("Test");
-            todo.setDueDate("23/11/2021");
-
-            todayItems.add(todo);
-        }
+        svTodo = view.findViewById(R.id.search_view_todo);
+        ivDelete = view.findViewById(R.id.ib_todo_delete);
     }
 
-    private void populateListViews() {
-        if (todayItems.isEmpty() && tomorrowItems.isEmpty() && nextItems.isEmpty()) {
-            setVisibility(View.GONE,
-                    lvToday, lvTomorrow, lvUpcoming,
-                    emptyCardViewToday, emptyCardViewTomorrow, emptyCardViewNext,
-                    tvToday, tvTomorrow, tvNext);
-            todoEmptyLayout.setVisibility(View.VISIBLE);
-
-            return;
-        }
-
-        todoEmptyLayout.setVisibility(View.GONE);
-
-//        ListViewUtil.sortByTime(todayItems);
-//        ListViewUtil.sortByTime(tomorrowItems);
-//        ListViewUtil.sortByDateAsc(nextItems);
-
-        if (todayItems.size() > 0) {
-            todayAdapter = populateViewsOfaDay(emptyCardViewToday, tvToday, lvToday, todayAdapter, todayItems);
-        } else {
-            hideViewsOfaDay(emptyCardViewToday, tvToday, lvToday);
-        }
-
-        if (tomorrowItems.size() > 0) {
-            tomorrowAdapter = populateViewsOfaDay(emptyCardViewTomorrow, tvTomorrow, lvTomorrow, tomorrowAdapter, tomorrowItems);
-        } else {
-            hideViewsOfaDay(emptyCardViewTomorrow, tvTomorrow, lvTomorrow);
-        }
-
-        if (nextItems.size() > 0) {
-            nextAdapter = populateViewsOfaDay(emptyCardViewNext, tvNext, lvUpcoming, nextAdapter, nextItems);
-        } else {
-            hideViewsOfaDay(emptyCardViewNext, tvNext, lvUpcoming);
-        }
-
-        setListViewHeightBasedOnChildren(lvToday);
-        setListViewHeightBasedOnChildren(lvTomorrow);
-        setListViewHeightBasedOnChildren(lvUpcoming);
+    private void populateListView() {
+        ArrayList<ToDo> todos = new ArrayList<>();
+        todoAdapter = new ToDoAdapter(getContext(), todos);
+        todoService.findAll(todos, todoAdapter);
+        lvTodo.setAdapter(todoAdapter);
     }
 
-    private ToDoAdapter populateViewsOfaDay(CardView emptyCardView, TextView textView, ListView listView,
-                                            ToDoAdapter adapter, ArrayList<ToDo> items) {
-        if (adapter == null) {
-            adapter = new ToDoAdapter(getContext(), items);
-        }
-
-        showViewsOfaDay(emptyCardView, textView, listView);
-        listView.setAdapter(adapter);
-        adapter.notify(items);
-
-        return adapter;
-    }
-
-    public void showDeleteConfirmDialog() {
+    private void showDeleteConfirmDialog() {
         ViewGroup viewGroup = getView().findViewById(android.R.id.content);
         final CustomDialog dialog = new CustomDialog(getContext(),
                 viewGroup,
@@ -209,7 +106,7 @@ public class ToDoFragment extends Fragment {
                 R.string.dialog_btn_cancel);
 
         dialog.posBtn.setOnClickListener(view -> {
-            todayAdapter.deleteCompletedTodos();
+            todoAdapter.deleteCompletedTodos();
             dialog.dismiss();
         });
 
@@ -217,23 +114,9 @@ public class ToDoFragment extends Fragment {
     }
 
     private void registerOnClickListeners() {
-        if (todayAdapter != null && lvToday.getOnItemClickListener() == null) {
-            setOnClickListeners(lvToday, todayAdapter);
-        }
-
-        if (tomorrowAdapter != null && lvTomorrow.getOnItemClickListener() == null) {
-            setOnClickListeners(lvTomorrow, tomorrowAdapter);
-        }
-
-        if (nextAdapter != null && lvUpcoming.getOnItemClickListener() == null) {
-            setOnClickListeners(lvUpcoming, nextAdapter);
-        }
-    }
-
-    private void setOnClickListeners(ListView listView, final ToDoAdapter adapter) {
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        lvTodo.setOnItemClickListener((parent, view, position, id) -> {
             Intent todoIntent = new Intent(getContext(), NewToDoActivity.class);
-            todoIntent.putExtra(TODO, adapter.getItem(position));
+            todoIntent.putExtra(TODO, todoAdapter.getItem(position));
             startActivity(todoIntent);
         });
 
@@ -245,37 +128,26 @@ public class ToDoFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                String queryText = svTodo.getQuery().toString();
-                todayAdapter.getFilter().filter(queryText);
+                todoAdapter.getFilter().filter(svTodo.getQuery());
 
                 return true;
             }
         });
 
+        fabAddTodo.setOnClickListener(view -> startActivity(new Intent(getContext(), NewToDoActivity.class)));
         ivDelete.setOnClickListener(view -> showDeleteConfirmDialog());
     }
 
     private void registerOnLongClickListeners() {
-        if (todayAdapter != null && lvToday.getOnItemLongClickListener() == null) {
-            setOnLongClickListeners(lvToday, todayAdapter);
-        }
-
-        if (tomorrowAdapter != null && lvTomorrow.getOnItemLongClickListener() == null) {
-            setOnLongClickListeners(lvTomorrow, tomorrowAdapter);
-        }
-
-        if (nextAdapter != null && lvUpcoming.getOnItemLongClickListener() == null) {
-            setOnLongClickListeners(lvUpcoming, nextAdapter);
-        }
-    }
-
-    private void setOnLongClickListeners(ListView listView, final ToDoAdapter adapter) {
-        listView.setOnItemLongClickListener((parent, view, position, id) -> {
-
+        lvTodo.setOnItemLongClickListener((adapterView, view, i, l) -> {
             View parentView = (View) view.getParent();
             if (parentView == null) {
                 return false;
             }
+
+            ArrayList<ToDo> filteredTodos = todoAdapter.getItems();
+            ArrayList<ToDo> originalTodos = todoAdapter.getOriginalToDoList();
+            Context context = view.getContext();
 
             ViewGroup viewGroup = parentView.findViewById(android.R.id.content);
             final CustomDialog customDialog = new CustomDialog(getContext(),
@@ -287,12 +159,28 @@ public class ToDoFragment extends Fragment {
                     R.string.dialog_btn_cancel);
 
             customDialog.posBtn.setOnClickListener(view1 -> {
+                ToDo todoToDelete = filteredTodos.get(i);
+                originalTodos.remove(todoToDelete);
+                filteredTodos.remove(todoToDelete);
+                todoService.delete(todoToDelete);
 
+                todoAdapter.notifyDataSetChanged();
+                customDialog.dismiss();
             });
 
             customDialog.show();
 
             return true;
         });
+    }
+
+    public void hideListView() {
+        cvEmpty.setVisibility(VISIBLE);
+        lvTodo.setVisibility(GONE);
+    }
+
+    public void showListView() {
+        cvEmpty.setVisibility(GONE);
+        lvTodo.setVisibility(VISIBLE);
     }
 }

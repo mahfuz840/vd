@@ -15,7 +15,7 @@ public class DateUtil {
     public static final String DATE_PATTERN = "d MMM, yyyy";
     public static final String TIME_PATTERN = "h:mm a";
 
-    public static Date getDateFromString(String dateString) throws ParseException {
+    public static Date getDateFromStr(String dateString) throws ParseException {
         if (dateString.trim().length() == 0) {
             return null;
         }
@@ -48,7 +48,7 @@ public class DateUtil {
         return calendar.get(Calendar.YEAR);
     }
 
-    public static Date getTomorrowFormattedDate() throws ParseException {
+    public static Date getTomorrowFormattedDate() {
         Date date = getCurrentFormattedDate();
 
         Calendar calendar = Calendar.getInstance();
@@ -58,11 +58,21 @@ public class DateUtil {
         return calendar.getTime();
     }
 
-    public static Date getCurrentFormattedDate() throws ParseException {
+    public static Date getCurrentFormattedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("d/MM/yyyy", Locale.getDefault());
         String currentDateString = sdf.format(new Date());
 
-        return sdf.parse(currentDateString);
+        try {
+            return sdf.parse(currentDateString);
+        } catch (ParseException ex) {
+            return null;
+        }
+    }
+
+    public static String getCurrentFormattedDateStr() {
+        SimpleDateFormat sdf = new SimpleDateFormat("d/MM/yyyy", Locale.getDefault());
+
+        return sdf.format(new Date());
     }
 
     public static Date getThirtyDaysEarlierDate(Date currentDate) {

@@ -1,7 +1,5 @@
 package com.the_spartan.virtualdiary.adapter;
 
-import static com.the_spartan.virtualdiary.util.ListViewUtil.setListViewHeightBasedOnChildren;
-
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -32,7 +30,6 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
     private ArrayList<ToDo> filteredToDoList;
     private ArrayList<ToDo> originalToDoList;
-
     private Context context;
     private ListView listView;
 
@@ -40,10 +37,10 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
     public ToDoAdapter(Context context, ArrayList<ToDo> items) {
         super(context, 0, items);
-        this.originalToDoList = new ArrayList<>();
-        this.originalToDoList.addAll(items);
-        this.filteredToDoList = new ArrayList<>();
-        this.filteredToDoList.addAll(items);
+        this.originalToDoList = items;
+//        this.originalToDoList.addAll(items);
+//        this.filteredToDoList = new ArrayList<>();
+        this.filteredToDoList = items;
         this.context = context;
 
         toDoService = new ToDoService();
@@ -59,6 +56,14 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
         return filteredToDoList.get(position);
     }
 
+    public ArrayList<ToDo> getItems() {
+        return filteredToDoList;
+    }
+
+    public ArrayList<ToDo> getOriginalToDoList() {
+        return originalToDoList;
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -70,8 +75,8 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
             convertView = LayoutInflater.from(context).inflate(R.layout.todo_list_item, null);
         }
 
-        TextView tvName = convertView.findViewById(R.id.tvItem);
-        TextView tvPriority = convertView.findViewById(R.id.tvItemPriority);
+        TextView tvName = convertView.findViewById(R.id.tv_task_name);
+        TextView tvPriority = convertView.findViewById(R.id.tv_priority);
         TextView dueDate;
         TextView tvTime;
         listView = (ListView) parent;
@@ -81,7 +86,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
         ToDo item = filteredToDoList.get(position);
 
         if (item != null) {
-            CheckBox cb = convertView.findViewById(R.id.cbItemCheck);
+            CheckBox cb = convertView.findViewById(R.id.cb_item_check);
             cb.setTag(position);
             cb.setChecked(item.isDone());
 
@@ -106,7 +111,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
             tvPriority.setText(item.getPriority().getDisplayName());
 
-            dueDate = convertView.findViewById(R.id.tvDueDate);
+            dueDate = convertView.findViewById(R.id.tv_date);
             tvTime = convertView.findViewById(R.id.tv_todo_time);
             if (!TextUtils.isEmpty(item.getDueDate())) {
                 dueDate.setText(item.getDueDate());
@@ -177,11 +182,6 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
     }
 
     @Override
-    public int getViewTypeCount() {
-        return getCount();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return 0;
     }
@@ -190,14 +190,6 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
     @Override
     public Filter getFilter() {
         return new ToDoFilter();
-    }
-
-    public void notify(ArrayList<ToDo> list) {
-        this.filteredToDoList.clear();
-        this.originalToDoList.clear();
-        this.filteredToDoList.addAll(list);
-        this.originalToDoList.addAll(list);
-        notifyDataSetChanged();
     }
 
     private class ToDoFilter extends Filter {
@@ -226,7 +218,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             filteredToDoList = (ArrayList<ToDo>) filterResults.values;
             notifyDataSetChanged();
-            setListViewHeightBasedOnChildren(listView);
+//            setListViewHeightBasedOnChildren(listView);
         }
     }
 }

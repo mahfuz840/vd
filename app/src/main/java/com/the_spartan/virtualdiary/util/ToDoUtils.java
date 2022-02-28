@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class ToDoUtils {
+
+    public static final String QUERY_BY_DATE_RANGE_PREFIX = "#DATE_RANGE#";
+
     public static Date getDateFromString(String date) {
         SimpleDateFormat sf = new SimpleDateFormat("M/dd/yyyy");
         sf.setLenient(true);
@@ -64,5 +67,9 @@ public class ToDoUtils {
             strDate += curTime;
         }
         return strDate;
+    }
+
+    public static String getEncodedQueryForSearch(String queryText) {
+        return "";
     }
 }

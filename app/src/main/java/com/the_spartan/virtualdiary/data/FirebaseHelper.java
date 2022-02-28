@@ -1,5 +1,9 @@
 package com.the_spartan.virtualdiary.data;
 
+import static com.the_spartan.virtualdiary.model.Note.NOTE;
+import static com.the_spartan.virtualdiary.model.ToDo.TODO;
+
+import android.app.DownloadManager;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -40,7 +44,11 @@ public class FirebaseHelper {
     }
 
     public static Query getQueryForNotes() {
-        return getReference().child("Note");
+        return getReference().child(NOTE);
+    }
+
+    public static Query getQueryForTodos() {
+        return getReference().child(TODO);
     }
 
     public static void removeNote(int position) {

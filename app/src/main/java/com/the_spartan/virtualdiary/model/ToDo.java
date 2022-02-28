@@ -9,7 +9,7 @@ public class ToDo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Exclude
-    public static final String TODO = "todo";
+    public static final String TODO = "ToDo";
 
     private String key;
     private Priority priority;

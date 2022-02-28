@@ -25,6 +25,7 @@ import com.the_spartan.virtualdiary.listener.NoteChildEventListener;
 import com.the_spartan.virtualdiary.listener.NoteItemLongClickListener;
 import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
+import com.the_spartan.virtualdiary.service.NoteService;
 import com.the_spartan.virtualdiary.util.DateUtil;
 import com.whiteelephant.monthpicker.MonthPickerDialog;
 
@@ -42,6 +43,8 @@ public class MainFragment extends Fragment {
     private SearchView noteSearchView;
     private LinearLayout lvMonthYearPicker;
     private TextView tvMonthYearPicker;
+
+    private NoteService noteService;
 
     private MainFragment() {
     }
@@ -71,6 +74,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        noteService = new NoteService();
+
         populateMonthYearPicker();
         populateNotesAndSetAdapter();
         registerListeners();
@@ -110,10 +116,7 @@ public class MainFragment extends Fragment {
 //    }
 
     private void populateNotes(ArrayList<Note> notes) {
-        FirebaseHelper.getQueryForNotes()
-                .addChildEventListener(
-                        new NoteChildEventListener(notes, noteAdapter)
-                );
+        noteService.findAll(notes, noteAdapter);
     }
 
     private void registerListeners() {
@@ -157,7 +160,7 @@ public class MainFragment extends Fragment {
                     .setActivatedYear(today.get(Calendar.YEAR))
                     .setMinYear(2015)
                     .setMaxYear(2030)
-                    .setTitle("Select Month For Notes")
+                    .setTitle(getString(R.string.note_month_picker_title))
                     .build()
                     .show();
         });

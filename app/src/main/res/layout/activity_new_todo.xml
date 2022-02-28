@@ -18,7 +18,7 @@
         android:layout_marginBottom="5dp">
 
         <ImageButton
-            android:id="@+id/iv_new_todo_back"
+            android:id="@+id/ib_new_todo_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/iv_new_todo_back"
+            android:layout_toRightOf="@id/ib_new_todo_back"
             android:fontFamily="@font/rashfeng"
             android:text="@string/todo_name"
             android:textAlignment="textStart"
@@ -41,34 +41,23 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/iv_new_todo_delete"
+            android:id="@+id/ib_new_todo_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_delete"
             app:tint="@android:color/black" />
 
         <ImageButton
-            android:id="@+id/iv_new_todo_share"
+            android:id="@+id/ib_new_todo_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/iv_new_todo_delete"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_share"
-            app:tint="@android:color/black" />
-
-        <ImageButton
-            android:id="@+id/iv_new_todo_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/iv_new_todo_share"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/ib_new_todo_delete"
+            android:layout_alignWithParentIfMissing="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_done_black_30dp"
             app:tint="@android:color/black" />
