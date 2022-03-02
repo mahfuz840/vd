@@ -1,15 +1,21 @@
 package com.the_spartan.virtualdiary.fragment;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.the_spartan.virtualdiary.model.Note.NOTE;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.CreateNoteActivity;
 import com.the_spartan.virtualdiary.adapter.NoteAdapter;
-import com.the_spartan.virtualdiary.data.FirebaseHelper;
-import com.the_spartan.virtualdiary.listener.NoteChildEventListener;
+import com.the_spartan.virtualdiary.animation.WidthAnimation;
 import com.the_spartan.virtualdiary.listener.NoteItemLongClickListener;
 import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
@@ -45,6 +50,8 @@ public class MainFragment extends Fragment {
     private TextView tvMonthYearPicker;
 
     private NoteService noteService;
+
+    private int searchViewOriginalWidth;
 
     private MainFragment() {
     }
@@ -129,6 +136,23 @@ public class MainFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(view -> {
             startActivity(new Intent(getContext(), CreateNoteActivity.class));
+        });
+
+        noteSearchView.setOnQueryTextFocusChangeListener((view, focused) -> {
+            if (focused) {
+                searchViewOriginalWidth = noteSearchView.getLayoutParams().width;
+
+                WidthAnimation widthAnimation = new WidthAnimation(noteSearchView);
+                widthAnimation.setDuration(300);
+                widthAnimation.setParams(1000);
+                noteSearchView.startAnimation(widthAnimation);
+
+            } else {
+                WidthAnimation widthAnimation = new WidthAnimation(noteSearchView);
+                widthAnimation.setDuration(300);
+                widthAnimation.setParams(searchViewOriginalWidth);
+                noteSearchView.startAnimation(widthAnimation);
+            }
         });
 
         noteSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

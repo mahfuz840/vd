@@ -20,9 +20,11 @@
         <activity
             android:name=".activity.MainActivityNew"
             android:exported="false" />
+
         <activity
             android:name=".activity.NewToDoActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
+
         <activity
             android:name=".fragment.ToDoFragment"
             android:theme="@style/ToolbarThemeWithNoActionBar">
@@ -36,6 +38,7 @@
             android:authorities="to.do.authority"
             android:enabled="true"
             android:exported="false" />
+
         <provider
             android:name=".data.NoteProvider"
             android:authorities="com.the_spartan.virtualdiary"
@@ -52,9 +55,11 @@
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
         </activity>
+
         <activity
             android:name=".activity.CreateNoteActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar" />
+
         <activity
             android:name=".activity.settings.FontStyleActivity"
             android:theme="@style/MyPreferenceTheme" />
@@ -74,17 +79,17 @@
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
         </activity>
+
         <activity
             android:name=".activity.PasswordActivity"
             android:theme="@style/ToolbarThemeWithNoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

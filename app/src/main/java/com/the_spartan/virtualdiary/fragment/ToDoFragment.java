@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.NewToDoActivity;
 import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
+import com.the_spartan.virtualdiary.animation.WidthAnimation;
 import com.the_spartan.virtualdiary.model.ToDo;
 import com.the_spartan.virtualdiary.service.ToDoService;
 import com.the_spartan.virtualdiary.view.CustomDialog;
@@ -46,6 +47,8 @@ public class ToDoFragment extends Fragment {
     private ImageButton ivDelete;
 
     private ToDoService todoService;
+
+    private int searchViewOriginalWidth;
 
     private ToDoFragment() {
     }
@@ -133,6 +136,24 @@ public class ToDoFragment extends Fragment {
                 return true;
             }
         });
+
+        svTodo.setOnQueryTextFocusChangeListener((view, focused) -> {
+            if (focused) {
+                searchViewOriginalWidth = svTodo.getLayoutParams().width;
+
+                WidthAnimation widthAnimation = new WidthAnimation(svTodo);
+                widthAnimation.setDuration(300);
+                widthAnimation.setParams(1000);
+                svTodo.startAnimation(widthAnimation);
+
+            } else {
+                WidthAnimation widthAnimation = new WidthAnimation(svTodo);
+                widthAnimation.setDuration(300);
+                widthAnimation.setParams(searchViewOriginalWidth);
+                svTodo.startAnimation(widthAnimation);
+            }
+        });
+
 
         fabAddTodo.setOnClickListener(view -> startActivity(new Intent(getContext(), NewToDoActivity.class)));
         ivDelete.setOnClickListener(view -> showDeleteConfirmDialog());
