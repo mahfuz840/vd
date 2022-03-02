@@ -1,7 +1,5 @@
 package com.the_spartan.virtualdiary.fragment;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static com.the_spartan.virtualdiary.model.ToDo.TODO;
 
 import android.content.Context;
@@ -38,11 +36,8 @@ public class ToDoFragment extends Fragment {
 
     private ToDoAdapter todoAdapter;
     private ListView lvTodo;
-
     private FloatingActionButton fabAddTodo;
-
     private CardView cvEmpty;
-
     private SearchView svTodo;
     private ImageButton ivDelete;
 
@@ -94,6 +89,7 @@ public class ToDoFragment extends Fragment {
     private void populateListView() {
         ArrayList<ToDo> todos = new ArrayList<>();
         todoAdapter = new ToDoAdapter(getContext(), todos);
+
         todoService.findAll(todos, todoAdapter);
         lvTodo.setAdapter(todoAdapter);
     }
@@ -130,8 +126,8 @@ public class ToDoFragment extends Fragment {
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                todoAdapter.getFilter().filter(svTodo.getQuery());
+            public boolean onQueryTextChange(String queryText) {
+                todoAdapter.getFilter().filter(queryText);
 
                 return true;
             }
@@ -167,7 +163,7 @@ public class ToDoFragment extends Fragment {
             }
 
             ArrayList<ToDo> filteredTodos = todoAdapter.getItems();
-            ArrayList<ToDo> originalTodos = todoAdapter.getOriginalToDoList();
+            ArrayList<ToDo> originalTodos = todoAdapter.getOriginalTodos();
             Context context = view.getContext();
 
             ViewGroup viewGroup = parentView.findViewById(android.R.id.content);
@@ -193,15 +189,5 @@ public class ToDoFragment extends Fragment {
 
             return true;
         });
-    }
-
-    public void hideListView() {
-        cvEmpty.setVisibility(VISIBLE);
-        lvTodo.setVisibility(GONE);
-    }
-
-    public void showListView() {
-        cvEmpty.setVisibility(GONE);
-        lvTodo.setVisibility(VISIBLE);
     }
 }

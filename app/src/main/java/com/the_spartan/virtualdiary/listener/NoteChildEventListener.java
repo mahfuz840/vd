@@ -27,9 +27,8 @@ public class NoteChildEventListener implements ChildEventListener {
         Note note = dataSnapshot.getValue(Note.class);
         note.setKey(dataSnapshot.getKey());
         notes.add(note);
-        noteAdapter.notifyDataSetChanged();
 
-        FirebaseHelper.getNoteKeys().add(dataSnapshot.getKey());
+        noteAdapter.notifyDataSetChanged();
     }
 
     @Override

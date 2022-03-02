@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,19 +27,16 @@ import java.util.List;
 
 public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
-    private ArrayList<ToDo> filteredToDoList;
-    private ArrayList<ToDo> originalToDoList;
+    private ArrayList<ToDo> filteredTodos;
+    private ArrayList<ToDo> originalTodos;
     private Context context;
-    private ListView listView;
 
     private ToDoService toDoService;
 
-    public ToDoAdapter(Context context, ArrayList<ToDo> items) {
-        super(context, 0, items);
-        this.originalToDoList = items;
-//        this.originalToDoList.addAll(items);
-//        this.filteredToDoList = new ArrayList<>();
-        this.filteredToDoList = items;
+    public ToDoAdapter(Context context, ArrayList<ToDo> todos) {
+        super(context, 0, todos);
+        this.originalTodos = todos;
+        this.filteredTodos = todos;
         this.context = context;
 
         toDoService = new ToDoService();
@@ -48,25 +44,20 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
     @Override
     public int getCount() {
-        return filteredToDoList == null ? 0 : filteredToDoList.size();
+        return filteredTodos.size();
     }
 
     @Override
     public ToDo getItem(int position) {
-        return filteredToDoList.get(position);
+        return filteredTodos.get(position);
     }
 
     public ArrayList<ToDo> getItems() {
-        return filteredToDoList;
+        return filteredTodos;
     }
 
-    public ArrayList<ToDo> getOriginalToDoList() {
-        return originalToDoList;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public ArrayList<ToDo> getOriginalTodos() {
+        return originalTodos;
     }
 
     @Override
@@ -79,11 +70,10 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
         TextView tvPriority = convertView.findViewById(R.id.tv_priority);
         TextView dueDate;
         TextView tvTime;
-        listView = (ListView) parent;
 
         Typeface myFont = FontUtil.initializeFonts(context);
 
-        ToDo item = filteredToDoList.get(position);
+        ToDo item = filteredTodos.get(position);
 
         if (item != null) {
             CheckBox cb = convertView.findViewById(R.id.cb_item_check);
@@ -96,7 +86,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
                 tappedTodo.setDone(isChecked);
 
                 toDoService.saveOrUpdate(tappedTodo);
-                originalToDoList.set(pos, tappedTodo);
+                originalTodos.set(pos, tappedTodo);
 
                 notifyDataSetChanged();
             });
@@ -162,7 +152,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
     public void deleteCompletedTodos() {
         List<ToDo> todosToDelete = new ArrayList<>();
-        for (ToDo todo : originalToDoList) {
+        for (ToDo todo : originalTodos) {
             if (todo.isDone()) {
                 todosToDelete.add(todo);
             }
@@ -173,8 +163,8 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
         //remove after testing
         for (ToDo todo : todosToDelete) {
             if (todo.isDone()) {
-                originalToDoList.remove(todo);
-                filteredToDoList.remove(todo);
+                originalTodos.remove(todo);
+                filteredTodos.remove(todo);
             }
         }
 
@@ -195,13 +185,21 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
     private class ToDoFilter extends Filter {
 
         @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            String queryString = charSequence.toString().toLowerCase().trim();
+        protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
+
+            if (constraint == null || constraint.length() == 0) {
+                results.values = originalTodos;
+                results.count = originalTodos.size();
+
+                return results;
+            }
+
+            String queryString = constraint.toString().toLowerCase().trim();
             List<ToDo> nList = new ArrayList<>();
             String filterableString = null;
 
-            for (ToDo item : originalToDoList) {
+            for (ToDo item : originalTodos) {
                 filterableString = item.getSubject().toLowerCase();
                 if (filterableString.contains(queryString)) {
                     nList.add(item);
@@ -216,7 +214,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            filteredToDoList = (ArrayList<ToDo>) filterResults.values;
+            filteredTodos = (ArrayList<ToDo>) filterResults.values;
             notifyDataSetChanged();
 //            setListViewHeightBasedOnChildren(listView);
         }

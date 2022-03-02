@@ -113,17 +113,8 @@ public class MainFragment extends Fragment {
         ArrayList<Note> notes = new ArrayList<>();
         noteAdapter = new NoteAdapter(getContext(), notes);
 
-        populateNotes(notes);
-        lvNote.setAdapter(noteAdapter);
-    }
-
-//    private void testWrite() {
-//        Note note = new Note(0, 0, "Title", "Content");
-//        FirebaseHelper.getReference().push().setValue(note);
-//    }
-
-    private void populateNotes(ArrayList<Note> notes) {
         noteService.findAll(notes, noteAdapter);
+        lvNote.setAdapter(noteAdapter);
     }
 
     private void registerListeners() {

@@ -7,7 +7,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
-import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 import com.the_spartan.virtualdiary.model.ToDo;
 
 import java.util.ArrayList;
@@ -27,7 +26,10 @@ public class ToDoChildEventListener implements ChildEventListener {
         ToDo todo = dataSnapshot.getValue(ToDo.class);
         todo.setKey(dataSnapshot.getKey());
         todos.add(todo);
+
         todoAdapter.notifyDataSetChanged();
+        int count = todoAdapter.getCount();
+        System.out.println("COUNT " + count);
     }
 
     @Override
@@ -66,13 +68,5 @@ public class ToDoChildEventListener implements ChildEventListener {
     @Override
     public void onCancelled(@NonNull DatabaseError databaseError) {
 
-    }
-
-    private void setEmptyViewVisibility() {
-        if (todos.size() > 0) {
-            ToDoFragment.getInstance().showListView();
-        } else {
-            ToDoFragment.getInstance().hideListView();
-        }
     }
 }
