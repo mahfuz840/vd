@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.fragment.MainFragment;
+import com.the_spartan.virtualdiary.fragment.SettingsFragment;
 import com.the_spartan.virtualdiary.fragment.ToDoFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 default:
-                    fragment = MainFragment.getInstance();
+                    fragment = SettingsFragment.getInstance();
                     break;
             }
 

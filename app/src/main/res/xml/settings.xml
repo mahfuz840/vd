@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_title_profile">
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Font Style">
+        <Preference
+            android:key="@string/pref_key_font"
+            android:title="@string/pref_title_display_font" />
+
+        <Preference
+            android:key="@string/pref_key_font_size"
+            android:title="@string/pref_title_font_size" />
+
+        <Preference
+            android:key="@string/pref_key_color"
+            android:title="@string/pref_title_font_color" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_pref_passcode_lock">
+        <SwitchPreference
+            android:key="@string/pref_key_is_password_activated"
+            android:title="@string/pref_title_activate_password"
+            android:defaultValue="false"/>
+
+        <Preference
+            android:key="@string/pref_key_password"
+            android:title="@string/pref_title_set_change_password"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_title_about">
+        <Preference
+            android:key="@string/pref_key_about"
+            android:title="@string/pref_title_about_app"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -15,6 +15,7 @@ import com.the_spartan.virtualdiary.util.FontUtil;
 import java.util.ArrayList;
 
 public class FontsAdapter extends ArrayAdapter<String> {
+
     private Context mContext;
     private ArrayList<String> fontTitles;
     private String[] fontPaths;
@@ -37,7 +38,7 @@ public class FontsAdapter extends ArrayAdapter<String> {
         Log.d("font", fontPaths[position]);
 
         TextView fonTitleTextView = fontListView.findViewById(R.id.font_chooser_title_text_view);
-        if (fontPaths[position].equals("null")){
+        if (fontPaths[position].equals("null")) {
             fonTitleTextView.setTypeface(Typeface.DEFAULT);
         } else {
             fonTitleTextView.setTypeface(FontUtil.loadFontForFontChooserDialog(mContext, fontPaths[position]));

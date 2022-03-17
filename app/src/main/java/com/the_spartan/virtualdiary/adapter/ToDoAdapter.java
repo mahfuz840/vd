@@ -197,7 +197,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
             String queryString = constraint.toString().toLowerCase().trim();
             List<ToDo> nList = new ArrayList<>();
-            String filterableString = null;
+            String filterableString;
 
             for (ToDo item : originalTodos) {
                 filterableString = item.getSubject().toLowerCase();

@@ -8,10 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.the_spartan.virtualdiary.R;
 
 public class CustomDialog {
@@ -22,12 +26,18 @@ public class CustomDialog {
     private AlertDialog alertDialog;
     private ViewGroup viewGroup;
     private View dialogView;
+    private ListView listView;
     private int layoutResId;
     private Animation openingAnimation;
     private Animation closingAnimation;
     private TextView titleView;
     private TextView messageView;
     private boolean defaultAnim;
+    private boolean hasListView;
+
+    private EditText edOldPassword;
+    private EditText edNewPassword;
+    private EditText edConfirmPassword;
 
     public CustomDialog(Context context,
                         ViewGroup viewGroup,
@@ -43,10 +53,33 @@ public class CustomDialog {
                 true,
                 R.anim.scale_in,
                 R.anim.scale_out,
-                title == 0 ? null : context.getString(title),
-                message == 0 ? null : context.getString(message),
-                context.getString(posText),
-                context.getString(negText));
+                title == -1 ? null : context.getString(title),
+                message == -1 ? null : context.getString(message),
+                posText == -1 ? null : context.getString(posText),
+                negText == -1 ? null : context.getString(negText),
+                false);
+    }
+
+    public CustomDialog(Context context,
+                        ViewGroup viewGroup,
+                        int layout,
+                        int title,
+                        int message,
+                        int posText,
+                        int negText,
+                        boolean hasListView) {
+
+        this(context,
+                viewGroup,
+                layout,
+                true,
+                R.anim.scale_in,
+                R.anim.scale_out,
+                title == -1 ? null : context.getString(title),
+                message == -1 ? null : context.getString(message),
+                posText == -1 ? null : context.getString(posText),
+                negText == -1 ? null : context.getString(negText),
+                hasListView);
     }
 
     public CustomDialog(Context context,
@@ -58,13 +91,15 @@ public class CustomDialog {
                         String title,
                         String message,
                         String posText,
-                        String negText) {
+                        String negText,
+                        boolean hasListView) {
 
         this.context = context;
         this.viewGroup = viewGroup;
         this.layoutResId = layout;
         this.openingAnimation = AnimationUtils.loadAnimation(context, openingAnimResId);
         this.closingAnimation = AnimationUtils.loadAnimation(context, closingAnimResId);
+        this.hasListView = hasListView;
 
         init(title, message, posText, negText);
     }
@@ -92,49 +127,87 @@ public class CustomDialog {
         titleView.setText(title);
 
         this.messageView = dialogView.findViewById(R.id.dialog_message);
-        if (message == null) {
+        if (message == null && messageView != null) {
             messageView.setVisibility(View.GONE);
         }
-        messageView.setText(message);
+        if (messageView != null) {
+            messageView.setText(message);
+        }
+
+        this.listView = dialogView.findViewById(R.id.dialog_list_view);
+        if (!hasListView && this.listView != null) {
+            this.listView.setVisibility(View.GONE);
+        }
+
+        this.edOldPassword = dialogView.findViewById(R.id.ed_old_password);
+        this.edNewPassword = dialogView.findViewById(R.id.ed_password);
+        this.edConfirmPassword = dialogView.findViewById(R.id.ed_confirm_password);
 
         this.posBtn = dialogView.findViewById(R.id.pos_btn);
+        if (posText == null) {
+            posBtn.setVisibility(View.GONE);
+        }
         posBtn.setText(posText);
 
         this.negBtn = dialogView.findViewById(R.id.neg_btn);
+        if (negText == null) {
+            negBtn.setVisibility(View.GONE);
+        }
         negBtn.setText(negText);
 
         setNegBtnDefaultListener();
     }
 
+    public ListView getListView() {
+        return listView;
+    }
+
+    public void setListAdapter(ListAdapter adapter) {
+        this.listView.setAdapter(adapter);
+    }
+
     private void setNegBtnDefaultListener() {
-        this.negBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (defaultAnim) {
-                    dismiss();
-                    return;
+        this.negBtn.setOnClickListener(view -> {
+            if (defaultAnim) {
+                dismiss();
+                return;
+            }
+
+            closingAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
                 }
 
-                closingAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    dismiss();
+                }
 
-                    }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        dismiss();
-                    }
+                }
+            });
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-                startAnimation(closingAnimation);
-            }
+            startAnimation(closingAnimation);
         });
+    }
+
+    public EditText getEdOldPassword() {
+        return edOldPassword;
+    }
+
+    public EditText getEdNewPassword() {
+        return edNewPassword;
+    }
+
+    public EditText getEdConfirmPassword() {
+        return edConfirmPassword;
+    }
+
+    public TextInputLayout getOldPasswordTextInputLayout() {
+        return dialogView.findViewById(R.id.til_old_password);
     }
 
     public void startAnimation(int animationResId) {

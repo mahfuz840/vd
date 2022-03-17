@@ -1,5 +1,7 @@
 package com.the_spartan.virtualdiary.model;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
@@ -68,6 +70,30 @@ public class Note implements Serializable {
 
     public boolean isNew() {
         return getKey() == null;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object thatObj) {
+        if (thatObj == null) {
+            return false;
+        }
+
+        if (thatObj == this) {
+            return true;
+        }
+
+        Note that = (Note) thatObj;
+
+        if (this.getKey() == null || that.getKey() == null) {
+            return false;
+        }
+
+        return this.getKey().equals(that.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getKey().hashCode();
     }
 
     public static class NoteBuilder {

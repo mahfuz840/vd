@@ -36,7 +36,6 @@ public class PasswordSettingsActivity extends AppCompatActivity {
 
     String oldPassword;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +57,6 @@ public class PasswordSettingsActivity extends AppCompatActivity {
             passwordSwitch.setChecked(true);
         else
             passwordSwitch.setChecked(false);
-
 
         oldPasswordEditText = findViewById(R.id.old_password_edittext);
         setPasswordTextView = findViewById(R.id.set_password_textview);

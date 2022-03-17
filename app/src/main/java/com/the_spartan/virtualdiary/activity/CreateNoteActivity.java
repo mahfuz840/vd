@@ -88,7 +88,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private void initVariables() {
         mCalendar = Calendar.getInstance();
         existing = false;
-        noteService = new NoteService();
+        noteService = new NoteService(getApplicationContext());
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
@@ -201,6 +201,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         customDialog.posBtn.setOnClickListener(view -> {
             noteService.delete(note);
             customDialog.dismiss();
+
+            Toast.makeText(this,
+                    getString(R.string.toast_note_deleted_successfully),
+                    Toast.LENGTH_SHORT)
+                    .show();
+
             finish();
         });
 

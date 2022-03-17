@@ -78,8 +78,8 @@ public class PasswordSettingsFragment extends Fragment {
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = preferences.edit();
 
-        oldPassword = preferences.getString("pass", null);
-        boolean isPasswordOn = preferences.getBoolean("isPasswordOn", false);
+        oldPassword = preferences.getString(getString(R.string.pref_key_password), null);
+        boolean isPasswordOn = preferences.getBoolean(getString(R.string.pref_key_is_password_activated), false);
 
         if (isPasswordOn)
             passwordSwitch.setChecked(true);

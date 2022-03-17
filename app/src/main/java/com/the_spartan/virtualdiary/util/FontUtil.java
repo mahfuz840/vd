@@ -11,7 +11,7 @@ public class FontUtil {
 
     public static Typeface initializeFonts(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String fontPath = preferences.getString(context.getString(R.string.font), null);
+        String fontPath = preferences.getString(context.getString(R.string.pref_key_font), null);
         Typeface defaultFont = context.getResources().getFont(R.font.roboto);
 
         Typeface myFont;
@@ -40,7 +40,7 @@ public class FontUtil {
     public static String initializeFontSize(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        String fontSize = preferences.getString(context.getString(R.string.font_size), null);
+        String fontSize = preferences.getString(context.getString(R.string.pref_key_font_size), null);
 
         return fontSize;
     }

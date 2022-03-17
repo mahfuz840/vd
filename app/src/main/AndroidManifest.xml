@@ -17,9 +17,6 @@
         android:testOnly="false"
         android:theme="@style/VirtualDiaryTheme"
         tools:replace="android:icon">
-        <activity
-            android:name=".activity.MainActivityNew"
-            android:exported="false" />
 
         <activity
             android:name=".activity.NewToDoActivity"

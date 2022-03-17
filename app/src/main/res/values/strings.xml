@@ -1,12 +1,13 @@
 <resources>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab eum expedita fugiat mollitia quia rerum tempore. Aliquam at debitis ipsam iusto odio.</string>
-    <string name="font">font</string>
     <string name="app_name">Virtual Diary</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
 
     <string name="select_date">Select Date: </string>
-    <string name="font_size">font_size</string>
+    <string name="pref_key_font_size">font_size</string>
+    <string name="pref_key_color">color</string>
+    <string name="pref_key_font">font</string>
 
     <string name="settings_title">Settings</string>
     <string name="font_color_settings_title">Font Color</string>
@@ -77,4 +78,23 @@
     <string name="change_account">Change account</string>
     <string name="todo_name">To-Do</string>
     <string name="note_month_picker_title">Select Month For Notes</string>
+    <string name="dialog_title_choose_font">Choose your custom font</string>
+    <string name="title_pref_passcode_lock">Passcode Lock</string>
+    <string name="pref_key_password">pass</string>
+    <string name="pref_key_is_password_activated">isPasswordOn</string>
+    <string name="pref_title_activate_password">Activate Password Protection</string>
+    <string name="pref_title_font_color">Font Color</string>
+    <string name="pref_title_font_size">Font Size</string>
+    <string name="pref_title_display_font">Display Font</string>
+    <string name="pref_title_profile">Profile</string>
+    <string name="pref_title_about">About</string>
+    <string name="pref_title_about_app">About this app</string>
+    <string name="pref_key_about">about</string>
+    <string name="dialog_btn_ok">Ok</string>
+    <string name="dialog_title_about">About</string>
+    <string name="dialog_msg_about">Developed by Mahfuz Ahmed\nContact: mahfuz.sust.cse@gmail.com</string>
+    <string name="dialog_btn_rate_this_app">Rate This App</string>
+    <string name="toast_note_deleted_successfully">Note deleted successfully</string>
+    <string name="toast_note_saved_successfully">Note saved successfully</string>
+    <string name="pref_title_set_change_password">Set/Change Password</string>
 </resources>

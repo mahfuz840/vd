@@ -48,11 +48,10 @@ public class NoteChildEventListener implements ChildEventListener {
 
     @Override
     public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-        for (Note currentNote : notes) {
-            if (currentNote.getKey().equals(dataSnapshot.getKey())) {
-                notes.remove(currentNote);
-            }
-        }
+        Note noteToDelete = dataSnapshot.getValue(Note.class);
+        noteToDelete.setKey(dataSnapshot.getKey());
+        notes.remove(noteToDelete);
+
         noteAdapter.notifyDataSetChanged();
 
         FirebaseHelper.getNoteKeys().remove(dataSnapshot.getKey());

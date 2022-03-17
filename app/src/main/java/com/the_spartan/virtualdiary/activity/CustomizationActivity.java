@@ -83,7 +83,6 @@ public class CustomizationActivity extends AppCompatActivity{
 
         preferences = PreferenceManager.getDefaultSharedPreferences(CustomizationActivity.this);
         editor = preferences.edit();
-
     }
 
     private void showFontChooserDialog(){

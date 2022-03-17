@@ -14,7 +14,8 @@
         <item name="itemIconTint">@color/bottom_nav_item_color</item>
     </style>
 
-    <style name="MyPreferenceTheme" parent="PreferenceFixTheme.DayNight.DarkActionBar">
+<!--    <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
+    <style name="MyPreferenceTheme" parent="PreferenceThemeOverlay">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
