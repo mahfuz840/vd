@@ -51,7 +51,7 @@
             app:tint="@android:color/black"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <ImageButton
             android:id="@+id/iv_create_note_share"
@@ -62,7 +62,7 @@
             app:tint="@android:color/black"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_create_note_delete"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <ImageButton
             android:id="@+id/iv_create_note_done"
@@ -73,7 +73,7 @@
             app:tint="@android:color/black"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_create_note_share"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless" />
     </RelativeLayout>
 
     <LinearLayout
@@ -109,56 +109,45 @@
             android:paddingBottom="2dp"
             android:text="08:42AM"
             android:textSize="12sp" />
-
     </LinearLayout>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp">
-
-        <ImageView
-            android:id="@+id/title_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_note"
-            android:text="Title: "
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:tint="#ab6767" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Title">
 
         <EditText
-            android:id="@+id/title_edit_text"
-            class="com.the_spartan.virtualdiary.model.LinedEditText"
+            android:id="@+id/ed_note_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Title"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <view xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/content_edit_text"
-            class="com.the_spartan.virtualdiary.model.LinedEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="50dp"
-            android:capitalize="sentences"
-            android:fadingEdge="vertical"
-            android:gravity="top"
-            android:hint="Description"
-            android:scrollbars="vertical" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Description">
+
+            <view xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/content_edit_text"
+                class="com.the_spartan.virtualdiary.model.LinedEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:capitalize="sentences"
+                android:fadingEdge="vertical"
+                android:gravity="top"
+                android:scrollbars="vertical" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/banner_container"
@@ -166,9 +155,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:orientation="vertical"></LinearLayout>
-
+            android:orientation="vertical" />
     </RelativeLayout>
-
-
 </LinearLayout>

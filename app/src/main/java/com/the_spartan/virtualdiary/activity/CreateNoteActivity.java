@@ -93,7 +93,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        etTitle = findViewById(R.id.title_edit_text);
+        etTitle = findViewById(R.id.ed_note_title);
         etDescription = findViewById(R.id.content_edit_text);
         tvDate = findViewById(R.id.date);
         tvTime = findViewById(R.id.time);

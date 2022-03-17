@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 /**
  * A custom EditText that draws lines between each line of text that is displayed.
@@ -37,8 +38,8 @@ public class LinedEditText extends androidx.appcompat.widget.AppCompatEditText {
         int right = getRight();
         int paddingTop = getPaddingTop();
         int paddingBottom = getPaddingBottom();
-        int paddingLeft = 0;
-        int paddingRight = getPaddingRight();
+        int paddingLeft = 5;
+        int paddingRight = 5;
         int height = getHeight();
         int lineHeight = getLineHeight();
         int count = getLineCount() + (height-paddingTop-paddingBottom) / lineHeight;
