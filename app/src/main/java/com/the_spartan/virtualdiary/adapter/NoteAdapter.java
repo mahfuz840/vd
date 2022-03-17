@@ -5,6 +5,7 @@ import static com.the_spartan.virtualdiary.model.Action.SEARCH_BY_QUERY;
 import static com.the_spartan.virtualdiary.util.DateUtil.MONTH_YEAR_PREFIX;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.the_spartan.virtualdiary.model.Action;
 import com.the_spartan.virtualdiary.model.Month;
 import com.the_spartan.virtualdiary.model.Note;
 import com.the_spartan.virtualdiary.util.DateUtil;
+import com.the_spartan.virtualdiary.util.FontUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,10 +52,19 @@ public class NoteAdapter extends ArrayAdapter<Note> implements Filterable {
             listItemView = LayoutInflater.from(context).inflate(R.layout.note_list_view_item, null);
         }
 
+        Typeface preferredFont = FontUtil.initializeFonts(context);
+
         tvTitle = listItemView.findViewById(R.id.note_list_item_title);
         tvContent = listItemView.findViewById(R.id.note_list_item_content);
         tvDate = listItemView.findViewById(R.id.tv_note_date_list_view);
         tvYear = listItemView.findViewById(R.id.tv_note_year_list_view);
+
+        if (preferredFont != null) {
+            tvTitle.setTypeface(preferredFont);
+            tvContent.setTypeface(preferredFont);
+            tvDate.setTypeface(preferredFont);
+            tvYear.setTypeface(preferredFont);
+        }
 
         Note currentNote = filteredNotes.get(position);
         tvTitle.setText(currentNote.getTitle());
