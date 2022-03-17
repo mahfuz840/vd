@@ -67,7 +67,9 @@ public class NoteAdapter extends ArrayAdapter<Note> implements Filterable {
         }
 
         Note currentNote = filteredNotes.get(position);
-        tvTitle.setText(currentNote.getTitle());
+        tvTitle.setText(currentNote.getTitle().isEmpty()
+                ? context.getString(R.string.prompt_no_title)
+                : currentNote.getTitle());
         tvContent.setText(currentNote.getDescription());
         tvDate.setText(DateUtil.getFormattedDayAndMonthStrFromMillis(currentNote.getTimestamp()));
         tvYear.setText(String.valueOf(DateUtil.getYearFromMillis(currentNote.getTimestamp())));
