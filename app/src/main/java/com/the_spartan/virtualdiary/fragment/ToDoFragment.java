@@ -2,7 +2,6 @@ package com.the_spartan.virtualdiary.fragment;
 
 import static com.the_spartan.virtualdiary.model.ToDo.TODO;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,13 +21,14 @@ import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.activity.NewToDoActivity;
 import com.the_spartan.virtualdiary.adapter.ToDoAdapter;
 import com.the_spartan.virtualdiary.animation.WidthAnimation;
+import com.the_spartan.virtualdiary.interfacing.DeleteIconVisibilityChecker;
 import com.the_spartan.virtualdiary.model.ToDo;
 import com.the_spartan.virtualdiary.service.ToDoService;
 import com.the_spartan.virtualdiary.view.CustomDialog;
 
 import java.util.ArrayList;
 
-public class ToDoFragment extends Fragment {
+public class ToDoFragment extends Fragment implements DeleteIconVisibilityChecker {
 
     private static final String TODO_FRAGMENT_TAG = "ToDoFragment";
 
@@ -88,7 +88,7 @@ public class ToDoFragment extends Fragment {
 
     private void populateListView() {
         ArrayList<ToDo> todos = new ArrayList<>();
-        todoAdapter = new ToDoAdapter(getContext(), todos);
+        todoAdapter = new ToDoAdapter(getContext(), todos, this);
 
         todoService.findAll(todos, todoAdapter);
         lvTodo.setAdapter(todoAdapter);
@@ -150,7 +150,6 @@ public class ToDoFragment extends Fragment {
             }
         });
 
-
         fabAddTodo.setOnClickListener(view -> startActivity(new Intent(getContext(), NewToDoActivity.class)));
         ivDelete.setOnClickListener(view -> showDeleteConfirmDialog());
     }
@@ -164,7 +163,6 @@ public class ToDoFragment extends Fragment {
 
             ArrayList<ToDo> filteredTodos = todoAdapter.getItems();
             ArrayList<ToDo> originalTodos = todoAdapter.getOriginalTodos();
-            Context context = view.getContext();
 
             ViewGroup viewGroup = parentView.findViewById(android.R.id.content);
             final CustomDialog customDialog = new CustomDialog(getContext(),
@@ -189,5 +187,18 @@ public class ToDoFragment extends Fragment {
 
             return true;
         });
+    }
+
+    @Override
+    public void checkDeleteIconVisibility(ArrayList<ToDo> todos) {
+        for (ToDo todo : todos) {
+            if (todo.isDone()) {
+                ivDelete.setVisibility(View.VISIBLE);
+
+                return;
+            }
+        }
+
+        ivDelete.setVisibility(View.INVISIBLE);
     }
 }

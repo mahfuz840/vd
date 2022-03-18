@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.the_spartan.virtualdiary.R;
+import com.the_spartan.virtualdiary.interfacing.DeleteIconVisibilityChecker;
 import com.the_spartan.virtualdiary.model.ToDo;
 import com.the_spartan.virtualdiary.service.ToDoService;
 import com.the_spartan.virtualdiary.util.FontUtil;
@@ -33,11 +34,16 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
 
     private ToDoService toDoService;
 
-    public ToDoAdapter(Context context, ArrayList<ToDo> todos) {
+    private DeleteIconVisibilityChecker deleteIconVisibilityChecker;
+
+    public ToDoAdapter(Context context, ArrayList<ToDo> todos,
+                       DeleteIconVisibilityChecker deleteIconVisibilityChecker) {
+
         super(context, 0, todos);
         this.originalTodos = todos;
         this.filteredTodos = todos;
         this.context = context;
+        this.deleteIconVisibilityChecker = deleteIconVisibilityChecker;
 
         toDoService = new ToDoService();
     }
@@ -89,6 +95,7 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
                 originalTodos.set(pos, tappedTodo);
 
                 notifyDataSetChanged();
+                deleteIconVisibilityChecker.checkDeleteIconVisibility(getItems());
             });
 
             tvName.setText(item.getSubject());
@@ -146,6 +153,8 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> implements Filterable {
                 tvTime.setTextSize(Float.parseFloat(String.valueOf(Integer.parseInt(fontSize) - 3)));
             }
         }
+
+        deleteIconVisibilityChecker.checkDeleteIconVisibility(getItems());
 
         return convertView;
     }

@@ -4,7 +4,7 @@ import com.the_spartan.virtualdiary.model.ToDo;
 
 import java.util.ArrayList;
 
-public interface DeleteListCollector {
+public interface DeleteIconVisibilityChecker {
 
-    void updateDeleteList(ArrayList<ToDo> deleteList);
+    void checkDeleteIconVisibility(ArrayList<ToDo> deleteList);
 }
