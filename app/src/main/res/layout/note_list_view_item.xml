@@ -45,7 +45,8 @@
             android:layout_weight="1"
             android:text="This is the title"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/note_list_item_content"
