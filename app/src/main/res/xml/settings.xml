@@ -22,16 +22,22 @@
         <SwitchPreference
             android:key="@string/pref_key_is_password_activated"
             android:title="@string/pref_title_activate_password"
-            android:defaultValue="false"/>
+            android:defaultValue="false" />
 
         <Preference
             android:key="@string/pref_key_password"
-            android:title="@string/pref_title_set_change_password"/>
+            android:title="@string/pref_title_set_change_password" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_title_notification">
+        <SwitchPreference
+            android:key="@string/pref_key_notification_switch"
+            android:title="@string/pref_title_enable_notification" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_title_about">
         <Preference
             android:key="@string/pref_key_about"
-            android:title="@string/pref_title_about_app"/>
+            android:title="@string/pref_title_about_app" />
     </PreferenceCategory>
 </PreferenceScreen>

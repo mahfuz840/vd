@@ -82,7 +82,7 @@
     <string name="title_pref_passcode_lock">Passcode Lock</string>
     <string name="pref_key_password">pass</string>
     <string name="pref_key_is_password_activated">isPasswordOn</string>
-    <string name="pref_title_activate_password">Activate Password Protection</string>
+    <string name="pref_title_activate_password">Enable Password Protection</string>
     <string name="pref_title_font_color">Font Color</string>
     <string name="pref_title_font_size">Font Size</string>
     <string name="pref_title_display_font">Display Font</string>
@@ -98,4 +98,7 @@
     <string name="toast_note_saved_successfully">Note saved successfully</string>
     <string name="pref_title_set_change_password">Set/Change Password</string>
     <string name="prompt_no_title">(no title)</string>
+    <string name="pref_title_notification">Notification</string>
+    <string name="pref_title_enable_notification">Enable Notification</string>
+    <string name="pref_key_notification_switch">notification_switch_value</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.the_spartan.virtualdiary.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.the_spartan.virtualdiary.R;
 import com.the_spartan.virtualdiary.adapter.FontSizeAdapter;
 import com.the_spartan.virtualdiary.adapter.FontsAdapter;
+import com.the_spartan.virtualdiary.service.NotificationService;
 import com.the_spartan.virtualdiary.service.PasswordService;
 import com.the_spartan.virtualdiary.validator.PasswordValidator;
 import com.the_spartan.virtualdiary.view.CustomDialog;
@@ -76,6 +78,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference(getString(R.string.pref_key_about))
                 .setOnPreferenceClickListener(preference -> {
                     showAboutDialog(preference);
+
+                    return true;
+                });
+
+        findPreference(getString(R.string.pref_key_notification_switch))
+                .setOnPreferenceChangeListener((preference, newValue) -> {
+                    handleNotificationPrefChange(preference, (boolean) newValue);
 
                     return true;
                 });
@@ -194,6 +203,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         passwordSetterDialog.show();
+    }
+
+    private void handleNotificationPrefChange(Preference preference, boolean enabled) {
+        Intent notificationIntent = new Intent(getContext(), NotificationService.class);
+
+        if (enabled) {
+            getContext().startService(notificationIntent);
+        } else {
+            getContext().stopService(notificationIntent);
+        }
     }
 
     private void showAboutDialog(Preference preference) {
