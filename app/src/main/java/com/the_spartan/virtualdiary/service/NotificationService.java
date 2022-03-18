@@ -7,10 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * Created by Spartan on 3/26/2018.
@@ -20,7 +20,6 @@ public class NotificationService extends Service {
 
     static AlarmManager alarmManager;
     static PendingIntent pendingIntent;
-
 
     @Nullable
     @Override
@@ -47,7 +46,7 @@ public class NotificationService extends Service {
 
         Log.d("Notification Service", " " + isNotificationTurnedOn);
 
-        if (isNotificationTurnedOn){
+        if (isNotificationTurnedOn) {
             Intent notificationBroadcastIntent = new Intent(this, NotificationBroadcastReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(this, 101, notificationBroadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
@@ -62,7 +61,6 @@ public class NotificationService extends Service {
 
     @Override
     public void onDestroy() {
-
         alarmManager.cancel(pendingIntent);
 
         super.onDestroy();
